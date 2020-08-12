@@ -1,0 +1,68 @@
+.page-newSpecies {
+	form {
+		label {
+			display: flex;
+			flex-wrap: wrap;
+			margin-bottom: .5rem;
+			> span {
+				flex: 1 1 50%;
+			}
+			> .form-control {
+				flex: 1 1 50%;
+				input {
+					width: 20em;
+					max-width: 80vw;
+				}
+			}
+		}
+		.btn-small {
+			font-size: .9em;
+			padding: 0;
+			border: none;
+			background: transparent;
+			margin-left: .5em;
+		}
+	}
+	.result {
+		ul.taxons
+		li {
+			&.has-common-name {
+				em {
+					&::before, &::after {
+						display: inline;
+					}
+					&::before {
+						content: '(';
+					}
+					&::after {
+						content: ')';
+					}
+				}
+			}
+		}
+	}
+	.note {
+		strong::before {
+			content:'-';
+			font-weight: bold;
+			color: #fff;
+			background-color: #000;
+			border-radius: 1em;
+			width: 1.2em;
+			height: 1.2em;
+			line-height: 1em;
+			margin-right: .5em;
+			padding: 0;
+			text-align: center;
+			display: inline-block;
+			cursor: help;
+		}
+		&.collapsed {
+			strong::before {
+				content: '+';
+			}
+			overflow: hidden;
+			height: 1.5em;
+		}
+	}
+}
