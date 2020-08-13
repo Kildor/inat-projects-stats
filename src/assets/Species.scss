@@ -9,7 +9,7 @@
 			}
 			> .form-control {
 				flex: 1 1 50%;
-				input {
+				input:not([type='checkbox']) {
 					width: 20em;
 					max-width: 80vw;
 				}

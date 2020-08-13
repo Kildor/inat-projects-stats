@@ -9,15 +9,18 @@ import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import FormControl from '../mixins/FormControl.jsx'
+import FormControlCheckbox from '../mixins/FormControlCheckbox';
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
 			d1: "2020-06-01", d2:'', project_id: "", user_id: '',
+			show_first: false,
 			data: [],
 			users: Settings.get('users',[])
 		 };
 		this.changeHandler = this.changeHandler.bind(this);
+		this.checkHandler = this.checkHandler.bind(this);
 		this.submitHandler = this.submitHandler.bind(this);
 		this.counter = this.counter.bind(this);
 		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
@@ -28,6 +31,12 @@ export default class extends React.Component {
 	changeHandler(e) {
 		let newState = {};
 		newState[e.target.name] = e.target.value;
+		this.setState(newState);
+	}
+
+	checkHandler(e) {
+		let newState = {};
+		newState[e.target.name] = e.target.checked;
 		this.setState(newState);
 	}
 	clearDatalistHandler(e) {
@@ -43,7 +52,7 @@ export default class extends React.Component {
 	}
 
 	async counter () {
-		const {project_id, user_id, d1, d2} = this.state;
+		const {project_id, user_id, d1, d2, show_first} = this.state;
 		this.setState({ loadingTitle: "Загрузка новых видов" });
 		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, this.setStatusMessage);
 		if (newTaxa.total === 0) return [];
@@ -54,7 +63,7 @@ export default class extends React.Component {
 			alld2.setDate(alld2.getDate() - 1);
 			allTaxa = API.concatTaxons(await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), this.setStatusMessage));
 		}
-		if (d2 !== '') {
+		if (d2 !== '' && !show_first) {
 			const alld1 = new Date(d2);
 			alld1.setDate(alld1.getDate() + 1);
 			allTaxa = API.concatTaxons(allTaxa, await API.fetchSpecies(project_id, user_id, alld1.toISOString().substring(0, 10), null, this.setStatusMessage));
@@ -97,19 +106,22 @@ export default class extends React.Component {
 			<Page title='Новые виды проекта' backlink='/' className='page-newSpecies'>
 				<form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset>
-						<FormControl title='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+						<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 							value={this.state.project_id} list={defaultProjects} >
 						</FormControl>
-						<FormControl title='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
+						<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
 							value={this.state.user_id} list={this.state.users} >
 							{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 						</FormControl>
-						<FormControl title='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
+						<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
 							value={this.state.d1} >
 						</FormControl>
-						<FormControl title='Дата загрузки наблюдений (по которую считать новые виды):' type='date' name='d2' onChange={this.changeHandler}
+						<FormControl label='Дата загрузки наблюдений (по которую считать новые виды):' type='date' name='d2' onChange={this.changeHandler}
 							value={this.state.d2} >
 						</FormControl>
+						<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
+							checked={this.state.showFirst} >
+						</FormControlCheckbox>
 					</fieldset>
 					<button disabled={disabled} type='submit'>Запустить</button>
 				</form>
