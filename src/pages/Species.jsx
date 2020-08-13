@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Page from './Page'
-import './Species.scss';
+import '../assets/Species.scss';
 
 import API, { Settings } from '../mixins/API';
 import Loader from '../mixins/Loader';

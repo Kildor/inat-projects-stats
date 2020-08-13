@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 
-import './Page.scss';
+import '../assets/Page.scss';
 
 const Header = ({title, backlink}) => {
 	if (!title && !backlink) return null;
