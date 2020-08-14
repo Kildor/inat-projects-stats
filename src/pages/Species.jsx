@@ -10,10 +10,12 @@ import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import FormControl from '../mixins/FormControl.jsx'
 import FormControlCheckbox from '../mixins/FormControlCheckbox';
+import Error from '../mixins/Error';
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
+			error: null,
 			d1: "2020-06-01", d2:'', project_id: "", user_id: '',
 			show_first: false,
 			data: [],
@@ -29,7 +31,7 @@ export default class extends React.Component {
 	}
 
 	changeHandler(e) {
-		let newState = {};
+		let newState = {error:null};
 		newState[e.target.name] = e.target.value;
 		this.setState(newState);
 	}
@@ -97,6 +99,8 @@ export default class extends React.Component {
 		this.setState({data:[] });
 		this.counter().then((data)=>{
 			this.setState({data, loading:false});
+		}).catch(e=>{
+			this.setState({data:[], loading:false,error: e.message})
 		})
 	}
 	
@@ -127,7 +131,8 @@ export default class extends React.Component {
 				</form>
 				<Note/>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
-				{!this.state.loading &&
+				<Error {...this.state} />
+				{!this.state.loading && !this.state.error &&
 					<div className='result'>
 						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} />
 					</div>

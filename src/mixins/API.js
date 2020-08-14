@@ -38,7 +38,7 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 		if(!!callback) {
 			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
 		}
-		const json = await fetch(url+'&page='+page).then(res=>res.json());
+		const json = await fetch(url+'&page='+page).then(res=>res.json()).catch(e=>{throw e});
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
@@ -56,19 +56,15 @@ API.concatTaxons = function () {
 	let taxonsOut = { ids: new Set(), taxons: {}, total: 0 };
 	for(let arg in arguments) {
 		const taxonsIn = arguments[arg];
-		console.dir(taxonsIn);
 		if (!taxonsIn.taxons) continue;
 	for( let id of taxonsIn.ids) {
 		if (!taxonsOut.ids.has(id)) {
-			console.dir(id)
-			console.dir(typeof id)
 		taxonsOut.ids.add(id);
 		taxonsOut.taxons[id] = taxonsIn.taxons[id];
 		}
 	}
 }
 	taxonsOut.total = taxonsOut.ids.size;
-	console.dir(taxonsOut)
 	return taxonsOut;
 }
 
