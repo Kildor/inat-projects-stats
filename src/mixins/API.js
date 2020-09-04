@@ -19,6 +19,20 @@ https://api.inaturalist.org/v1/observations/species_counts?project_id=75512
 https://api.inaturalist.org/v1/observations/species-counts?project_id=75512&page=1
 */
 
+const trottle = 1000 // 1 sec;
+API.awaiting = false;
+
+API.debounceFetch = async function(url) {
+	console.dir(url);
+	console.dir(API.awaiting);
+	if (!API.awaiting) {
+		API.awaiting=true;
+		setTimeout(()=>API.awaiting = false,trottle);
+		return await fetch(url).then(res => res.json()).catch(e => { throw e });
+	} else {
+		setTimeout(API.debounceFetch(url),300);
+	}
+}
 API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 	let taxons = {ids:new Set(), taxons:{}, total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
@@ -31,14 +45,13 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 	let page = 0;
 	let perPage = 0;
 
-
 	do {
 		page++;
 
 		if(!!callback) {
 			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
 		}
-		const json = await fetch(url+'&page='+page).then(res=>res.json()).catch(e=>{throw e});
+		const json = await API.debounceFetch(url + '&page=' + page)
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
