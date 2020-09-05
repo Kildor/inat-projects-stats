@@ -22,7 +22,7 @@ export default (state) => {
 	};
 	return (
 		<>{!!state.error && <div>Произошла ошибка при получении или обработке данных. Пожалуйста, попробуйте повторить позже.<br />
-						Если ошибка повторяется, вы можете написать автору (kromanov@gmail.com или @kildor на йнате) и приложить следующую информацию:
+						Если ошибка повторяется, вы можете написать автору (kromanov@gmail.com или <a href='https://inaturalist.org/peoples/kildor' rel='noopener noreferrer' target='_blank'>@kildor</a>) и приложить следующую информацию:
 						<pre style={{whiteSpace:'pre-wrap'}} onClick={onClickHandler}>
 							{errorMessage}
 						</pre>

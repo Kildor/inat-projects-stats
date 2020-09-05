@@ -1,4 +1,5 @@
 import Taxon from './Taxon'
+import User from './User';
 const API = ()=>{};
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
 API.LOCALE = 'ru';
@@ -21,6 +22,7 @@ https://api.inaturalist.org/v1/observations/species-counts?project_id=75512&page
 
 const trottle = 1000 // 1 sec;
 API.awaiting = false;
+
 
 API.debounceFetch = async function(url) {
 	console.dir(url);
@@ -51,7 +53,9 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 		if(!!callback) {
 			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
 		}
-		const json = await API.debounceFetch(url + '&page=' + page)
+		// const json = await API.debounceFetch(url + '&page=' + page);
+		const json = await fetch(url + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
+		console.dir(json);
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
@@ -64,21 +68,62 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 	taxons.total = totalCount;
 	return taxons;
 }
+API.fetchMembers = async (project_id, callback)=>{
+	let users = {ids:new Set(), users:{}, total:0};
+	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
+	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
+	let url = `${API.BASE_URL}projects/${project_id}/members?per_page=100`; 
 
-API.concatTaxons = function () {
-	let taxonsOut = { ids: new Set(), taxons: {}, total: 0 };
-	for(let arg in arguments) {
-		const taxonsIn = arguments[arg];
-		if (!taxonsIn.taxons) continue;
-	for( let id of taxonsIn.ids) {
-		if (!taxonsOut.ids.has(id)) {
-		taxonsOut.ids.add(id);
-		taxonsOut.taxons[id] = taxonsIn.taxons[id];
+	let totalCount = 0;
+	let page = 0;
+	let perPage = 0;
+
+	do {
+		page++;
+
+		if(!!callback) {
+			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
 		}
-	}
+		// const json = await API.debounceFetch(url + '&page=' + page);
+		const json = await fetch(url + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
+		totalCount = json.total_results;
+		page = json.page;
+		perPage = json.per_page;
+		json.results.forEach(result=>{
+			let u = new User(result.user);
+			u.role = result.role;
+			users.users[u.id] = u;
+			users.ids.add(u.id);
+		})
+	} while (totalCount > page*perPage);
+	users.total = totalCount;
+	return users;
 }
-	taxonsOut.total = taxonsOut.ids.size;
-	return taxonsOut;
+
+API.concatObjects = function (key, ...objects) {
+	let out = { ids: new Set(), total: 0 };
+	out[key] = {};
+	console.dir(objects);
+	for (let obj in objects[0]) {
+		const objIn = objects[0][obj];
+		if (!objIn[key]) continue;
+		const inObjects = objIn[key];
+		let outObjects = out[key];
+		for (let id of objIn.ids) {
+			if (!out.ids.has(id)) {
+				out.ids.add(id);
+				outObjects[id] = inObjects[id];
+			}
+		}
+		console.dir(outObjects);
+		out[key] = outObjects;
+	}
+	out.total = out.ids.size;
+	console.dir(out);
+	return out;
+}
+API.concatTaxons = function () {
+	return API.concatObjects('taxons', arguments);
 }
 
 export class Settings {

@@ -8,9 +8,10 @@ import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
-import FormControl from '../mixins/FormControl.jsx'
-import FormControlCheckbox from '../mixins/FormControlCheckbox';
 import Error from '../mixins/Error';
+import Form from '../mixins/Form';
+import FormControl from '../mixins/FormControl';
+import FormControlCheckbox from '../mixins/FormControlCheckbox';
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
@@ -49,8 +50,6 @@ export default class extends React.Component {
 		newState[name]=[];
 		this.setState(newState);
 		Settings.set(name, []);
-
-
 	}
 
 	async counter () {
@@ -63,6 +62,7 @@ export default class extends React.Component {
 		if (d1 !== '') {
 			const alld2 = new Date(d1);
 			alld2.setDate(alld2.getDate() - 1);
+			// allTaxa = await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), this.setStatusMessage);
 			allTaxa = API.concatTaxons(await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), this.setStatusMessage));
 		}
 		if (d2 !== '' && !show_first) {
@@ -102,33 +102,31 @@ export default class extends React.Component {
 		}).catch(e=>{
 			this.setState({data:[], loading:false,error: e.message})
 		})
+		return false;
 	}
 	
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
 			<Page title='Новые виды проекта' backlink='/' className='page-newSpecies'>
-				<form onSubmit={this.submitHandler} disabled={disabled}>
-					<fieldset>
-						<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
-							value={this.state.project_id} list={defaultProjects} >
-						</FormControl>
-						<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
-							value={this.state.user_id} list={this.state.users} >
-							{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
-						</FormControl>
-						<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
-							value={this.state.d1} >
-						</FormControl>
-						<FormControl label='Дата загрузки наблюдений (по которую считать новые виды):' type='date' name='d2' onChange={this.changeHandler}
-							value={this.state.d2} >
-						</FormControl>
-						<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
-							checked={this.state.showFirst} >
-						</FormControlCheckbox>
-					</fieldset>
-					<button disabled={disabled} type='submit'>Запустить</button>
-				</form>
+				<Form onSubmit={this.submitHandler} disabled={disabled}>
+					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+						value={this.state.project_id} list={defaultProjects} />
+					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
+						value={this.state.user_id} list={this.state.users} >
+						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+					</FormControl>
+					<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
+						value={this.state.d1} >
+					</FormControl>
+					<FormControl label='Дата загрузки наблюдений (по которую считать новые виды):' type='date' name='d2' onChange={this.changeHandler}
+						value={this.state.d2} >
+					</FormControl>
+					<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
+						checked={this.state.showFirst} >
+					</FormControlCheckbox>
+					
+				</Form>
 				<Note/>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

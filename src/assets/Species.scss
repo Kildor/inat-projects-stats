@@ -1,28 +1,4 @@
 .page-newSpecies {
-	form {
-		label {
-			display: flex;
-			flex-wrap: wrap;
-			margin-bottom: .5rem;
-			> span {
-				flex: 1 1 50%;
-			}
-			> .form-control {
-				flex: 1 1 50%;
-				input:not([type='checkbox']) {
-					width: 20em;
-					max-width: 80vw;
-				}
-			}
-		}
-		.btn-small {
-			font-size: .9em;
-			padding: 0;
-			border: none;
-			background: transparent;
-			margin-left: .5em;
-		}
-	}
 	.result {
 		ul.taxons
 		li {
