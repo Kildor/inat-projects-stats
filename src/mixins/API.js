@@ -72,30 +72,37 @@ API.fetchMembers = async (project_id, callback)=>{
 	let users = {ids:new Set(), users:{}, total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
-	let url = `${API.BASE_URL}projects/${project_id}/members?per_page=100`; 
+	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=id&order=asc`; 
 
 	let totalCount = 0;
 	let page = 0;
-	let perPage = 0;
+	let perPageFromJSON = 0;
+
+	let perPage = 100;
 
 	do {
 		page++;
 
 		if(!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
+			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ?` из ${1+~~(totalCount/perPageFromJSON)}` : '' ), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
-		const json = await fetch(url + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
+		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
 		totalCount = json.total_results;
 		page = json.page;
-		perPage = json.per_page;
+		perPageFromJSON = json.per_page;
 		json.results.forEach(result=>{
 			let u = new User(result.user);
 			u.role = result.role;
 			users.users[u.id] = u;
 			users.ids.add(u.id);
-		})
-	} while (totalCount > page*perPage);
+		});
+		// console.dir(users.ids.size);
+		// if (totalCount < page*perPageFromJSON && totalCount !== users.ids.size ) {
+			// page = 0;
+			// perPage-=20;
+		// }
+	} while (totalCount > page*perPageFromJSON);
 	users.total = totalCount;
 	return users;
 }

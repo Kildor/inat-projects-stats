@@ -123,7 +123,7 @@ export default class extends React.Component {
 						value={this.state.d2} >
 					</FormControl>
 					<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
-						checked={this.state.showFirst} >
+						checked={this.state.show_first} >
 					</FormControlCheckbox>
 					
 				</Form>

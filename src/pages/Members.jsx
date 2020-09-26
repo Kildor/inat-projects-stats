@@ -33,7 +33,7 @@ export default class extends React.Component {
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка участников" });
 		const members = await API.fetchMembers(this.state.project_id, this.setStatusMessage);
-		return [...members.ids].map(id => members.users[id]);
+		return { total: members.total, members: [...members.ids].map(id => members.users[id])};
 
 	}
 
@@ -88,11 +88,12 @@ export default class extends React.Component {
 					</FormControl>
 					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
 				</Form>
+				<p>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных</p>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<UsersList users={this.state.data} csv={this.state.csv} />
+						<UsersList users={this.state.data.members} total={this.state.data.total} csv={this.state.csv} />
 					</div>
 				}
 
