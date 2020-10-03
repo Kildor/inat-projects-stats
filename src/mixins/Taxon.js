@@ -4,6 +4,7 @@ class Taxon {
 	name;
 	rank;
 	commonName;
+	_count;
 	constructor(jsonTaxon) {
 		this.id = jsonTaxon.id;
 		this.name = jsonTaxon.name;
@@ -14,7 +15,10 @@ class Taxon {
 	 * @param {int} count
 	 */
 	set count(count) {
-		this.count = count;
+		this._count = count;
+	}
+	get count() {
+		return this._count;
 	}
 }
 

@@ -13,7 +13,7 @@ const Header = ({title, backlink}) => {
 	);
 }
 export default ({title, children, backlink, className})=>{
-
+	document.title = title;
 
 	return (
 		<div className={"page"+(!!className ? " "+className : "")}>

@@ -6,6 +6,7 @@ import Species from './pages/Species';
 import './App.scss';
 import NotFound from './pages/NotFound';
 import Members from './pages/Members';
+import Contribution from './pages/Contribution';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
           <li>
             <Link to='/members'>Участники проекта</Link>
           </li>
+          <li>
+            <Link to='/contribution'>Вклад наблюдателя</Link>
+          </li>
         </ul>
       </header>
       <Switch>
@@ -27,6 +31,7 @@ function App() {
         <List/>
         </Route>
         <Route path='/new-species'><Species/></Route>
+        <Route path='/contribution'><Contribution/></Route>
         <Route path='/members'><Members/></Route>
         <Route path='*'><NotFound/></Route>
       </Switch>

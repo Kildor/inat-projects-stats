@@ -8,6 +8,7 @@ import Error from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
 import FormControlCheckbox from '../mixins/FormControlCheckbox';
 import Form from '../mixins/Form';
+import Note from '../mixins/Note';
 
 const title = 'Участники проекта';
 export default class extends React.Component {
@@ -88,7 +89,8 @@ export default class extends React.Component {
 					</FormControl>
 					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
 				</Form>
-				<p>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных</p>
+				<Note defCollapsed={false}>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных
+				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

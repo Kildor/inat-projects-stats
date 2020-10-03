@@ -9,7 +9,6 @@ export interface TaxonListProps {
 	user_id: number|string
 }
 export default ({taxons,d1, d2, project_id, user_id}: TaxonListProps ) => {
-	console.dir(taxons);
 	let url = `https://www.inaturalist.org/observations?place_id=any&subview=table&verifiable=any`;
 	if (!!project_id) url += `&project_id=${project_id}`;
 	if (!!user_id) url += `&user_id=${user_id}`;

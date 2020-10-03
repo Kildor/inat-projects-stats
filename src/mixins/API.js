@@ -35,13 +35,18 @@ API.debounceFetch = async function(url) {
 		setTimeout(API.debounceFetch(url),300);
 	}
 }
-API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
+API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, customParams={})=>{
 	let taxons = {ids:new Set(), taxons:{}, total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
 	if (!!user_id) url +='&user_id='+user_id;
 	if (!!dateFrom) url +='&created_d1='+dateFrom;
 	if (!!dateTo) url +='&created_d2='+dateTo;
+	for(let key in customParams) {
+		if (customParams.hasOwnProperty(key)) {
+			url +=`&${key}=${customParams[key]}`;
+		}
+	}
 
 	let totalCount = 0;
 	let page = 0;
@@ -55,12 +60,13 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback)=>{
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
 		const json = await fetch(url + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
-		console.dir(json);
+		// console.dir(json);
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
 		json.results.forEach(result=>{
 			let t = new Taxon(result.taxon);
+			t.count = result.count;
 			taxons.taxons[t.id] = t;
 			taxons.ids.add(t.id);
 		})
