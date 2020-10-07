@@ -9,9 +9,10 @@ import UsersList from '../mixins/UsersList';
 import FormControlCheckbox from '../mixins/FormControlCheckbox';
 import Form from '../mixins/Form';
 import Note from '../mixins/Note';
+import Module from '../classes/Module';
 
 const title = 'Участники проекта';
-export default class extends React.Component {
+export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -53,31 +54,6 @@ export default class extends React.Component {
 			this.setState({ data: [], loading: false, error: e.message })
 		})
 	}
-
-	changeHandler(e) {
-		let newState = { error: null };
-		newState[e.target.name] = e.target.value;
-		this.setState(newState);
-	}
-
-	checkHandler(e) {
-		let newState = {};
-		newState[e.target.name] = e.target.checked;
-		this.setState(newState);
-	}
-	clearDatalistHandler(e) {
-		e.preventDefault();
-		const name = e.currentTarget.dataset['clear'];
-		const newState = {};
-		newState[name] = [];
-		this.setState(newState);
-		Settings.set(name, []);
-	}
-
-	setStatusMessage(message) {
-		this.setState({ loadingMessage: message });
-	}
-
 
 	render() {
 		const disabled = this.state.loading || this.state.project_id === '';

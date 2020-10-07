@@ -12,7 +12,8 @@ import Error from '../mixins/Error';
 import Form from '../mixins/Form';
 import FormControl from '../mixins/FormControl';
 import FormControlCheckbox from '../mixins/FormControlCheckbox';
-export default class extends React.Component {
+import Module from '../classes/Module';
+export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
@@ -28,27 +29,6 @@ export default class extends React.Component {
 		this.counter = this.counter.bind(this);
 		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
 		this.setStatusMessage = this.setStatusMessage.bind(this);
-	}
-
-	changeHandler(e) {
-		let newState = {error:null};
-		newState[e.target.name] = e.target.value;
-		this.setState(newState);
-	}
-
-	checkHandler(e) {
-		let newState = {};
-		newState[e.target.name] = e.target.checked;
-		this.setState(newState);
-	}
-	clearDatalistHandler(e) {
-		e.preventDefault();
-		const name = e.currentTarget.dataset['clear'];
-		const newState = {};
-		console.dir(name)
-		newState[name]=[];
-		this.setState(newState);
-		Settings.set(name, []);
 	}
 
 	async counter () {
@@ -74,10 +54,6 @@ export default class extends React.Component {
 			}).map(id => userTaxa.taxons[id]);
 
 		return userTaxaFiltered;
-	}
-
-	setStatusMessage (message) {
-		this.setState({loadingMessage: message});
 	}
 
 	async submitHandler(e) {
