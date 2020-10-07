@@ -37,8 +37,27 @@
 		a {
 			color: #fff;
 		}
-
-	}
+		@media screen and (min-width:600px) {
+			.btn-menu {
+				display: none;
+				}
+			}
+		@media screen and (max-width:600px) {
+			ul {
+				display: none;
+			}
+			.btn-menu.open + ul {
+				display: flex;
+				flex-direction: column;
+				li {
+					&+li {
+						border-left: none;
+						border-top: 1px solid #fff;
+					}
+				}
+			}
+		}
+		}
 	.loader {
 		font-weight: bold;
 		svg {

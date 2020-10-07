@@ -48,9 +48,13 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, custo
 		}
 	}
 
+	let limit = customParams.limit || 0;
 	let totalCount = 0;
 	let page = 0;
 	let perPage = 0;
+
+	if (limit > 0) url += `&per_page=${limit}`;
+
 
 	do {
 		page++;
@@ -69,7 +73,8 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, custo
 			t.count = result.count;
 			taxons.taxons[t.id] = t;
 			taxons.ids.add(t.id);
-		})
+		});
+		if (limit > 0 && page* perPage >= limit) break;
 	} while (totalCount > page*perPage);
 	taxons.total = totalCount;
 	return taxons;
