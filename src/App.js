@@ -6,7 +6,6 @@ import Species from './pages/Species';
 import './App.scss';
 import NotFound from './pages/NotFound';
 import Members from './pages/Members';
-import Contribution from './pages/Contribution';
 import SpeciesList from './pages/SpeciesList';
 
 const Header = () => {
@@ -23,9 +22,9 @@ const Header = () => {
         <li>
             <Link onClick={() => setstate(!state)} to='/members'>Участники проекта</Link>
         </li>
-        <li>
+        {/* <li>
             <Link onClick={() => setstate(!state)}to='/contribution'>Вклад наблюдателя</Link>
-        </li>
+        </li> */}
         <li>
             <Link onClick={() => setstate(!state)}to='/species'>Список видов проекта</Link>
         </li>
@@ -44,7 +43,7 @@ function App() {
         <List/>
         </Route>
         <Route path='/new-species'><Species/></Route>
-        <Route path='/contribution'><Contribution/></Route>
+        <Route path='/contribution'><SpeciesList/></Route>
         <Route path='/members'><Members/></Route>
         <Route path='/species'><SpeciesList/></Route>
         <Route path='*'><NotFound/></Route>

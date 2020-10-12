@@ -23,12 +23,6 @@ export default class extends Module {
 			data: [],
 			projects: Settings.get('projects', [])
 		};
-		this.changeHandler = this.changeHandler.bind(this);
-		this.checkHandler = this.checkHandler.bind(this);
-		this.submitHandler = this.submitHandler.bind(this);
-		this.counter = this.counter.bind(this);
-		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
-		this.setStatusMessage = this.setStatusMessage.bind(this);
 		document.title = title;
 	}
 
@@ -39,20 +33,13 @@ export default class extends Module {
 
 	}
 
-	async submitHandler(e) {
-		e.preventDefault();
+	storageHandler() {
 		let projects = this.state.projects;
+		if (!this.state.project_id) return;
 		projects.push({ name: this.state.project_id, title: this.state.project_id });
 		const filteredProjects = Array.from(new Set(projects.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
 		Settings.set('projects', filteredProjects);
-		this.setState({ loading: true, data: [], projects: filteredProjects });
-
-		this.counter().then((data) => {
-			this.setState({ data, loading: false });
-		}).catch(e => {
-			console.dir('error')
-			this.setState({ data: [], loading: false, error: e.message })
-		})
+		return {projects: filteredProjects };
 	}
 
 	render() {

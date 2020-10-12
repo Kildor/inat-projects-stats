@@ -23,13 +23,7 @@ export default class extends Module {
 			data: [],
 			users: Settings.get('users',[])
 		 };
-		this.changeHandler = this.changeHandler.bind(this);
-		this.checkHandler = this.checkHandler.bind(this);
-		this.submitHandler = this.submitHandler.bind(this);
-		this.counter = this.counter.bind(this);
-		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
-		this.setStatusMessage = this.setStatusMessage.bind(this);
-		document.title='Новые виды проекта';
+		// document.title='Новые виды проекта';
 	}
 
 	async counter () {
@@ -65,21 +59,14 @@ export default class extends Module {
 		return newTaxaFiltered;
 	}
 
-	async submitHandler(e) {
-		e.preventDefault();
+	storageHandler() {
 		let users = this.state.users;
 		users.push({ name: this.state.user_id, title: this.state.user_id });
 		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
 		Settings.set('users', filteredUsers);
-		this.setState({loading: true, data:[], users: filteredUsers });
-		this.setState({data:[] });
-		this.counter().then((data)=>{
-			this.setState({data, loading:false});
-		}).catch(e=>{
-			this.setState({data:[], loading:false,error: e.message})
-		})
-		return false;
+		return {users: filteredUsers };
 	}
+
 	
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));

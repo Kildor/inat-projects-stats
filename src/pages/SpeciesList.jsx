@@ -19,45 +19,44 @@ export default class extends Module {
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
 			error: null,
 			project_id: "", user_id: '', limit: 0, csv: false,
+			species_only: true, rg: false, contribution: false,
 			data: [],
 			users: Settings.get('users',[])
 		 };
-		this.changeHandler = this.changeHandler.bind(this);
-		this.checkHandler = this.checkHandler.bind(this);
-		this.submitHandler = this.submitHandler.bind(this);
-		this.counter = this.counter.bind(this);
-		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
-		this.setStatusMessage = this.setStatusMessage.bind(this);
-		document.title='Виды проекта';
 	}
 
 	async counter () {
-		const {project_id, user_id, limit} = this.state;
-		this.setState({ loadingTitle: "Загрузка видов" });
+		const {project_id, user_id, limit, contribution} = this.state;
+		this.setState({ loadingTitle: "Загрузка видов"});
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
-		let allTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
+		if (this.state.species_only) customParams['hrank'] = 'species';
+		if (this.state.rg) customParams['quality_grade'] = 'research';
+		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);
+		if (contribution) {
+			this.setState({ loadingTitle: "Загрузка видов пользователя"});
+			const userTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
+			if (userTaxa.total === 0) return [];
 
-		this.setState({loadingTitle: "Обработка загруженных данных", loading: true});
+			this.setState({ loadingTitle: "Обработка загруженных данных" });
+			return [...userTaxa.ids].filter(id => {
+				return !allTaxa.ids.has(id) || allTaxa.taxons[id].count === userTaxa.taxons[id].count;
+			}).map(id => userTaxa.taxons[id]);
+
+		}
+
+		this.setState({loadingTitle: "Обработка загруженных данных"});
 
 		return [...allTaxa.ids].map(id => allTaxa.taxons[id]);
 
 	}
 
-	async submitHandler(e) {
-		e.preventDefault();
+	storageHandler() {
 		let users = this.state.users;
 		users.push({ name: this.state.user_id, title: this.state.user_id });
 		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
 		Settings.set('users', filteredUsers);
-		this.setState({loading: true, data:[], users: filteredUsers });
-		this.setState({data:[] });
-		this.counter().then((data)=>{
-			this.setState({data, loading:false});
-		}).catch(e=>{
-			this.setState({data:[], loading:false,error: e.message})
-		})
-		return false;
+		return { users: filteredUsers };
 	}
 	
 	render() {
@@ -73,13 +72,19 @@ export default class extends Module {
 					</FormControl>
 					<FormControl label='Лимит:' type='number' name='limit' onChange={this.changeHandler}
 						value={this.state.limit} />
+					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
+						checked={this.state.species_only} >
+					</FormControlCheckbox>
+					<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
+						checked={this.state.rg} >
+					</FormControlCheckbox> 
+					<FormControlCheckbox label='Виды, встреченные только этим пользователем' name='contribution' onChange={this.checkHandler}
+						checked={this.state.contribution} >
+					</FormControlCheckbox> 
 					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
-				</Form>
+		</Form>
 				<Note>
-					Скрипт выбирает все виды из проекта, загруженные на сайт до выбранной даты (Дата создания), выбирает все виды, загруженные после выбранной даты,
-					после чего сравнивает списки и оставляет только новые. К сожалению, API iNaturalist не даёт возможности выбрать виды, добавленные в проект относительно даты,
-					поэтому если в требованиях проекта выставлен "Исследовательский статус", есть вероятность того, что наблюдение, добавленное раньше указанной даты, было добавлено в проект уже после неё,
-					но при этом в списке его не будет. Аналогично с теми наблюдениями, которые были переопределены после указанной даты.
+					Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />
