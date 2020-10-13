@@ -1,0 +1,15 @@
+.taxons li {
+	&.has-common-name {
+		em {
+			&::before, &::after {
+				display: inline;
+				}
+			&::before {
+				content: '(';
+				}
+			&::after {
+				content: ')';
+				}
+			}
+		}
+	}

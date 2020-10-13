@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import Page from './Page'
 
 export default ()=>{
-	document.title = 'Список утилит';
+	// document.title = 'Список утилит';
 	return (
-		<Page className='page-main'>
+		<Page className='page-main' pageTitle='Список утилит'>
 			<p>
 				Выберите один из доступных вариантов:
 			</p>
@@ -20,11 +20,7 @@ export default ()=>{
 				<dt>
 					<Link to='/species'>Виды в проекте</Link>
 				</dt>
-				<dd><p>Просмотр списка видов проекта.</p></dd>
-				<dt>
-					<Link to='/contribution'>Вклад пользователя в проект</Link>
-				</dt>
-				<dd><p>Просмотр списка видов, которые встретил только указанный наблюдатель.
+				<dd><p>Просмотр списка видов проекта, а так же списка видов, которые встретил только указанный наблюдатель.
 					</p></dd>
 				<dt>
 					<Link to='/members'>Участники проекта</Link>

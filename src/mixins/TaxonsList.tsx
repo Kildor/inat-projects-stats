@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
 import Taxon from './Taxon';
+import '../assets/Taxons.scss';
 
 export interface TaxonListProps {
 	taxons: Array<Taxon>
