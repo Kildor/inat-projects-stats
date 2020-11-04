@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
-import User from './User';
+import CSV from './CSV';
+import User, { getCSVHeader } from './User';
 
 export interface UsersListProps {
 	users?: Array<User> | null
@@ -15,9 +16,7 @@ export default ({ users, total, csv = false }: UsersListProps) => {
 
 	let list: ReactElement;
 	if (csv) {
-		let value = `ID\tLogin\tName\tRole\n`+
-		users.map((user) => `${user.id}\t${user.login}\t${!!user.name ? '"'+user.name+'"' : ''}\t${!!user.role ? user.role : ''}`).join("\n");
-		list = <textarea value={value} readOnly style={{width:"700px",maxWidth:"90vw", height:"200px"}} onFocus={(e)=>{e.target.select()}}/>
+		list = <CSV header={getCSVHeader} useRank={false}>{users}</CSV>
 	}else {
 		list = <ol className='users'>{users.map(user => <li key={user.id}>
 			<a href={url + user.login} target='_blank' rel='noopener noreferrer'>

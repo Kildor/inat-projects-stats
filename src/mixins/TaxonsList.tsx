@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
-import Taxon from './Taxon';
+import Taxon, { getCSVHeader } from './Taxon';
 import '../assets/Taxons.scss';
+import CSV from './CSV';
 
 export interface TaxonListProps {
 	taxons: Array<Taxon>
@@ -22,9 +23,7 @@ export default ({taxons,d1, d2, project_id, user_id, csv}: TaxonListProps ) => {
 	);
 	let list: ReactElement;
 	if (csv) {
-		let value = `Rank\tID\tName\tCommon name\tRank\tCount\n` +
-			taxons.map((taxon, index) => `${index+1}\t${taxon.id}\t"${taxon.name}"\t${!!taxon.commonName ? '"' + taxon.commonName + '"' : ''}\t${taxon.rank}\t${taxon.count}`).join("\n");
-		list = <textarea value={value} readOnly style={{ width: "700px", maxWidth: "90vw", height: "200px" }} onFocus={(e) => { e.target.select() }} />
+		list = <CSV header={getCSVHeader} useRank={true} >{taxons}</CSV>
 	} else {
 		list = <ol className='taxons'>{taxons.map(taxon => <li key={taxon.id} className={!!taxon.commonName ? 'has-common-name' : ''}>
 			<a href={url + '&taxon_id=' + taxon.id} target='_blank' rel='noopener noreferrer'>

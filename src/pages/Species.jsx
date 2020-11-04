@@ -18,8 +18,8 @@ export default class extends Module {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
 			error: null,
-			d1: "2020-06-01", d2:'', project_id: "", user_id: '',
-			show_first: false,
+			d1: "2020-06-01", d2:'', project_id: "", user_id: '', 
+			csv: false, show_first: false,
 			data: [],
 			users: Settings.get('users',[])
 		 };
@@ -88,6 +88,7 @@ export default class extends Module {
 					<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
 						checked={this.state.show_first} >
 					</FormControlCheckbox>
+					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
 					
 				</Form>
 				<Note>
@@ -100,7 +101,7 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} />
+						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} />
 					</div>
 				}
 			</Page>

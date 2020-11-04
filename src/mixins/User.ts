@@ -1,5 +1,12 @@
+import CSVConvertInterface from "../interfaces/CSVConvertInterface";
 
-class User {
+export function getCSVHeader (useRank: boolean) {
+	let str = '';
+	if (useRank) str += 'Rank\t';
+	return str + `ID\tLogin\tName\tRole\n`
+}
+
+class User implements CSVConvertInterface {
 	id: number;
 	name: string;
 	login: string;
@@ -15,6 +22,15 @@ class User {
 	get role(): string|null {
 		return this._role;
 	}
+
+	toCSV(index: number | false) {
+		let str = '';
+		if (typeof index === 'number') {
+			str += `${index + 1}\t`;
+		}
+		return str + `${this.id}\t${this.login}\t${!!this.name ? '"' + this.name + '"' : ''}\t${!!this.role ? this.role : ''}`;		
+	}
+
 }
 
 export default User;
