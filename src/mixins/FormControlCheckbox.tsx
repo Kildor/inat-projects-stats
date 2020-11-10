@@ -5,7 +5,7 @@ export interface FormControlCheckboxProps {
 	name: string
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	checked: boolean
-	children?: React.ReactChildren
+	children?: React.ReactNode
 }
 export default ({ label, name, onChange, checked, children }: FormControlCheckboxProps) : ReactElement => {
 	return (

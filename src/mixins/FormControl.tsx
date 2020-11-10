@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, FunctionComponent } from 'react'
 import DataList from './DataList'
 
 export interface FormControlProps {
@@ -8,9 +8,8 @@ export interface FormControlProps {
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	value: string
 	list?: Array<Object>
-	children?: React.ReactChildren
 }
-export default ({ label, type, name, onChange, value, list, children }: FormControlProps) => {
+const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, onChange, value, list, children }) => {
 	const dlId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
 
 	return (
@@ -18,9 +17,11 @@ export default ({ label, type, name, onChange, value, list, children }: FormCont
 			<span>{label}</span> <span className='form-control'>
 				<input type={type} name={name} onChange={onChange} value={value} list={dlId} />
 				{children}
-				{(!!dlId) && <DataList list={list} id={dlId} />}
+				{(!!dlId && !!list) && <DataList list={list} id={dlId} />}
 			</span>
 		</label>
 	)
 
 }
+
+export default FormControl;

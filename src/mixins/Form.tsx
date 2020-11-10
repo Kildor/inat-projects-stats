@@ -1,11 +1,11 @@
-import React, { ReactChildren } from 'react'
+import React, { ReactNode } from 'react'
 
 import '../assets/Form.scss'
 
 export interface FormProps {
 	onSubmit: any
 	disabled: boolean
-	children: ReactChildren
+	children: ReactNode
 }
 export default ({onSubmit, disabled, children}: FormProps)=>{
 	return (

@@ -12,7 +12,7 @@ const Header = ({title, backlink}) => {
 		</header>
 	);
 }
-export default ({title, children, backlink, className, pageTitle})=>{
+export default ({title, children, backlink, className, pageTitle=title})=>{
 	if (!!pageTitle) document.title = pageTitle;
 	else if(!!title) document.title = title;
 

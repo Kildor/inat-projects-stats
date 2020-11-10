@@ -44,8 +44,8 @@ export default class extends Module {
 			alld1.setDate(alld1.getDate() + 1);
 			allTaxa = API.concatTaxons(allTaxa, await API.fetchSpecies(project_id, user_id, alld1.toISOString().substring(0, 10), null, this.setStatusMessage));
 		}
-		console.dir(allTaxa);
-		console.dir(newTaxa);
+		// console.dir(allTaxa);
+		// console.dir(newTaxa);
 
 
 		this.setState({loadingTitle: "Обработка загруженных данных", loading: true});

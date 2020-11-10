@@ -7,6 +7,7 @@ import './App.scss';
 import NotFound from './pages/NotFound';
 import Members from './pages/Members';
 import SpeciesList from './pages/SpeciesList';
+// import UmbrellaTop from './pages/UmbrellaTop';
 
 const Header = () => {
   const [state, setstate] = useState(false);
@@ -46,6 +47,7 @@ function App() {
         <Route path='/contribution'><SpeciesList/></Route>
         <Route path='/members'><Members/></Route>
         <Route path='/species'><SpeciesList/></Route>
+        {/* <Route path='/umbrella-top'><UmbrellaTop/></Route> */}
         <Route path='*'><NotFound/></Route>
       </Switch>
     </div>
