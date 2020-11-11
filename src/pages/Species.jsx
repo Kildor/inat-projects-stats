@@ -54,7 +54,7 @@ export default class extends Module {
 		// 	return !allTaxa.taxons[id];
 		// }).map(id => newTaxa.taxons[id]);
 
-		let newTaxaFiltered = [...newTaxa.ids].filter(id=>!allTaxa.ids.has(id)).map(id => newTaxa.taxons[id]);
+		let newTaxaFiltered = [...newTaxa.ids].filter(id => !allTaxa.ids.has(id)).map(id => newTaxa.objects.get(id));
 
 		return newTaxaFiltered;
 	}

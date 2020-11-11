@@ -40,14 +40,14 @@ export default class extends Module {
 
 			this.setState({ loadingTitle: "Обработка загруженных данных" });
 			return [...userTaxa.ids].filter(id => {
-				return !allTaxa.ids.has(id) || allTaxa.taxons[id].count === userTaxa.taxons[id].count;
-			}).map(id => userTaxa.taxons[id]);
+				return !allTaxa.ids.has(id) || allTaxa.objects.get(id).count === userTaxa.objects.get(id).count;
+			}).map(id => userTaxa.objects.get(id));
 
 		}
 
 		this.setState({loadingTitle: "Обработка загруженных данных"});
 
-		return [...allTaxa.ids].map(id => allTaxa.taxons[id]);
+		return [...allTaxa.ids].map(id => allTaxa.objects.get(id));
 
 	}
 

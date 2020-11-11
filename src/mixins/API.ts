@@ -1,5 +1,8 @@
+import JSONTaxonObject from '../interfaces/JSONTaxonObject';
+import JSONUserObject from '../interfaces/JSONUserObject';
 import Taxon from './Taxon'
 import User from './User';
+import iObjectsList from '../interfaces/ObjectsList';
 const API = ()=>{};
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
 API.LOCALE = 'ru';
@@ -20,11 +23,10 @@ https://api.inaturalist.org/v1/observations/species_counts?project_id=75512
 https://api.inaturalist.org/v1/observations/species-counts?project_id=75512&page=1
 */
 
+/*
 const trottle = 1000 // 1 sec;
 API.awaiting = false;
-
-
-API.debounceFetch = async function(url) {
+API.debounceFetch = async function(url:string) {
 	console.dir(url);
 	console.dir(API.awaiting);
 	if (!API.awaiting) {
@@ -35,8 +37,9 @@ API.debounceFetch = async function(url) {
 		setTimeout(API.debounceFetch(url),300);
 	}
 }
-API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, customParams={})=>{
-	let taxons = {ids:new Set(), taxons:{}, total:0};
+*/
+API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any={})=>{
+	let taxons: iObjectsList = {ids:new Set(), objects: new Map<number, Taxon>(), total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
 	if (!!user_id) url +='&user_id='+user_id;
@@ -68,10 +71,10 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, custo
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
-		json.results.forEach(result=>{
+		json.results.forEach((result: {taxon: JSONTaxonObject, count: number} )=>{
 			let t = new Taxon(result.taxon);
 			t.count = result.count;
-			taxons.taxons[t.id] = t;
+			taxons.objects.set(t.id, t);
 			taxons.ids.add(t.id);
 		});
 		if (limit > 0 && page* perPage >= limit) break;
@@ -79,8 +82,8 @@ API.fetchSpecies = async (project_id, user_id, dateFrom, dateTo, callback, custo
 	taxons.total = totalCount;
 	return taxons;
 }
-API.fetchMembers = async (project_id, callback)=>{
-	let users = {ids:new Set(), users:{}, total:0};
+API.fetchMembers = async (project_id: string, callback:Function)=>{
+	let users: iObjectsList = {ids:new Set(), objects: new Map(), total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
 	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=id&order=asc`; 
@@ -102,10 +105,10 @@ API.fetchMembers = async (project_id, callback)=>{
 		totalCount = json.total_results;
 		page = json.page;
 		perPageFromJSON = json.per_page;
-		json.results.forEach(result=>{
+		json.results.forEach((result: {user: JSONUserObject, role: string})=>{
 			let u = new User(result.user);
 			u.role = result.role;
-			users.users[u.id] = u;
+			users.objects.set(u.id, u);
 			users.ids.add(u.id);
 		});
 		// console.dir(users.ids.size);
@@ -118,54 +121,51 @@ API.fetchMembers = async (project_id, callback)=>{
 	return users;
 }
 
-API.concatObjects = function (key, ...objects) {
-	let out = { ids: new Set(), total: 0 };
-	out[key] = {};
+API.concatObjects = function (...objects: Array<iObjectsList>) {
+	let out: iObjectsList = { ids: new Set(), total: 0, objects: new Map() };
 	console.dir(objects);
-	for (let obj in objects[0]) {
-		const objIn = objects[0][obj];
-		if (!objIn[key]) continue;
-		const inObjects = objIn[key];
-		let outObjects = out[key];
+	for (let obj in objects) {
+		const objIn = objects[obj];
+		if (!objIn.objects) continue;
+		const inObjects = objIn.objects;
+		let outObjects = out.objects;
 		for (let id of objIn.ids) {
 			if (!out.ids.has(id)) {
 				out.ids.add(id);
-				outObjects[id] = inObjects[id];
+				outObjects.set(id,inObjects.get(id));
 			}
 		}
 		console.dir(outObjects);
-		out[key] = outObjects;
+		out.objects = outObjects;
 	}
 	out.total = out.ids.size;
 	console.dir(out);
 	return out;
 }
-API.concatTaxons = function () {
-	return API.concatObjects('taxons', arguments);
-}
+API.concatTaxons = API.concatObjects;
 
 export class Settings {
 	static SettingsName = 'inat-projects-stats';
 
 	static loadFromStorage = ()=> {
 		try {
-		let val = localStorage.getItem(this.SettingsName);
+		let val = localStorage.getItem(Settings.SettingsName);
 		if (val === null) val = "{}";
 		return JSON.parse(val);
 		} catch(e) {
 		}
 		return {};
 	}
-	static get = (name, def) => {
-		const settings = this.loadFromStorage();
+	static get = (name: string, def: any) => {
+		const settings = Settings.loadFromStorage();
 	
 		if (settings.hasOwnProperty(name)) return settings[name];
 		return def;
 	}
-	static set = (name, value) => {
-		const settings = this.loadFromStorage();
+	static set = (name:string, value: any) => {
+		const settings = Settings.loadFromStorage();
 		settings[name] = value;
-		localStorage.setItem(this.SettingsName, JSON.stringify(settings));
+		localStorage.setItem(Settings.SettingsName, JSON.stringify(settings));
 		return value;
 	}
 }

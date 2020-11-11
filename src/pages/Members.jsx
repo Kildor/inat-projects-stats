@@ -29,7 +29,7 @@ export default class extends Module {
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка участников" });
 		const members = await API.fetchMembers(this.state.project_id, this.setStatusMessage);
-		return { total: members.total, members: [...members.ids].map(id => members.users[id])};
+		return { total: members.total, members: [...members.ids].map(id => members.objects.get(id))};
 
 	}
 
