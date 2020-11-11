@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom';
 
 import '../assets/Page.scss';
 
-const Header = ({title, backlink}) => {
+
+interface iHeader {
+	title?: string
+	backlink?: string
+}
+interface iPage {
+	title?: string
+	pageTitle?: string
+	backlink?: string
+	className?: string
+}
+
+const Header = ({title, backlink}: iHeader) => {
 	if (!title && !backlink) return null;
 	return (
 		<header className={'page-title' + (!title?' no-title':'')}>
@@ -12,7 +24,7 @@ const Header = ({title, backlink}) => {
 		</header>
 	);
 }
-export default ({title, children, backlink, className, pageTitle=title})=>{
+export const Page: FunctionComponent<iPage> = ({title, children, backlink, className, pageTitle=title})=>{
 	if (!!pageTitle) document.title = pageTitle;
 	else if(!!title) document.title = title;
 
@@ -24,5 +36,5 @@ export default ({title, children, backlink, className, pageTitle=title})=>{
 			</div>
 		</div>
 	)
-
 }
+export default Page;
