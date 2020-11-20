@@ -2,7 +2,12 @@ import React from 'react'
 
 import {ReactComponent as Spinner} from '../assets/load.svg'
 
-export default ({title, message, show})=>{
+interface iLoader {
+	title: string
+	message?: string
+	show?: boolean
+}
+export default ({title, message, show}: iLoader)=>{
 	if (!show) return null;
 	return (
 		<div className='loader'>
