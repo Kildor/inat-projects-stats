@@ -3,6 +3,7 @@ import React from 'react'
 import Page from './Page'
 import '../assets/Species.scss';
 
+import settings from '../assets/settings.json';
 import API, { Settings } from '../mixins/API';
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
@@ -18,11 +19,13 @@ export default class extends Module {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
 			error: null,
-			d1: "2020-06-01", d2:'', project_id: "", user_id: '', 
-			csv: false, show_first: false,
 			data: [],
-			users: Settings.get('users',[])
 		 };
+		["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "rg", "users"].forEach(state => {
+			const setting = settings[state];
+			this.state[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
+		});
+
 		// document.title='Новые виды проекта';
 	}
 

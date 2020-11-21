@@ -18,11 +18,9 @@ export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
+			user_id_in:'',
 			error: null,
-			// project_id: "", user_id: '', limit: 0, csv: false,
-			// species_only: true, rg: false, contribution: false,
 			data: [],
-			users: Settings.get('users',[])
 		 };
 		 ["project_id","user_id","csv","limit", "species_only","rg", "users"].forEach(state=>{
 			 const setting = settings[state];
@@ -31,29 +29,21 @@ export default class extends Module {
 	}
 
 	async counter () {
-		const {project_id, user_id, limit, contribution} = this.state;
+		const {project_id, user_id, limit, user_id_in} = this.state;
 		this.setState({ loadingTitle: "Загрузка видов"});
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (this.state.rg) customParams['quality_grade'] = 'research';
-		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);
-		if (contribution) {
-			this.setState({ loadingTitle: "Загрузка видов пользователя"});
-			const userTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
-			if (userTaxa.total === 0) return [];
-
-			this.setState({ loadingTitle: "Обработка загруженных данных" });
-			return [...userTaxa.ids].filter(id => {
-				return !allTaxa.ids.has(id) || allTaxa.objects.get(id).count === userTaxa.objects.get(id).count;
-			}).map(id => userTaxa.objects.get(id));
-
-		}
+		let allTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
+		this.setState({ loadingTitle: "Загрузка видов пользователя" });
+		let userTaxa = await API.fetchSpecies(project_id, user_id_in, null, null, this.setStatusMessage, customParams);
+		
 
 		this.setState({loadingTitle: "Обработка загруженных данных"});
-
-		return [...allTaxa.ids].map(id => allTaxa.objects.get(id));
-
+		return [...allTaxa.ids].filter(id => {
+			return !userTaxa.ids.has(id);
+		}).map(id => allTaxa.objects.get(id));
 	}
 
 	storageHandler() {
@@ -65,13 +55,17 @@ export default class extends Module {
 	}
 	
 	render() {
-		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
+		const disabled = this.state.loading || (this.state.user_id_in === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title='Виды проекта' backlink='/' className='page-listSpecies'>
+			<Page title='Пропущенные виды' backlink='/' className='page-listSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+					<FormControl label='Id или имя пользователя:' type='text' name='user_id_in' onChange={this.changeHandler}
+						value={this.state.user_id_in} list={this.state.users} >
+						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+					</FormControl>
+					<FormControl label='Id или имя проекта для сравнения:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
-					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
+					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} >
 						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 					</FormControl>
@@ -83,13 +77,10 @@ export default class extends Module {
 					<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
 						checked={this.state.rg} >
 					</FormControlCheckbox> 
-					<FormControlCheckbox label='Виды, встреченные только этим пользователем' name='contribution' onChange={this.checkHandler}
-						checked={this.state.contribution} >
-					</FormControlCheckbox> 
 					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
 		</Form>
 				<Note>
-					Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.
+					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

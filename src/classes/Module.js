@@ -1,5 +1,6 @@
 import React from 'react'
 import { Settings } from '../mixins/API';
+import settings from '../assets/settings.json';
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
@@ -9,17 +10,18 @@ export default class extends React.Component {
 		this.submitHandler = this.submitHandler.bind(this);
 		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
 		this.setStatusMessage = this.setStatusMessage.bind(this);
-
 	}
 	changeHandler(e) {
 		let newState = { error: null };
 		newState[e.target.name] = e.target.value.toLowerCase();
+		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 
 	checkHandler(e) {
 		let newState = {};
 		newState[e.target.name] = e.target.checked;
+		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 	clearDatalistHandler(e) {

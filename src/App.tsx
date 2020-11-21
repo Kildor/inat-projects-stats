@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import './App.scss';
 import List from './pages/List';
 import Species from './pages/Species';
-
-import './App.scss';
 import NotFound from './pages/NotFound';
 import Members from './pages/Members';
 import SpeciesList from './pages/SpeciesList';
-// import UmbrellaTop from './pages/UmbrellaTop';
-
+import modules from './assets/modules.json';
+import SpeciesMissed from './pages/SpeciesMissed';
+// const components = {
+//   "List": List,
+//   "Species": Species,
+//   "NotFound": NotFound,
+//   "Members": Members,
+//   "SpeciesList": SpeciesList
+// };
 const Header = () => {
   const [state, setstate] = useState(false);
   return (
@@ -17,18 +23,11 @@ const Header = () => {
       <div className='header-menu'>
       <button className={'button btn-menu '+ (state?'open':'')} onClick={()=>setstate(!state)}>Menu</button>
       <ul>
-        <li>
-            <Link onClick={() => setstate(!state)} to='/new-species'>Новые виды в проекте</Link>
-        </li>
-        <li>
-            <Link onClick={() => setstate(!state)} to='/members'>Участники проекта</Link>
-        </li>
-        {/* <li>
-            <Link onClick={() => setstate(!state)}to='/contribution'>Вклад наблюдателя</Link>
-        </li> */}
-        <li>
-            <Link onClick={() => setstate(!state)}to='/species'>Список видов проекта</Link>
-        </li>
+        {modules.map(module=>
+          <li key={module.url}>
+            <Link onClick={() => setstate(!state)} to={module.url}>{module.title}</Link>
+          </li>          
+        )}
       </ul>
       </div>
     </header>
@@ -40,13 +39,12 @@ function App() {
     <div className="App">
       <Header/>
       <Switch>
-        <Route exact path='/'>
-        <List/>
-        </Route>
+        <Route exact path='/'><List/></Route>
         <Route path='/new-species'><Species/></Route>
         <Route path='/contribution'><SpeciesList/></Route>
         <Route path='/members'><Members/></Route>
         <Route path='/species'><SpeciesList/></Route>
+        <Route path='/missed-species'><SpeciesMissed/></Route>
         {/* <Route path='/umbrella-top'><UmbrellaTop/></Route> */}
         <Route path='*'><NotFound/></Route>
       </Switch>

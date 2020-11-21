@@ -2,7 +2,8 @@ import React from 'react'
 import Page from './Page';
 import API, { Settings } from '../mixins/API';
 import FormControl from '../mixins/FormControl';
-import defaultProjects from '../assets/projects.json'
+import defaultProjects from '../assets/projects.json';
+import settings from '../assets/settings.json';
 import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
@@ -18,11 +19,13 @@ export default class extends Module {
 		this.state = {
 			loading: false, loadingTitle: null, loadingMessage: null,
 			error: null,
-			project_id: "",
-			csv:false,
 			data: [],
-			projects: Settings.get('projects', [])
 		};
+		["project_id", "csv", "projects"].forEach(state => {
+			const setting = settings[state];
+			this.state[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
+		});
+
 		document.title = title;
 	}
 

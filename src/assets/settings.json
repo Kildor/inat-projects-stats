@@ -1,0 +1,62 @@
+{
+	"project_id": {"setting": "project_id",
+		"type": "string",
+		"default":"",
+		"save": false
+	},
+	"user_id": {"setting": "user_id",
+		"type": "string",
+		"default": "",
+		"save": false
+	},
+	"d1": {"setting": "d1",
+		"type": "string",
+		"default": "2020-06-01",
+		"save": true
+	},
+	"d2": {"setting": "d2",
+		"type": "string",
+		"default": "",
+		"save": true
+	},
+	"csv": {"setting": "csv",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"species_only": {"setting": "species_only",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
+	"rg": {"setting": "rg",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"contribution": {"setting": "contribution",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"show_first": {"setting": "show_first",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"users": {"setting": "users",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"projects": {"setting": "projects",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"limit": {"setting": "limit",
+		"type": "number",
+		"default": 0,
+		"save": true
+	}
+}
