@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import modules from '../assets/modules.json';
-import Page from './Page'
+import Page from '../mixins/Page'
 
 export default ()=>{
 	// document.title = 'Список утилит';

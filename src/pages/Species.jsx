@@ -1,9 +1,8 @@
 import React from 'react'
 
-import Page from './Page'
+import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import settings from '../assets/settings.json';
 import API, { Settings } from '../mixins/API';
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
@@ -11,9 +10,9 @@ import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form';
-import FormControl from '../mixins/FormControl';
-import FormControlCheckbox from '../mixins/FormControlCheckbox';
 import Module from '../classes/Module';
+import I18n from '../classes/I18n';
+import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/FormControl';
 export default class extends Module {
 	constructor(props) {
 		super(props);
@@ -21,20 +20,16 @@ export default class extends Module {
 			error: null,
 			data: [],
 		 };
-		["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "rg", "users"].forEach(state => {
-			const setting = settings[state];
-			this.state[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
-		});
-
+		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "rg", "users"], this.state);
 		// document.title='Новые виды проекта';
 	}
 
 	async counter () {
 		const {project_id, user_id, d1, d2, show_first} = this.state;
-		this.setState({ loadingTitle: "Загрузка новых видов" });
+		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
 		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, this.setStatusMessage);
 		if (newTaxa.total === 0) return [];
-		this.setState({ loadingTitle: "Загрузка всех видов" });
+		this.setState({ loadingTitle: I18n.t("Загрузка всех видов") });
 		let allTaxa = [];
 		if (d1 !== '') {
 			const alld2 = new Date(d1);
@@ -51,7 +46,7 @@ export default class extends Module {
 		// console.dir(newTaxa);
 
 
-		this.setState({loadingTitle: "Обработка загруженных данных", loading: true});
+		this.setState({loadingTitle: I18n.t("Обработка загруженных данных"), loading: true});
 
 		// let newTaxaFiltered = newTaxa.ids.filter((id) => {
 		// 	return !allTaxa.taxons[id];
@@ -74,7 +69,7 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title='Новые виды проекта' backlink='/' className='page-newSpecies'>
+			<Page title={I18n.t('Новые виды проекта')} backlink='/' className='page-newSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
@@ -91,7 +86,7 @@ export default class extends Module {
 					<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
 						checked={this.state.show_first} >
 					</FormControlCheckbox>
-					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
+					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					
 				</Form>
 				<Note>

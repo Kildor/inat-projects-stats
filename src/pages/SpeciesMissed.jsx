@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Page from './Page'
+import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
 import API, { Settings } from '../mixins/API';
@@ -8,12 +8,10 @@ import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
-import settings from '../assets/settings.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form';
-import FormControl from '../mixins/FormControl';
+import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit } from '../mixins/FormControl';
 import Module from '../classes/Module';
-import FormControlCheckbox from '../mixins/FormControlCheckbox';
 export default class extends Module {
 	constructor(props) {
 		super(props);
@@ -22,10 +20,7 @@ export default class extends Module {
 			error: null,
 			data: [],
 		 };
-		 ["project_id","user_id","csv","limit", "species_only","rg", "users"].forEach(state=>{
-			 const setting = settings[state];
-			 this.state[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
-		 });
+		 this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"]);
 	}
 
 	async counter () {
@@ -69,15 +64,14 @@ export default class extends Module {
 						value={this.state.user_id} list={this.state.users} >
 						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 					</FormControl>
-					<FormControl label='Лимит:' type='number' name='limit' onChange={this.changeHandler}
-						value={this.state.limit} />
+					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
 					</FormControlCheckbox>
 					<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
 						checked={this.state.rg} >
 					</FormControlCheckbox> 
-					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
+					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 		</Form>
 				<Note>
 					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом

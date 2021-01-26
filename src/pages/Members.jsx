@@ -1,13 +1,12 @@
 import React from 'react'
-import Page from './Page';
+import Page from '../mixins/Page';
 import API, { Settings } from '../mixins/API';
-import FormControl from '../mixins/FormControl';
+import {FormControl, FormControlCSV} from '../mixins/FormControl';
 import defaultProjects from '../assets/projects.json';
 import settings from '../assets/settings.json';
 import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
-import FormControlCheckbox from '../mixins/FormControlCheckbox';
 import Form from '../mixins/Form';
 import Note from '../mixins/Note';
 import Module from '../classes/Module';
@@ -21,10 +20,7 @@ export default class extends Module {
 			error: null,
 			data: [],
 		};
-		["project_id", "csv", "projects"].forEach(state => {
-			const setting = settings[state];
-			this.state[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
-		});
+		this.initSettings(["project_id", "csv", "projects"]);
 
 		document.title = title;
 	}
@@ -53,7 +49,7 @@ export default class extends Module {
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} >
 					</FormControl>
-					<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={this.checkHandler} checked={this.state.csv}></FormControlCheckbox>
+					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 				</Form>
 				<Note defCollapsed={false}>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных
 				</Note>
@@ -64,8 +60,6 @@ export default class extends Module {
 						<UsersList users={this.state.data.members} total={this.state.data.total} csv={this.state.csv} />
 					</div>
 				}
-
-
 			</Page>
 		)
 	}

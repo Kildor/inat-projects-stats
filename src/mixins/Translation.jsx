@@ -1,4 +1,4 @@
-import I18n from './I18n'
+import I18n from '../classes/I18n'
 import React from 'react'
 
 export default ({props})=> {
