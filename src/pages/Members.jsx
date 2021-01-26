@@ -3,7 +3,6 @@ import Page from '../mixins/Page';
 import API, { Settings } from '../mixins/API';
 import {FormControl, FormControlCSV} from '../mixins/FormControl';
 import defaultProjects from '../assets/projects.json';
-import settings from '../assets/settings.json';
 import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
@@ -20,7 +19,7 @@ export default class extends Module {
 			error: null,
 			data: [],
 		};
-		this.initSettings(["project_id", "csv", "projects"]);
+		this.initSettings(["project_id", "csv", "projects"], this.state);
 
 		document.title = title;
 	}
