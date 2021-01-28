@@ -20,7 +20,7 @@ export default class extends Module {
 			error: null,
 			data: [],
 		 };
-		 this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"]);
+		 this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"], this.state);
 	}
 
 	async counter () {
