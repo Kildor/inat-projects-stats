@@ -14,11 +14,7 @@ const title = 'Участники проекта';
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = {
-			loading: false, loadingTitle: null, loadingMessage: null,
-			error: null,
-			data: [],
-		};
+		this.state = this.getDefaultSettings();
 		this.initSettings(["project_id", "csv", "projects"], this.state);
 
 		document.title = title;

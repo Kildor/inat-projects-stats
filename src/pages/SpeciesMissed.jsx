@@ -15,12 +15,9 @@ import Module from '../classes/Module';
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
-			user_id_in:'',
-			error: null,
-			data: [],
-		 };
-		 this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"], this.state);
+		this.state = this.getDefaultSettings();
+		this.state.user_id_in = '';
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"], this.state);
 	}
 
 	async counter () {
@@ -74,7 +71,8 @@ export default class extends Module {
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 		</Form>
 				<Note>
-					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом
+					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом <br/>
+					В случае сравнения с проектом, показываются виды включённые в проект, не встреченные данным пользователем.
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

@@ -16,10 +16,7 @@ import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/Form
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
-			error: null,
-			data: [],
-		 };
+		this.state = this.getDefaultSettings();
 		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "rg", "users"], this.state);
 		// document.title='Новые виды проекта';
 	}

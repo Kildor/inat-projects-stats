@@ -11,9 +11,17 @@ export default class extends React.Component {
 		this.clearDatalistHandler = this.clearDatalistHandler.bind(this);
 		this.setStatusMessage = this.setStatusMessage.bind(this);
 	}
+
+	getDefaultSettings() {
+		return {
+			loading: false, loadingTitle: null, loadingMessage: null,
+			error: null,
+			data: []
+		}
+	}
 	initSettings(settingsList, thisState) {
 		settingsList.forEach(state => {
-			const setting = settings[state];
+			const setting = settings[state] || {save: false, default: ""};
 			thisState[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
 		});
 	}

@@ -15,14 +15,8 @@ import Module from '../classes/Module';
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = { loading: false, loadingTitle: null, loadingMessage: null, 
-			error: null,
-			// project_id: "", user_id: '', limit: 0, csv: false,
-			// species_only: true, rg: false, contribution: false,
-			data: [],
-			users: Settings.get('users',[])
-		 };
-		 this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"],this.state);
+		this.state = this.getDefaultSettings();
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"],this.state);
 	}
 
 	async counter () {
