@@ -77,7 +77,7 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title={I18n.t('Новые виды проекта')} backlink='/' className='page-newSpecies'>
+			<Page title={I18n.t('Новые виды проекта')} className='page-newSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />

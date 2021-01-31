@@ -6,12 +6,12 @@ import '../assets/Page.scss';
 
 interface iHeader {
 	title?: string
-	backlink?: string
+	backlink?: string | false
 }
 interface iPage {
 	title?: string
 	pageTitle?: string
-	backlink?: string
+	backlink?: string | false
 	className?: string
 }
 
@@ -24,7 +24,7 @@ const Header = ({title, backlink}: iHeader) => {
 		</header>
 	);
 }
-export const Page: FunctionComponent<iPage> = ({title, children, backlink, className, pageTitle=title})=>{
+export const Page: FunctionComponent<iPage> = ({title, children, backlink='/', className, pageTitle=title})=>{
 	if (!!pageTitle) document.title = pageTitle;
 	else if(!!title) document.title = title;
 

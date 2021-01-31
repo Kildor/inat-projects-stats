@@ -42,7 +42,7 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || this.state.project_id === '';
 		return (
-			<Page title={title} backlink='/' className='page-members'>
+			<Page title={title} className='page-members'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} >

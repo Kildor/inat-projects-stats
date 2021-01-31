@@ -1,21 +1,31 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import modules from '../assets/modules.json';
+import I18n from '../classes/I18n';
 import Page from '../mixins/Page'
 
-export default ()=>{
-	// document.title = 'Список утилит';
+interface iDescription {
+	description?: string
+	note?: string
+};
+
+const Description = ({ description, note }: iDescription) => {
+	if (!description) return null
 	return (
-		<Page className='page-main' pageTitle='Список утилит'>
-			<p>
-				Выберите один из доступных вариантов:
-			</p>
+		<dd><p>{description} {!!note ? <><br /><small><strong>*</strong> {note}</small></> : null} </p></dd>
+	);
+};
+
+export default ()=>{
+	return (
+		<Page className='page-main' title={I18n.t("Список утилит")} backlink={false}>
 			<dl>
 				{
 					modules.map(module=>{
+						if(module.url==='/') return null;
 						return (
 							<React.Fragment key={module.url}><dt><Link to={module.url}>{module.title}</Link></dt>
-								{!!module.description ? <dd><p>{module.description} {!!module.note ? <><br/><small><strong>*</strong> {module.note}</small></> :null } </p></dd> : null}
+								<Description description={module.description} note={module.note} ></Description>
 							</React.Fragment>
 						)
 					})

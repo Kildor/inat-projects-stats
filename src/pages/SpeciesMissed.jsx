@@ -58,7 +58,7 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.user_id_in === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title='Пропущенные виды' backlink='/' className='page-listSpecies'>
+			<Page title='Пропущенные виды' className='page-listSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<FormControl label='Id или имя пользователя:' type='text' name='user_id_in' onChange={this.changeHandler}
 						value={this.state.user_id_in} list={this.state.users} >
