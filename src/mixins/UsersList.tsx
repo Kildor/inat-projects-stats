@@ -5,9 +5,10 @@ import User, { getCSVHeader } from './User';
 export interface UsersListProps {
 	users?: Array<User> | null
 	total?: number
-	csv: boolean
+	csv: boolean | false
+	filename?: string | "users.csv"
 }
-export default ({ users, total, csv = false }: UsersListProps) => {
+export default ({ users, total, csv = false, filename }: UsersListProps) => {
 	let url = `https://www.inaturalist.org/people/`;
 	if (!users || users.length === 0) return (
 		<div>Нет данных</div>
@@ -16,7 +17,7 @@ export default ({ users, total, csv = false }: UsersListProps) => {
 
 	let list: ReactElement;
 	if (csv) {
-		list = <CSV header={getCSVHeader} useRank={false}>{users}</CSV>
+		list = <CSV header={getCSVHeader} useRank={false} filename={filename}>{users}</CSV>
 	}else {
 		list = <ol className='users'>{users.map(user => <li key={user.id}>
 			<a href={url + user.login} target='_blank' rel='noopener noreferrer'>

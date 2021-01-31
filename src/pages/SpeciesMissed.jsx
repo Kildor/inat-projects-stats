@@ -45,7 +45,16 @@ export default class extends Module {
 		Settings.set('users', filteredUsers);
 		return { users: filteredUsers };
 	}
-	
+	setFilename() {
+		let filename='';
+		filename= this.state.user_id_in+"-";
+		if (!!this.state.project_id) filename += this.state.project_id + "-"
+		if (!!this.state.user_id) filename += this.state.user_id + "-"
+		if (!!this.state.rg) filename += "rg-";
+		filename += "missed_species.csv";
+		this.setState({ filename: filename });
+
+	}
 	render() {
 		const disabled = this.state.loading || (this.state.user_id_in === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (

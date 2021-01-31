@@ -15,8 +15,7 @@ export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
-		this.initSettings(["project_id", "csv", "projects"], this.state);
-
+		this.initSettings(["project_id", "projects"], this.state);
 		document.title = title;
 	}
 
@@ -27,6 +26,10 @@ export default class extends Module {
 
 	}
 
+	setFilename() {
+		const filename=this.state.project_id+"-members.csv";
+		this.setState({filename: filename});
+	}
 	storageHandler() {
 		let projects = this.state.projects;
 		if (!this.state.project_id) return;
@@ -52,7 +55,7 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<UsersList users={this.state.data.members} total={this.state.data.total} csv={this.state.csv} />
+						<UsersList users={this.state.data.members} total={this.state.data.total} csv={this.state.csv} filename={this.state.filename} />
 					</div>
 				}
 			</Page>

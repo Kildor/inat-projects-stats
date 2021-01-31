@@ -41,7 +41,8 @@ API.debounceFetch = async function(url:string) {
 API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any={})=>{
 	let taxons: iObjectsList = {ids:new Set(), objects: new Map<number, Taxon>(), total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
-	let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
+	let url = `${API.BASE_URL}observations/species_counts?locale=${window.navigator.language}&preferred_place_id=7161`; 
+	if (!!project_id) url +='&project_id='+project_id;
 	if (!!user_id) url +='&user_id='+user_id;
 	if (!!dateFrom) url +='&created_d1='+dateFrom;
 	if (!!dateTo) url +='&created_d2='+dateTo;

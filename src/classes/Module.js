@@ -13,11 +13,13 @@ export default class extends React.Component {
 	}
 
 	getDefaultSettings() {
-		return {
+		const state = {
 			loading: false, loadingTitle: null, loadingMessage: null,
 			error: null,
 			data: []
-		}
+		};
+		this.initSettings(["filename", "csv"], state);
+		return state;
 	}
 	initSettings(settingsList, thisState) {
 		settingsList.forEach(state => {
@@ -53,7 +55,7 @@ export default class extends React.Component {
 		e.preventDefault();
 		this.setState({ loading: true, data: [] });
 		if (!!this.storageHandler) this.setState(this.storageHandler());
-
+		if (!!this.setFilename) this.setFilename();
 		this.counter().then((data) => {
 			this.setState({ data, loading: false });
 		}).catch(e => {

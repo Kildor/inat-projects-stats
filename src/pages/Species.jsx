@@ -54,6 +54,17 @@ export default class extends Module {
 		return newTaxaFiltered;
 	}
 
+	setFilename() {
+		let filename = "";
+		filename += this.state.project_id + "-";
+		if (!!this.state.user_id) filename += this.state.user_id += "-";
+		if (!!this.state.d1) filename += "from_"+this.state.d1+"-";
+		if (!!this.state.d2) filename += "to_"+this.state.d2+"-";
+		if (!!this.state.show_first) filename += "first-";
+		filename += "new_species.csv";
+		this.setState({ filename: filename });
+	}
+
 	storageHandler() {
 		let users = this.state.users;
 		users.push({ name: this.state.user_id, title: this.state.user_id });
@@ -96,7 +107,7 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} />
+						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} filename={this.state.filename} />
 					</div>
 				}
 			</Page>

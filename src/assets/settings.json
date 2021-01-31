@@ -24,6 +24,11 @@
 		"default": false,
 		"save": true
 	},
+	"filename": {"setting": "filename",
+		"type": "string",
+		"default": "stats.csv",
+		"save": false
+	},
 	"species_only": {"setting": "species_only",
 		"type": "boolean",
 		"default": true,
