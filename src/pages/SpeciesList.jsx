@@ -49,7 +49,7 @@ export default class extends Module {
 		let filename = "";
 		filename+=this.state.project_id+"-";
 		if (!!this.state.user_id) {
-			filename+=this.state.user_id+="-";
+			filename+=this.state.user_id+"-";
 			if (!!this.state.contribution && !!this.state.project_id) filename += "only-";
 		}
 		if (!!this.state.rg) filename += "rg-";
