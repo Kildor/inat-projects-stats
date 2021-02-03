@@ -57,7 +57,7 @@ export default class extends Module {
 	setFilename() {
 		let filename = "";
 		filename += this.state.project_id + "-";
-		if (!!this.state.user_id) filename += this.state.user_id += "-";
+		if (!!this.state.user_id) filename += this.state.user_id + "-";
 		if (!!this.state.d1) filename += "from_"+this.state.d1+"-";
 		if (!!this.state.d2) filename += "to_"+this.state.d2+"-";
 		if (!!this.state.show_first) filename += "first-";
