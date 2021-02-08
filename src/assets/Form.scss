@@ -14,11 +14,41 @@
 				}
 			}
 		}
+		> fieldset {
+			display: block;
+			border: 1px solid #666;
+			margin: 0;
+			padding: 0 15px;
+			> fieldset {
+				border: solid #666;
+				border-width: 1px 0;
+				margin: 0 -5px 1em;
+				padding: 0 15px;
+				
+			}
+		}
 		.btn-small {
 			font-size: .9em;
 			padding: 0;
 			border: none;
 			background: transparent;
 			margin-left: .5em;
+		}
+		.btn-submit {
+			margin: 1rem auto;
+			display: block;
+			color: #fff;
+			text-shadow: 1px 1px 1px #000;
+			border: 1px solid rgb(8, 88, 8);
+			border-radius: 4px;
+			background: linear-gradient(to bottom, rgb(10, 110, 10), rgb(8, 88, 8));
+			padding: 3px 1em;
+
+			&:disabled {
+			background: linear-gradient(to bottom, rgb(196, 196, 196), rgb(100, 100, 100));
+			border: 1px solid rgb(88, 88, 88);
+
+			}
+
 		}
 	}

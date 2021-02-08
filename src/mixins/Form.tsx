@@ -13,7 +13,7 @@ export default ({onSubmit, disabled, children}: FormProps)=>{
 			<fieldset>
 				{children}
 			</fieldset>
-			<button disabled={disabled} type='submit'>Запустить</button>
+			<button disabled={disabled} type='submit' className="btn-submit">Запустить</button>
 		</form>
 
 	)
