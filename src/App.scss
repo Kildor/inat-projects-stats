@@ -7,11 +7,26 @@
 	header.App-header {
 		background: #333;
 		color: #fff;
-		padding: .5rem;
+		padding: 0.5rem;
 		h1 {
 			margin: 0;
-			padding: .5rem;
+			padding: 0.5rem;
 			font-size: 1.5rem;
+		}
+		.btn-menu {
+			position: absolute;
+			top: 20px;
+			right: 10px;
+			background: rgba(0, 0, 0, 0.2);
+			border: none;
+			color: #fff;
+			font-size: 1em;
+			line-height: 1.2;
+			/* font-weight: bold; */
+			padding: 5px 15px;
+			&.open {
+				box-shadow: 0 0 3px #fff;
+			}
 		}
 		ul {
 			display: inline-flex;
@@ -22,12 +37,15 @@
 			background: #000 linear-gradient(to bottom, #222, #000);
 			box-shadow: 0 0 1px #000;
 			li {
-				padding: 4px 10px;
-				&+li {
+				& + li {
 					border-left: 1px solid #444;
 				}
 				&::marker {
 					color: #000;
+				}
+				&.active {
+					background: #444 linear-gradient(to bottom, #404040, #202020);
+					text-shadow: 1px 1px #000;
 				}
 				a {
 					text-decoration: none;
@@ -36,13 +54,15 @@
 		}
 		a {
 			color: #fff;
+			display: block;
+			padding: 4px 10px;
 		}
-		@media screen and (min-width:600px) {
+		@media screen and (min-width: 600px) {
 			.btn-menu {
 				display: none;
-				}
 			}
-		@media screen and (max-width:600px) {
+		}
+		@media screen and (max-width: 600px) {
 			ul {
 				display: none;
 			}
@@ -50,14 +70,14 @@
 				display: flex;
 				flex-direction: column;
 				li {
-					&+li {
+					& + li {
 						border-left: none;
 						border-top: 1px solid #fff;
 					}
 				}
 			}
 		}
-		}
+	}
 	.loader {
 		font-weight: bold;
 		svg {
