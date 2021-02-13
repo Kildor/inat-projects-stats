@@ -9,7 +9,8 @@ import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
 import defaultProjects from '../assets/projects.json';
 import ButtonClear from "../mixins/ButtonClear";
-import API, { Settings } from "../mixins/API";
+import API from "../mixins/API";
+import Settings from "../mixins/Settings";
 
 
 const title = I18n.t("Скачивание наблюдений");
@@ -46,7 +47,10 @@ export default class Downloader extends Module {
 
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка наблюдений" });
-
+		const { project_id, taxon_id, user_id, place_id, d1, d2, limit, rg} = this.state;
+		const observations = API.fetchObservations(taxon_id, project_id, user_id, place_id, d1, d2, limit, rg);
+		console.dir(this.state);
+		return [];
 	}
 
 	render() {
@@ -55,20 +59,13 @@ export default class Downloader extends Module {
 			<Page title={title}>
 				{/* {JSON.stringify(this.state)} */}
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}  value={this.state.taxon_name} list={this.state.taxons}>
+					<FormControl label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler} 
+					value={this.state.taxon_name} list={this.state.taxons} clearDatalistHandler={this.clearDatalistHandler} listName="taxons">
 						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
-							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`}>&raquo;</a>
+							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
 								: <span role='img' aria-label='fail'>⚠️</span>
 						) : null}
-						{!!this.state.taxons && this.state.taxons.length > 0 && <ButtonClear onClickHandler={this.clearDatalistHandler} listName='taxons' />}
 					</FormControl>
-					{/* <FormControl label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler} value={this.state.taxon_name} list={this.state.taxons}>
-						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
-							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`}>&raquo;</a>
-								: <span role='img' aria-label='fail'>⚠️</span>
-						) : null}
-						{!!this.state.taxons && this.state.taxons.length > 0 && <ButtonClear onClickHandler={this.clearDatalistHandler} listName='taxons' />}
-					</FormControl> */}
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
