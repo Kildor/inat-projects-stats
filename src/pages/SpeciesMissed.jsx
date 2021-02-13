@@ -62,13 +62,13 @@ export default class extends Module {
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<FormControl label='Id или имя пользователя:' type='text' name='user_id_in' onChange={this.changeHandler}
 						value={this.state.user_id_in} list={this.state.users} >
-						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='button' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 					</FormControl>
 					<FormControl label='Id или имя проекта для сравнения:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
 					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} >
-						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='button' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 					</FormControl>
 					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}

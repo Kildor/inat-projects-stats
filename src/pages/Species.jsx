@@ -83,7 +83,7 @@ export default class extends Module {
 						value={this.state.project_id} list={defaultProjects} />
 					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} >
-						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='btn' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='button' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
 					</FormControl>
 					<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
 						value={this.state.d1} >
