@@ -20,7 +20,7 @@ const Header = () => {
   
   return (
     <header className="App-header">
-      <h1>Inat projects utils</h1>
+      <h1>Inat utils</h1>
       <div className='header-menu'>
       <button className={'button btn-menu '+ (state?'open':'')} onClick={()=>setstate(!state)}>Menu</button>
       <ul>
