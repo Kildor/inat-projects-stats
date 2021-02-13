@@ -3,7 +3,8 @@ import React from 'react'
 import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import API, { Settings } from '../mixins/API';
+import API from '../mixins/API';
+import Settings from "../mixins/Settings";
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';

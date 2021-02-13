@@ -1,5 +1,5 @@
 import React from 'react'
-import { Settings } from '../mixins/API';
+import Settings from "../mixins/Settings";
 import settings from '../assets/settings.json';
 export default class extends React.Component {
 	constructor(props) {

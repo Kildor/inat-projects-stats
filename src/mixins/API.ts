@@ -124,7 +124,6 @@ API.fetchMembers = async (project_id: string, callback:Function)=>{
 
 API.concatObjects = function (...objects: Array<iObjectsList>) {
 	let out: iObjectsList = { ids: new Set(), total: 0, objects: new Map() };
-	console.dir(objects);
 	for (let obj in objects) {
 		const objIn = objects[obj];
 		if (!objIn.objects) continue;
@@ -136,39 +135,11 @@ API.concatObjects = function (...objects: Array<iObjectsList>) {
 				outObjects.set(id,inObjects.get(id));
 			}
 		}
-		console.dir(outObjects);
 		out.objects = outObjects;
 	}
 	out.total = out.ids.size;
-	console.dir(out);
 	return out;
 }
 API.concatTaxons = API.concatObjects;
-
-export class Settings {
-	static SettingsName = 'inat-projects-stats';
-
-	static loadFromStorage = ()=> {
-		try {
-		let val = localStorage.getItem(Settings.SettingsName);
-		if (val === null) val = "{}";
-		return JSON.parse(val);
-		} catch(e) {
-		}
-		return {};
-	}
-	static get = (name: string, def: any) => {
-		const settings = Settings.loadFromStorage();
-	
-		if (settings.hasOwnProperty(name)) return settings[name];
-		return def;
-	}
-	static set = (name:string, value: any) => {
-		const settings = Settings.loadFromStorage();
-		settings[name] = value;
-		localStorage.setItem(Settings.SettingsName, JSON.stringify(settings));
-		return value;
-	}
-}
 
 export default API;
