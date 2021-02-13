@@ -8,6 +8,7 @@ import Members from './pages/Members';
 import SpeciesList from './pages/SpeciesList';
 import modules from './assets/modules.json';
 import SpeciesMissed from './pages/SpeciesMissed';
+import Downloader from './pages/Downloader';
 // const components = {
 //   "List": List,
 //   "Species": Species,
@@ -54,6 +55,7 @@ function App() {
         <Route path='/contribution'><SpeciesList/></Route>
         <Route path='/members'><Members/></Route>
         <Route path='/species'><SpeciesList/></Route>
+        <Route path='/download-observations'><Downloader/></Route>
         <Route path='/missed-species'><SpeciesMissed/></Route>
         {/* <Route path='/umbrella-top'><UmbrellaTop/></Route> */}
         <Route path='*'><NotFound/></Route>

@@ -3,6 +3,7 @@ import JSONUserObject from '../interfaces/JSONUserObject';
 import Taxon from './Taxon'
 import User from './User';
 import iObjectsList from '../interfaces/ObjectsList';
+import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
 const API = ()=>{};
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
 API.LOCALE = 'ru';
@@ -38,6 +39,25 @@ API.debounceFetch = async function(url:string) {
 	}
 }
 */
+
+API.lookupTaxon = async (taxonName: string) => {
+	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
+	let url = `${API.BASE_URL}search?q=${encodeURIComponent(taxonName)}&sources=taxa`;
+	const json = await fetch(url).then(res=>res.json());
+	let score = 0.0, id=0;
+	if (!!json.total_results) {
+		json.results.forEach((result: JSONLookupTaxonObject ) => {
+			if (score < result.score) {
+				score = result.score;
+				id = result.record.id;
+			}
+		});
+		console.dir(id);
+		return id;
+	}
+
+	return 0;
+}
 API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any={})=>{
 	let taxons: iObjectsList = {ids:new Set(), objects: new Map<number, Taxon>(), total:0};
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
