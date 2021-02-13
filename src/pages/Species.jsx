@@ -82,8 +82,7 @@ export default class extends Module {
 					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
 					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
-						value={this.state.user_id} list={this.state.users} >
-						{this.state.users.length > 0 && <button onClick={this.clearDatalistHandler} data-clear='users' type='button' className='btn-small clear-datalist' title='Очистить сохранённые имена'><span role='img' aria-label='Clear'>❌</span></button>}
+						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
 					<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
 						value={this.state.d1} >

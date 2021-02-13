@@ -2,15 +2,16 @@ import React, { FunctionComponent, ReactElement } from 'react'
 import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps } from '../interfaces/FormControlTypes'
 import DataList from './DataList'
 
-export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, onChange, value, list, children, ...attr }) => {
-	const dlId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
+export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
+	const datalistId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
 
 	return (
 		<label>
 			<span>{label}</span> <span className='form-control'>
-				<input type={type} name={name} onChange={onChange} value={value} list={dlId} {...attr} />
+				<input type={type} name={name} onChange={onChange} value={value} list={datalistId} {...attr} />
 				{children}
-				{(!!dlId && !!list) && <DataList list={list} id={dlId} />}
+				{(!!datalistId && !!list) &&
+					<DataList list={list} id={datalistId} clearDatalistHandler={clearDatalistHandler} listName={listName} />}
 			</span>
 		</label>
 	)
