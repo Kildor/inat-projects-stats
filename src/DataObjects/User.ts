@@ -22,6 +22,11 @@ class User implements CSVConvertInterface {
 	get role(): string|null {
 		return this._role;
 	}
+	get fullName() : string {
+		let fullName = this.login;
+		if (!!this.name) fullName+=' ('+this.name+')'
+		return fullName;
+	}
 
 	toCSV(index: number | false) {
 		let str = '';

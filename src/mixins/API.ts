@@ -1,12 +1,29 @@
 import JSONTaxonObject from '../interfaces/JSONTaxonObject';
 import JSONUserObject from '../interfaces/JSONUserObject';
-import Taxon from './Taxon'
-import User from './User';
+import Taxon from '../DataObjects/Taxon'
+import User from '../DataObjects/User';
 import iObjectsList from '../interfaces/ObjectsList';
 import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
-const API = ()=>{};
+import JSONObservationObject from '../interfaces/JSONObservationObject';
+import Observation from '../DataObjects/Observation';
+
+// import debug_observation_json from '../assets/debug-observations.json';
+
+
+const API = () => { };
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
 API.LOCALE = 'ru';
+API.DEBUG = !1;
+function addCustomParams(customParams: any): string {
+	let url = '';
+	for (let key in customParams) {
+		if (customParams.hasOwnProperty(key)) {
+			url += `&${key}=${customParams[key]}`;
+		}
+	}
+	return url;
+}
+
 // https://api.inaturalist.org/v1/ 
 //         observations?project_id=bioraznoobrazie-zameshalkinskogo-lesa&
 //         user_id=kildor&created_d1=2020-05-01&created_d2=2020-06-01&
@@ -18,7 +35,7 @@ API.LOCALE = 'ru';
  * created_d1=2020-05-01&created_d2=2020-06-01
  * 
  */
- 
+
 /*
 https://api.inaturalist.org/v1/observations/species_counts?project_id=75512
 https://api.inaturalist.org/v1/observations/species-counts?project_id=75512&page=1
@@ -43,34 +60,31 @@ API.debounceFetch = async function(url:string) {
 API.lookupTaxon = async (taxonName: string) => {
 	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
 	let url = `${API.BASE_URL}search?q=${encodeURIComponent(taxonName)}&sources=taxa`;
-	const json = await fetch(url).then(res=>res.json());
-	let score = 0.0, id=0;
+	const json = await fetch(url).then(res => res.json());
+	const taxon = {
+		score: 0.0, id: 0, name: taxonName
+	}
 	if (!!json.total_results) {
-		json.results.forEach((result: JSONLookupTaxonObject ) => {
-			if (score < result.score) {
-				score = result.score;
-				id = result.record.id;
+		json.results.forEach((result: JSONLookupTaxonObject) => {
+			if (taxon.score < result.score) {
+				taxon.score = result.score;
+				taxon.id = result.record.id;
+				taxon.name = result.record.name;
 			}
 		});
-		console.dir(id);
-		return id;
+		console.dir(taxon);
 	}
-
-	return 0;
+	return taxon;
 }
-API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any={})=>{
-	let taxons: iObjectsList = {ids:new Set(), objects: new Map<number, Taxon>(), total:0};
+API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any = {}) => {
+	let taxons: iObjectsList = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
-	let url = `${API.BASE_URL}observations/species_counts?locale=${window.navigator.language}&preferred_place_id=7161`; 
-	if (!!project_id) url +='&project_id='+project_id;
-	if (!!user_id) url +='&user_id='+user_id;
-	if (!!dateFrom) url +='&created_d1='+dateFrom;
-	if (!!dateTo) url +='&created_d2='+dateTo;
-	for(let key in customParams) {
-		if (customParams.hasOwnProperty(key)) {
-			url +=`&${key}=${customParams[key]}`;
-		}
-	}
+	let url = `${API.BASE_URL}observations/species_counts?locale=${window.navigator.language}&preferred_place_id=7161`;
+	if (!!project_id) url += '&project_id=' + project_id;
+	if (!!user_id) url += '&user_id=' + user_id;
+	if (!!dateFrom) url += '&created_d1=' + dateFrom;
+	if (!!dateTo) url += '&created_d2=' + dateTo;
+	url += addCustomParams(customParams);
 
 	let limit = customParams.limit || 0;
 	let totalCount = 0;
@@ -83,31 +97,31 @@ API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string,
 	do {
 		page++;
 
-		if(!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ?` из ${1+~~(totalCount/perPage)}` : '' ), true);
+		if (!!callback) {
+			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ? ` из ${1 + ~~(totalCount / perPage)}` : ''), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
-		const json = await fetch(url + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
+		const json = await fetch(url + '&page=' + page).then(res => res.json()).catch(e => { throw e });
 		// console.dir(json);
 		totalCount = json.total_results;
 		page = json.page;
 		perPage = json.per_page;
-		json.results.forEach((result: {taxon: JSONTaxonObject, count: number} )=>{
+		json.results.forEach((result: { taxon: JSONTaxonObject, count: number }) => {
 			let t = new Taxon(result.taxon);
 			t.count = result.count;
 			taxons.objects.set(t.id, t);
 			taxons.ids.add(t.id);
 		});
-		if (limit > 0 && page* perPage >= limit) break;
-	} while (totalCount > page*perPage);
+		if (limit > 0 && page * perPage >= limit) break;
+	} while (totalCount > page * perPage);
 	taxons.total = totalCount;
 	return taxons;
 }
-API.fetchMembers = async (project_id: string, callback:Function)=>{
-	let users: iObjectsList = {ids:new Set(), objects: new Map(), total:0};
+API.fetchMembers = async (project_id: string, callback: Function) => {
+	let users: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
-	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=id&order=asc`; 
+	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=id&order=asc`;
 
 	let totalCount = 0;
 	let page = 0;
@@ -118,15 +132,15 @@ API.fetchMembers = async (project_id: string, callback:Function)=>{
 	do {
 		page++;
 
-		if(!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ?` из ${1+~~(totalCount/perPageFromJSON)}` : '' ), true);
+		if (!!callback) {
+			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ? ` из ${1 + ~~(totalCount / perPageFromJSON)}` : ''), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
-		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res=>res.json()).catch(e=>{throw e});
+		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw e });
 		totalCount = json.total_results;
 		page = json.page;
 		perPageFromJSON = json.per_page;
-		json.results.forEach((result: {user: JSONUserObject, role: string})=>{
+		json.results.forEach((result: { user: JSONUserObject, role: string }) => {
 			let u = new User(result.user);
 			u.role = result.role;
 			users.objects.set(u.id, u);
@@ -134,12 +148,62 @@ API.fetchMembers = async (project_id: string, callback:Function)=>{
 		});
 		// console.dir(users.ids.size);
 		// if (totalCount < page*perPageFromJSON && totalCount !== users.ids.size ) {
-			// page = 0;
-			// perPage-=20;
+		// page = 0;
+		// perPage-=20;
 		// }
-	} while (totalCount > page*perPageFromJSON);
+	} while (totalCount > page * perPageFromJSON);
 	users.total = totalCount;
 	return users;
+}
+
+API.fetchObservations = async (
+	taxon_id: number, dateFrom: string, dateTo: string, date_created: boolean, limit: number = 0, customParams: any = {}, callback?: Function
+) => {
+// https://api.inaturalist.org/v1/observations?taxon_id=3122314&order=desc&order_by=created_at
+	let url = `${API.BASE_URL}observations?locale=${window.navigator.language}&preferred_place_id=7161&taxon_id=${taxon_id}`;
+	const datePrefix = date_created ? "created_" : "";
+	if (!!dateFrom) url += `&${datePrefix}d1=${dateFrom}`;
+	if (!!dateTo) url += `&${datePrefix}d2=${dateTo}`;
+	url += addCustomParams(customParams);
+	console.dir(url);
+
+	let observations: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
+	// if (!!API.DEBUG) {
+	// 	const json = debug_observation_json;
+	// 	json.results.forEach((observation: JSONObservationObject) => {
+	// 		let o = new Observation(observation);
+	// 		observations.objects.set(o.id, o);
+	// 		observations.ids.add(o.id);
+	// 	});
+	// 	observations.total = observations.ids.size;
+	// 	return observations;
+	// }
+
+	let totalCount = 0;
+	let page = 0;
+	let perPageFromJSON = 0;
+
+	let perPage = 100;
+	do {
+		page++;
+
+		if (!!callback) {
+			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ? ` из ${1 + ~~(totalCount / perPageFromJSON)}` : ''), true);
+		}
+		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw e });
+		totalCount = json.total_results;
+		page = json.page;
+		perPageFromJSON = json.per_page;
+		json.results.forEach(( observation: JSONObservationObject) => {
+			console.dir(observation)
+			let o = new Observation(observation);
+			observations.objects.set(o.id, o);
+			observations.ids.add(o.id);
+		});
+		if (limit > 0 && page * perPage >= limit) break;
+	} while (totalCount > page * perPageFromJSON);
+	observations.total = totalCount;
+	return observations;
 }
 
 API.concatObjects = function (...objects: Array<iObjectsList>) {
@@ -152,7 +216,7 @@ API.concatObjects = function (...objects: Array<iObjectsList>) {
 		for (let id of objIn.ids) {
 			if (!out.ids.has(id)) {
 				out.ids.add(id);
-				outObjects.set(id,inObjects.get(id));
+				outObjects.set(id, inObjects.get(id));
 			}
 		}
 		out.objects = outObjects;

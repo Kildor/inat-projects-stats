@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import CSV from './CSV';
-import User, { getCSVHeader } from './User';
+import User, { getCSVHeader } from '../DataObjects/User';
 
 export interface UsersListProps {
 	users?: Array<User> | null

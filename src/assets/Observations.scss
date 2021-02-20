@@ -1,0 +1,38 @@
+.activity {
+	list-style-position: outside;
+	margin: 0;
+	padding: 0 0 5px 1em;
+	li {
+		list-style-position: outside;
+		&.comment {
+			&::marker {
+				content: "💬 ";
+			}
+		}
+		&.identification {
+			position: relative;
+			&::marker {
+				content: "👁‍🗨 ";
+			}
+		&.identification-outdated {
+			.taxon-link {
+				text-decoration: line-through;
+			}
+			&::before {
+				content: "❌";
+				font-size: 10px;
+				width: 0;				
+				position: absolute;
+				margin: .4em 0 0 -2em;
+			}
+			// &::marker {
+				// content: "👁‍🗨❌            ";
+				// letter-spacing: -1.4em;
+			// }
+		}
+		}
+		.comment {
+			margin-left: 1em;
+		}
+	}
+}

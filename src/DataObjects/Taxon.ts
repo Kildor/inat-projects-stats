@@ -27,6 +27,10 @@ class Taxon implements CSVConvertInterface {
 		this.rank = jsonTaxon.rank;
 		this._count = 0;
 	}
+	get fullName() {
+		if (!!this.commonName) return `${this.commonName} (${this.name})`;
+		return this.name;
+	}
 	/**
 	 * @param {int} count
 	 */

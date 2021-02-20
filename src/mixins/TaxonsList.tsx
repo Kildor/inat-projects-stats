@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import Taxon, { getCSVHeader } from './Taxon';
+import Taxon, { getCSVHeader } from '../DataObjects/Taxon';
 import '../assets/Taxons.scss';
 import CSV from './CSV';
 
