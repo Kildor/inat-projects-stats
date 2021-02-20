@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 import './App.scss';
 import List from './pages/List';
+import About from './pages/About';
 import Species from './pages/Species';
 import NotFound from './pages/NotFound';
 import Members from './pages/Members';
@@ -33,6 +34,13 @@ const Header = () => {
     </header>
   );
 }
+const Footer = () => {
+  return (
+    <footer className='app-footer'>
+      <span>© 2020-2021, <a href='https://kildor.name/'>Константин (Kildor) Романов</a></span> <i></i> <Link to='/about'>О приложении</Link> <i></i> <a href='https://github.com/Kildor/inat-projects-stats'>Github</a>
+    </footer>
+  )
+}
 function ListItem(module: { url: string; title: string; }, setstate: React.Dispatch<React.SetStateAction<boolean>>): JSX.Element {
   let match = useRouteMatch({
     path: module.url,
@@ -46,9 +54,9 @@ function ListItem(module: { url: string; title: string; }, setstate: React.Dispa
 
 function App() {
   return (
-    <Router basename='inat'>
     <div className="App">
-      <Header/>
+    <Router basename='inat'>
+        <Header />
       <Switch>
         <Route exact path='/'><List/></Route>
         <Route path='/new-species'><Species/></Route>
@@ -57,11 +65,13 @@ function App() {
         <Route path='/species'><SpeciesList/></Route>
         <Route path='/download-observations'><Downloader/></Route>
         <Route path='/missed-species'><SpeciesMissed/></Route>
+        <Route path='/about'><About/></Route>
         {/* <Route path='/umbrella-top'><UmbrellaTop/></Route> */}
         <Route path='*'><NotFound/></Route>
       </Switch>
-    </div>
+      <Footer/>
     </Router>
+    </div>
   );
 }
 

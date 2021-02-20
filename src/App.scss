@@ -8,6 +8,7 @@
 		background: #333;
 		color: #fff;
 		padding: 0.5rem;
+		position: relative;
 		h1 {
 			margin: 0;
 			padding: 0.5rem;
@@ -85,6 +86,24 @@
 			display: inline-block;
 			width: 1.2em;
 			height: 1.2em;
+		}
+	}
+	footer.app-footer {
+		padding: 0.5rem;
+		text-align: center;
+		a {
+			color: #22a;
+			text-decoration: none;
+		}
+		i:before {
+			content: '';
+			width: 3px;
+			height: 3px;
+			border-radius: 50%;
+			background-color: #000;
+			margin: 2px 3px 3px;
+			display: inline-block;
+
 		}
 	}
 }
