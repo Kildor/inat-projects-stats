@@ -12,6 +12,7 @@ import ButtonClear from "../mixins/ButtonClear";
 import API from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
+import Settings from "../mixins/Settings";
 
 
 const title = I18n.t("Скачивание наблюдений");
@@ -34,20 +35,25 @@ export default class Downloader extends Module {
 		document.title = title;
 	}
 	async changeTaxonHandler(e) {
+		if (this.state.taxon_name.trim().length < 3) return;
 		this.setState({ loading: true, loadingTitle: I18n.t("Поиск ID вида") });
 		const regexp = /[0-9]+/;
-		const taxonName = e.target.value.toLowerCase();
+		const taxonName = this.state.taxon_name;
 		// if (this.state.taxon_name===taxonName) return;
 		// const name = e.target.name;
-		this.setState({ taxon_name: taxonName });
+		// this.setState({ taxon_name: taxonName });
 		let taxon = {};
 		if (!taxonName.match(regexp)) {
 			taxon = await API.lookupTaxon(taxonName);
 		} else {
-			taxon = {id:taxonName, name:taxonName, lookupSuccess:true};
+			taxon = {id:taxonName, name:taxonName, common: taxonName, lookupSuccess:true};
 		}
 		console.dir(taxon);
-		this.setState({ taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0 });
+		this.setState((prevState)=>{
+			let taxons = prevState.taxons;
+			taxons.push({name:taxon.name, title: taxon.common});
+			return { taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0, taxons: API.filterArray(taxons) };
+		})
 		if (taxon.id === 0) {
 			this.setState({ loadingTitle: I18n.t("Поиск не удался, проверьте корректность введёного имени") });
 		} else {
@@ -66,8 +72,6 @@ export default class Downloader extends Module {
 		if (!!place_id) customParams['place_id'] = place_id;
 
 		const observations = await API.fetchObservations(taxon_id, d1, d2, date_created, limit, customParams, this.setStatusMessage);
-		console.dir(observations);
-		console.dir(this.state);
 		return [...observations.ids].map(id => observations.objects.get(id))
 	}
 
@@ -90,7 +94,15 @@ export default class Downloader extends Module {
 		if (!!this.state.current_ids) filename += "current_ids-";
 		filename += "observations.csv";
 		this.setState({ filename: filename });
+	}
 
+	storageHandler() {
+		let users = this.state.users;
+		users.push({ name: this.state.user_id, title: this.state.user_id });
+		const filteredUsers = API.filterArray(users);
+		Settings.set('users', filteredUsers);
+		Settings.set('taxons', this.state.taxons);
+		return { users: filteredUsers };
 	}
 
 
@@ -98,7 +110,6 @@ export default class Downloader extends Module {
 		const disabled = this.state.loading || (this.state.project_id === '' && this.state.taxon_id === '');
 		return (
 			<Page title={title}>
-				{/* {JSON.stringify(this.state)} */}
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset className='noborder'>
 					<FormControl className='heading' label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}

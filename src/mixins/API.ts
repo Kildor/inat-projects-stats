@@ -4,7 +4,6 @@ import Taxon from '../DataObjects/Taxon'
 import User from '../DataObjects/User';
 import iObjectsList from '../interfaces/ObjectsList';
 import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
-import JSONObservationObject from '../interfaces/JSONObservationObject';
 import Observation from '../DataObjects/Observation';
 
 // import debug_observation_json from '../assets/debug-observations.json';
@@ -24,62 +23,45 @@ function addCustomParams(customParams: any): string {
 	return url;
 }
 
-// https://api.inaturalist.org/v1/ 
-//         observations?project_id=bioraznoobrazie-zameshalkinskogo-lesa&
-//         user_id=kildor&created_d1=2020-05-01&created_d2=2020-06-01&
-//         updated_since=2020-05-20&order=desc&order_by=created_at
-
-/**
- * https://api.inaturalist.org/v1/observations/species_counts?
- * project_id=75512&user_id=kildor&
- * created_d1=2020-05-01&created_d2=2020-06-01
- * 
- */
-
-/*
-https://api.inaturalist.org/v1/observations/species_counts?project_id=75512
-https://api.inaturalist.org/v1/observations/species-counts?project_id=75512&page=1
-*/
-
-/*
-const trottle = 1000 // 1 sec;
-API.awaiting = false;
-API.debounceFetch = async function(url:string) {
-	console.dir(url);
-	console.dir(API.awaiting);
-	if (!API.awaiting) {
-		API.awaiting=true;
-		setTimeout(()=>API.awaiting = false,trottle);
-		return await fetch(url).then(res => res.json()).catch(e => { throw e });
-	} else {
-		setTimeout(API.debounceFetch(url),300);
-	}
-}
-*/
+const cache = new Map<string, any>();
 
 API.lookupTaxon = async (taxonName: string) => {
 	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
-	let url = `${API.BASE_URL}search?q=${encodeURIComponent(taxonName)}&sources=taxa`;
-	const json = await fetch(url).then(res => res.json());
+	let json;
 	const taxon = {
-		score: 0.0, id: 0, name: taxonName
+		score: 0.0, id: 0, name: taxonName, common: ''
 	}
+	taxonName = taxonName.toLowerCase();
+
+	// if (cache.has(taxonName)) json = cache.get(taxonName);
+	if (cache.has(taxonName)) return cache.get(taxonName);
+		let url = API.getBaseUrl('search', `q=${encodeURIComponent(taxonName)}&sources=taxa`);
+		json = await fetch(url).then(res => res.json());
+		// cache.set(taxonName, json);
+
 	if (!!json.total_results) {
 		json.results.forEach((result: JSONLookupTaxonObject) => {
 			if (taxon.score < result.score) {
 				taxon.score = result.score;
 				taxon.id = result.record.id;
 				taxon.name = result.record.name;
+				taxon.common = !!result.record.preferred_common_name ? result.record.preferred_common_name : taxon.name;
 			}
 		});
-		console.dir(taxon);
+		cache.set(taxonName, taxon);
 	}
 	return taxon;
+}
+API.getBaseUrl = (endpoint: string, tail: string = '') =>{
+	let url = `${API.BASE_URL}${endpoint}?locale=${window.navigator.language}&preferred_place_id=7161`;
+	if (tail !=='') url+='&'+tail;
+	return url;
+
 }
 API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any = {}) => {
 	let taxons: iObjectsList = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
-	let url = `${API.BASE_URL}observations/species_counts?locale=${window.navigator.language}&preferred_place_id=7161`;
+	let url = API.getBaseUrl('observations/species_counts');
 	if (!!project_id) url += '&project_id=' + project_id;
 	if (!!user_id) url += '&user_id=' + user_id;
 	if (!!dateFrom) url += '&created_d1=' + dateFrom;
@@ -159,8 +141,7 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 API.fetchObservations = async (
 	taxon_id: number, dateFrom: string, dateTo: string, date_created: boolean, limit: number = 0, customParams: any = {}, callback?: Function
 ) => {
-// https://api.inaturalist.org/v1/observations?taxon_id=3122314&order=desc&order_by=created_at
-	let url = `${API.BASE_URL}observations?locale=${window.navigator.language}&preferred_place_id=7161&taxon_id=${taxon_id}`;
+	let url = API.getBaseUrl('observations', `taxon_id=${taxon_id}`);
 	const datePrefix = date_created ? "created_" : "";
 	if (!!dateFrom) url += `&${datePrefix}d1=${dateFrom}`;
 	if (!!dateTo) url += `&${datePrefix}d2=${dateTo}`;
@@ -228,5 +209,7 @@ API.concatObjects = function (...objects: Array<iObjectsList>) {
 	return out;
 }
 API.concatTaxons = API.concatObjects;
+
+API.filterArray = (array: Array<any>) => Array.from(new Set(array.map(item => JSON.stringify(item)))).map(json => JSON.parse(json))
 
 export default API;

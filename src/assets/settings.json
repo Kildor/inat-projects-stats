@@ -59,6 +59,11 @@
 		"default": [],
 		"save": true
 	},
+	"taxons": {"setting": "taxons",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
 	"limit": {"setting": "limit",
 		"type": "number",
 		"default": 0,
