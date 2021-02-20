@@ -7,7 +7,7 @@ import User from "./User";
 
 const getCSVHeader = () => {
 	let str = '';
-	return str+`ID\tName\tCommon name\tData\tCoordinates\tUser\n`
+	return str+`ID\tName\tCommon name\tData\tCoordinates\tLocation\tUser\n`
 }
 
 class Observation implements CSVConvertInterface {
@@ -19,12 +19,14 @@ class Observation implements CSVConvertInterface {
 	taxon: Taxon;
 	user: User;
 	coordinates: Array<number>
+	location: string|null|undefined
+	geoprivacy: string
 	activity: Array<ObservationComment | ObservationIdentification>;
-	toCSV() {
-		let str = '';
+	toCSV(onlyObservations = false ) {
+		let str = '';	
 		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.created.toLocaleString()}\t`
-		+`${this.coordinates.toString()}\t${this.user.login} (${this.user.name})`;
-		this.activity.forEach(activity=>{
+		+`${this.coordinates.toString()}${this.geoprivacy===null?'':' ('+this.geoprivacy+')'}\t"${this.location}"\t${this.user.fullName}`;
+		if (onlyObservations!==false) this.activity.forEach(activity=>{
 			str+=activity.toCSV();
 		})
 		return str;
@@ -37,8 +39,10 @@ class Observation implements CSVConvertInterface {
 		this.name = jsonObservation.taxon.name;
 		this.commonName = jsonObservation.taxon.preferred_common_name;
 		this.coordinates = jsonObservation.geojson.coordinates;
+		this.location = jsonObservation.place_guess;
+		this.geoprivacy = jsonObservation.geoprivacy;
 		this.created = new Date(jsonObservation.created_at);
-		this.observed = new Date(jsonObservation.time_observed_at);
+		this.observed = new Date(jsonObservation.time_observed_at !== null ? jsonObservation.time_observed_at : jsonObservation.observed_on);
 		this.activity = new Array<ObservationIdentification | ObservationComment> ();
 		jsonObservation.identifications.forEach(ident=>{
 			this.activity.push(new ObservationIdentification(ident))

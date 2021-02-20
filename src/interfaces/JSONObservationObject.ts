@@ -5,11 +5,14 @@ import JSONTaxonObject from "./JSONTaxonObject";
 import JSONUserObject from "./JSONUserObject";
 
 export default interface JSONObservationObject {
-	created_at: any;
-	time_observed_at: any;
+	observed_on: string;
+	geoprivacy: string;
+	created_at: string;
+	time_observed_at: string | null;
 	id: number
 	taxon: JSONTaxonObject
 	geojson: JSONGeoJSONObject
+	place_guess: string | null | undefined;
 	user: JSONUserObject
 	identifications: Array<JSONIdentificationObject>
 	comments: Array<JSONCommentObject>

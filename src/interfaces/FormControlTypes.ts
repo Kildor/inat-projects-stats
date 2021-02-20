@@ -24,6 +24,7 @@ export interface FormControlProps {
 	name: string
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	value: string | number
+	className?: string
 	list?: Array<Object>
 	clearDatalistHandler?: (e: React.MouseEvent) => void
 	listName?: string

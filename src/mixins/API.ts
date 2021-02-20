@@ -183,7 +183,8 @@ API.fetchObservations = async (
 	let page = 0;
 	let perPageFromJSON = 0;
 
-	let perPage = 100;
+	let perPage = limit > 0 && limit < 100 ? limit : 100;
+	let loadedObservations = 0;
 	do {
 		page++;
 
@@ -194,13 +195,15 @@ API.fetchObservations = async (
 		totalCount = json.total_results;
 		page = json.page;
 		perPageFromJSON = json.per_page;
-		json.results.forEach(( observation: JSONObservationObject) => {
+		console.dir(typeof json.results);
+		for (let observation of json.results) {
 			console.dir(observation)
 			let o = new Observation(observation);
 			observations.objects.set(o.id, o);
 			observations.ids.add(o.id);
-		});
-		if (limit > 0 && page * perPage >= limit) break;
+			if (limit > 0 && limit <= ++loadedObservations) break;
+		}
+		if (limit > 0 && limit <= loadedObservations) break;
 	} while (totalCount > page * perPageFromJSON);
 	observations.total = totalCount;
 	return observations;

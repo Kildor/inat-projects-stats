@@ -22,7 +22,7 @@ export default class Downloader extends Module {
 		this.state = this.getDefaultSettings();
 		this.state.lookupSuccess = false
 		this.initSettings(["project_id", "projects", "taxon_name", "taxon_id", "taxons", "user_id", "users", "place_id", "places",
-			"d1", "d2", "limit", "rg", "date_created"
+			"d1", "d2", "limit", "rg", "date_created", "current_ids", "hide_activity"
 		], this.state);
 		// if (API.DEBUG) {
 		// 	this.state.user_id = "kildor";
@@ -43,6 +43,8 @@ export default class Downloader extends Module {
 		let taxon = {};
 		if (!taxonName.match(regexp)) {
 			taxon = await API.lookupTaxon(taxonName);
+		} else {
+			taxon = {id:taxonName, name:taxonName, lookupSuccess:true};
 		}
 		console.dir(taxon);
 		this.setState({ taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0 });
@@ -55,7 +57,7 @@ export default class Downloader extends Module {
 
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка наблюдений" });
-		const { project_id, taxon_id, place_id, user_id, date_created, limit, d1, d2 } = this.state;
+		const { project_id, taxon_id, place_id, user_id, date_created, limit, d1, d2} = this.state;
 		let customParams = {};
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (this.state.rg) customParams['quality_grade'] = 'research';
@@ -85,6 +87,7 @@ export default class Downloader extends Module {
 		}
 
 		if (!!this.state.rg) filename += "rg-";
+		if (!!this.state.current_ids) filename += "current_ids-";
 		filename += "observations.csv";
 		this.setState({ filename: filename });
 
@@ -97,13 +100,15 @@ export default class Downloader extends Module {
 			<Page title={title}>
 				{/* {JSON.stringify(this.state)} */}
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}
+					<fieldset className='noborder'>
+					<FormControl className='heading' label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}
 						value={this.state.taxon_name} list={this.state.taxons} clearDatalistHandler={this.clearDatalistHandler} listName="taxons">
 						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
 							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
 								: <span role='img' aria-label='fail'>⚠️</span>
 						) : null}
 					</FormControl>
+						</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 						<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
@@ -134,16 +139,29 @@ export default class Downloader extends Module {
 						<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
 							checked={this.state.rg} />
 
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Отображение")}</legend>
+						<FormControlCheckbox label='Не отображать отозванные определения' name='current_ids' onChange={this.checkHandler}
+							checked={this.state.current_ids} />
+						<FormControlCheckbox label='Показывать только наблюдения' name='hide_activity' onChange={this.checkHandler}
+							checked={this.state.hide_activity} />
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
-				<Note defCollapsed={false}></Note>
+				<Note defCollapsed={true}>
+					В поле таксона можно вводить как цифровой идентификатор, так и название (латинское или русское). 
+					Если введён не ID, скрипт, после потери полем фокуса ввода, попытается найти таксон в базе iNaturalist, и подставить наиболее подходящий (по мнению айната) вариант.
+					<br/>В поле места требуется вводить только цифровой идентификатор.
+					<br/>В поле проекта можно ввести либо цифровой, либо строковый id (можно скопировать из адресной строки браузера).
+
+				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error && !!this.state.data.length > 0 &&
 					<div className='result'>
 						{/* {JSON.stringify(this.state.data)} */}
-						<ObservationsList observations={this.state.data} csv={this.state.csv} filename={this.state.filename} />
+						<ObservationsList observations={this.state.data} csv={this.state.csv} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
 					</div>
 				}
 

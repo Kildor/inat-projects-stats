@@ -9,10 +9,13 @@ import ObservationComment from '../DataObjects/ObservationComment';
 export interface ObservationsListProps {
 	observations: Array<Observation>
 	csv: boolean | false
+	current_ids: boolean | false
+	hide_activity: boolean | false
 	filename?: string | "observations.csv"
 }
 
 interface ActivitiesListProps {
+	current_ids: boolean|false
 	activities: Array<ObservationComment | ObservationIdentification >
 }
 
@@ -40,10 +43,10 @@ const ActivityComment = ({ activity }: { activity: ObservationComment})=>{
 	return <ActivityItem className='comment' activity={activity}/>
 }
 
-const ActivityList = ({activities } : ActivitiesListProps ) => {
+const ActivityList = ({activities, current_ids } : ActivitiesListProps ) => {
 	return (
 		<ul className='activity'>
-			{activities.map(act => {
+			{activities.filter(act => !current_ids || !('current' in act) || act.current).map(act => {
 				return (
 					'taxon' in act ? <ActivityIdentification key={act.id} activity={act} /> : <ActivityComment activity={act} key={act.id}/>
 				)
@@ -53,21 +56,21 @@ const ActivityList = ({activities } : ActivitiesListProps ) => {
 
 	)
 }
-export default ({ observations, csv, filename }: ObservationsListProps) => {
+export default ({ observations, csv, filename, current_ids, hide_activity }: ObservationsListProps) => {
 	if (observations.length === 0) return (
 		<div>Нет данных</div>
 	);
 	let list: ReactElement;
 	if (csv) {
-		list = <CSV header={getCSVHeader} useRank={true} filename={filename}>{observations}</CSV>
+		list = <CSV header={getCSVHeader} useRank={!hide_activity} filename={filename}>{observations}</CSV>
 	} else {
 		let url = `https://www.inaturalist.org/observations/`;
 		list = <ol className='taxons'>{observations.map(obs => {
 		return (<li key={obs.id} className={!!obs.commonName ? 'has-common-name' : ''}>
 			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer'>
-				{obs.commonName} <em>{obs.name}</em> by @{obs.user.login}
-			</a>
-			{(obs.activity.length > 0) && <ActivityList activities={obs.activity} />}
+				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
+			</a> <span className={'location'+ (obs.geoprivacy !== null ? ' location-'+obs.geoprivacy : '') }>({obs.location}, {obs.observed.toLocaleString()})</span>
+			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} />}
 		</li>)})}</ol>;
 
 	}

@@ -1,3 +1,3 @@
 export default interface CSVConvertInterface {
-	toCSV(index: number | boolean) : string
+	toCSV(index?: number | boolean) : string
 }

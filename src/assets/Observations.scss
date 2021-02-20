@@ -1,3 +1,11 @@
+li {
+	.location {
+		&.location-obscured:before {
+			content: '🔘 ';
+			font-size: .5em;
+		}
+	}
+}
 .activity {
 	list-style-position: outside;
 	margin: 0;

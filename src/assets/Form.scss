@@ -3,6 +3,11 @@
 			display: flex;
 			flex-wrap: wrap;
 			margin-bottom: .5rem;
+			&.heading {
+				>span {
+					font-weight: bold;
+				}
+			}
 			> span {
 				flex: 1 1 50%;
 			}
@@ -17,13 +22,19 @@
 		> fieldset {
 			display: block;
 			border: 1px solid #666;
+			border-radius: 5px;
 			margin: 0;
 			padding: 0 15px;
 			> fieldset {
-				border: solid #666;
+				border: solid #ddd;
 				border-width: 1px 0;
 				margin: 0 -5px 1em;
 				padding: 0 15px;
+				&.noborder {
+					border: none;
+					padding: 5px 15px 0;
+					margin-bottom: 0;
+				}
 				
 			}
 		}
