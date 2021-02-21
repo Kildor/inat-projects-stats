@@ -13,30 +13,29 @@ import Error from '../mixins/Error';
 import Form from '../mixins/Form';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit } from '../mixins/FormControl';
 import Module from '../classes/Module';
+import I18n from '../classes/I18n';
+import { changeTaxonHandler } from '../classes/Methods';
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
-		this.state.user_id_in = '';
-		this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users"], this.state);
+		this.state.unobserved_by_user_id = '';
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users", "taxon_name","taxon_id","taxons"], this.state);
+		this.changeTaxonHandler = changeTaxonHandler.bind(this);
 	}
 
 	async counter () {
-		const {project_id, user_id, limit, user_id_in} = this.state;
-		this.setState({ loadingTitle: "Загрузка видов"});
+		const {project_id, taxon_id, user_id, limit, unobserved_by_user_id} = this.state;
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
+		if (!!taxon_id) customParams['taxon_id'] = taxon_id;
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (this.state.rg) customParams['quality_grade'] = 'research';
-		let allTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
-		this.setState({ loadingTitle: "Загрузка видов пользователя" });
-		let userTaxa = await API.fetchSpecies(project_id, user_id_in, null, null, this.setStatusMessage, customParams);
-		
+		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
+		this.setState({ loadingTitle: "Загрузка видов"});
+		const unobservedTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
 
-		this.setState({loadingTitle: "Обработка загруженных данных"});
-		return [...allTaxa.ids].filter(id => {
-			return !userTaxa.ids.has(id);
-		}).map(id => allTaxa.objects.get(id));
+		return [...unobservedTaxa.ids].map(id => unobservedTaxa.objects.get(id));
 	}
 
 	storageHandler() {
@@ -44,31 +43,45 @@ export default class extends Module {
 		users.push({ name: this.state.user_id, title: this.state.user_id });
 		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
 		Settings.set('users', filteredUsers);
+		Settings.set('taxons', this.state.taxons);
 		return { users: filteredUsers };
 	}
 	setFilename() {
 		let filename='';
-		filename= this.state.user_id_in+"-";
+		filename= this.state.unobserved_by_user_id+"-";
 		if (!!this.state.project_id) filename += this.state.project_id + "-"
 		if (!!this.state.user_id) filename += this.state.user_id + "-"
+		if (!!this.state.taxon_name) filename += this.state.taxon_name + "-"
 		if (!!this.state.rg) filename += "rg-";
 		filename += "missed_species.csv";
-		this.setState({ filename: filename });
+		this.setState({ filename: filename.replaceAll(/\s+/g, '_') });
 
 	}
 	render() {
-		const disabled = this.state.loading || (this.state.user_id_in === '' || (this.state.project_id === '' && this.state.user_id === ''));
+		const disabled = this.state.loading || (this.state.unobserved_by_user_id === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
 			<Page title='Пропущенные виды' className='page-listSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label='Id или имя пользователя:' type='text' name='user_id_in' onChange={this.changeHandler}
-						value={this.state.user_id_in} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
+				<fieldset>
+					<legend>{I18n.t("Фильтрация")}</legend>
+					<FormControl label='Id или имя пользователя:' type='text' name='unobserved_by_user_id' onChange={this.changeHandler}
+						value={this.state.unobserved_by_user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
 					<FormControl label='Id или имя проекта для сравнения:' type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
 					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
+					<FormControl label={I18n.t("Ограничиться таксоном")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}
+						value={this.state.taxon_name} list={this.state.taxons} clearDatalistHandler={this.clearDatalistHandler} listName="taxons">
+						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
+							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
+								: <span role='img' aria-label='fail'>⚠️</span>
+						) : null}
+					</FormControl>
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Прочее")}</legend>
 					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
@@ -77,6 +90,7 @@ export default class extends Module {
 						checked={this.state.rg} >
 					</FormControlCheckbox> 
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
+					</fieldset>
 		</Form>
 				<Note>
 					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом <br/>

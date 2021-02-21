@@ -13,6 +13,7 @@ import API from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
 import Settings from "../mixins/Settings";
+import { changeTaxonHandler } from "../classes/Methods";
 
 
 const title = I18n.t("Скачивание наблюдений");
@@ -31,34 +32,8 @@ export default class Downloader extends Module {
 		// 	this.state.taxon_name = "debug";
 		// }
 
-		this.changeTaxonHandler = this.changeTaxonHandler.bind(this);
+		this.changeTaxonHandler = changeTaxonHandler.bind(this);
 		document.title = title;
-	}
-	async changeTaxonHandler(e) {
-		if (this.state.taxon_name.trim().length < 3) return;
-		this.setState({ loading: true, loadingTitle: I18n.t("Поиск ID вида") });
-		const regexp = /[0-9]+/;
-		const taxonName = this.state.taxon_name;
-		// if (this.state.taxon_name===taxonName) return;
-		// const name = e.target.name;
-		// this.setState({ taxon_name: taxonName });
-		let taxon = {};
-		if (!taxonName.match(regexp)) {
-			taxon = await API.lookupTaxon(taxonName);
-		} else {
-			taxon = {id:taxonName, name:taxonName, common: taxonName, lookupSuccess:true};
-		}
-		console.dir(taxon);
-		this.setState((prevState)=>{
-			let taxons = prevState.taxons;
-			taxons.push({name:taxon.name, title: taxon.common});
-			return { taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0, taxons: API.filterArray(taxons) };
-		})
-		if (taxon.id === 0) {
-			this.setState({ loadingTitle: I18n.t("Поиск не удался, проверьте корректность введёного имени") });
-		} else {
-			this.setState({ loading: false });
-		}
 	}
 
 	async counter() {
