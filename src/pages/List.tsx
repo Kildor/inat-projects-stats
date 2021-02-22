@@ -34,6 +34,10 @@ export default ()=>{
 					<a href='/react/inat-converter'>Редактор постов в журналы</a>
 					</dt>
 					<dd><p>Конвертер для табличных данных с йната, а так же редактор для постов.</p></dd>
+				<dt style={{borderTop:"1px solid", marginTop:".5em"}}>
+					<a href='/about'>О сайте</a>
+					</dt>
+					<dd><p>Некоторая информация об этом сайте.</p></dd>
 			</dl>
 		</Page>
 	)
