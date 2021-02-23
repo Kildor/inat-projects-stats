@@ -11,7 +11,7 @@ import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form';
-import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit } from '../mixins/FormControl';
+import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect } from '../mixins/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { changeTaxonHandler } from '../classes/Methods';
@@ -20,7 +20,7 @@ export default class extends Module {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.state.unobserved_by_user_id = '';
-		this.initSettings(["project_id","user_id","csv","limit", "species_only","rg", "users", "taxon_name","taxon_id","taxons"], this.state);
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users", "taxon_name","taxon_id","taxons"], this.state);
 		this.changeTaxonHandler = changeTaxonHandler.bind(this);
 	}
 
@@ -30,7 +30,7 @@ export default class extends Module {
 		if (limit > 0) customParams['limit'] = limit;
 		if (!!taxon_id) customParams['taxon_id'] = taxon_id;
 		if (this.state.species_only) customParams['hrank'] = 'species';
-		if (this.state.rg) customParams['quality_grade'] = 'research';
+		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
 		this.setState({ loadingTitle: "Загрузка видов"});
 		const unobservedTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
@@ -52,7 +52,7 @@ export default class extends Module {
 		if (!!this.state.project_id) filename += this.state.project_id + "-"
 		if (!!this.state.user_id) filename += this.state.user_id + "-"
 		if (!!this.state.taxon_name) filename += this.state.taxon_name + "-"
-		if (!!this.state.rg) filename += "rg-";
+		if (!!this.state.quality_grade) filename += "quality_"+this.state.quality_grade+"-";
 		filename += "missed_species.csv";
 		this.setState({ filename: filename.replaceAll(/\s+/g, '_') });
 
@@ -86,9 +86,11 @@ export default class extends Module {
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
 					</FormControlCheckbox>
-					<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
-						checked={this.state.rg} >
-					</FormControlCheckbox> 
+					<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler}
+						value={this.state.quality_grade} values={this.getValues("quality_grade")} />
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Отображение")}</legend>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 		</Form>

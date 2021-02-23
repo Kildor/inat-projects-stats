@@ -1,8 +1,8 @@
 import React, { FunctionComponent, ReactElement } from 'react'
-import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps } from '../interfaces/FormControlTypes'
+import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps } from '../interfaces/FormControlTypes'
 import DataList from './DataList'
 
-export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
+export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
 	const datalistId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
 
 	return (
@@ -13,20 +13,46 @@ export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, 
 				{(!!datalistId && !!list) &&
 					<DataList list={list} id={datalistId} clearDatalistHandler={clearDatalistHandler} listName={listName} />}
 			</span>
+			{!!comment && <small className="comment">{comment}</small>}
 		</label>
 	)
 
 }
 
-export const FormControlCheckbox: FunctionComponent<FormControlCheckboxProps> = ({ label, name, onChange, checked, children }: FormControlCheckboxProps): ReactElement => {
+export const FormControlCheckbox: FunctionComponent<FormControlCheckboxProps> = ({ label, name, comment, onChange, checked, children }: FormControlCheckboxProps): ReactElement => {
 	return (
 		<label>
 			<span>{label}</span> <span className='form-control'>
 				<input type='checkbox' name={name} onChange={onChange} value='1' checked={checked} />
 				{children}
 			</span>
+			{!!comment && <small className="comment">{comment}</small>}
 		</label>
 	)
+}
+export const FormControlRadio: FunctionComponent<FormControlRadioProps> = (props: FormControlRadioProps) => {
+	return (
+		<div className='label'>
+			{props.label}
+			<div className="radios">
+			{[...props.values].map(entry => <label key={entry[0]}><input name={props.name} type='radio' value={entry[0]} checked={props.value===entry[0]} onChange={props.onChange} />{entry[1]}</label>)}
+			</div>
+		</div>
+	)
+
+}
+export const FormControlSelect: FunctionComponent<FormControlSelectProps> = (props: FormControlSelectProps) => {
+	return (
+		<label>
+			<span>{props.label}</span>
+			<span className="form-control">
+				<select name={props.name} onChange={props.onChange} value={props.value}>
+					{[...props.values].map(entry => <option key={entry[0]} value={entry[0]}>{entry[1]}</option>)}
+				</select>
+			</span>
+		</label>
+	)
+
 }
 
 export const FormControlCSV: FunctionComponent<BooleanControlProps> = ({ handler, value }: BooleanControlProps) => {

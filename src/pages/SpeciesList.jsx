@@ -11,13 +11,13 @@ import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form';
-import {FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit} from '../mixins/FormControl';
+import {FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect} from '../mixins/FormControl';
 import Module from '../classes/Module';
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
-		this.initSettings(["project_id","user_id","limit", "species_only","rg", "contribution", "users"],this.state);
+		this.initSettings(["project_id","user_id","limit", "species_only","quality_grade", "contribution", "users"],this.state);
 	}
 
 	async counter () {
@@ -26,7 +26,9 @@ export default class extends Module {
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
 		if (this.state.species_only) customParams['hrank'] = 'species';
-		if (this.state.rg) customParams['quality_grade'] = 'research';
+		console.dir(this.state.quality_grade)
+		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
+		
 		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);
 		if (contribution) {
 			this.setState({ loadingTitle: "Загрузка видов пользователя"});
@@ -53,7 +55,7 @@ export default class extends Module {
 			filename+=this.state.user_id+"-";
 			if (!!this.state.contribution && !!this.state.project_id) filename += "only-";
 		}
-		if (!!this.state.rg) filename += "rg-";
+		if (!!this.state.quality_grade) filename += "quality_"+this.state.quality_grade+"-";
 		filename+= "species.csv";
 		this.setState({ filename: filename });
 	}
@@ -80,9 +82,9 @@ export default class extends Module {
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
 					</FormControlCheckbox>
-					<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
-						checked={this.state.rg} >
-					</FormControlCheckbox> 
+					<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler} 
+						value={this.state.quality_grade} values={this.getValues("quality_grade")}
+					/>
 					<FormControlCheckbox label='Виды, встреченные только этим пользователем' name='contribution' onChange={this.checkHandler}
 						checked={this.state.contribution} >
 					</FormControlCheckbox> 

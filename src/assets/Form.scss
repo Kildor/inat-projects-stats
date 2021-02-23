@@ -13,9 +13,12 @@
 			}
 			> .form-control {
 				flex: 1 1 50%;
+				select,
 				input:not([type='checkbox']) {
-					width: 20em;
+					width: 250px;
 					max-width: 80vw;
+					box-sizing: content-box;
+					padding: 1px 2px;
 				}
 			}
 		}

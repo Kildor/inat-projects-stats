@@ -3,12 +3,11 @@ import Module from "../classes/Module";
 import Page from "../mixins/Page";
 import React from 'react'
 import Form from "../mixins/Form";
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit } from "../mixins/FormControl";
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect } from "../mixins/FormControl";
 import Note from "../mixins/Note";
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
 import defaultProjects from '../assets/projects.json';
-import ButtonClear from "../mixins/ButtonClear";
 import API from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
@@ -24,7 +23,7 @@ export default class Downloader extends Module {
 		this.state = this.getDefaultSettings();
 		this.state.lookupSuccess = false
 		this.initSettings(["project_id", "projects", "taxon_name", "taxon_id", "taxons", "user_id", "users", "place_id", "places",
-			"d1", "d2", "limit", "rg", "date_created", "current_ids", "hide_activity"
+			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
 		], this.state);
 		// if (API.DEBUG) {
 		// 	this.state.user_id = "kildor";
@@ -41,7 +40,7 @@ export default class Downloader extends Module {
 		const { project_id, taxon_id, place_id, user_id, date_created, limit, d1, d2} = this.state;
 		let customParams = {};
 		if (this.state.species_only) customParams['hrank'] = 'species';
-		if (this.state.rg) customParams['quality_grade'] = 'research';
+		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		if (!!project_id) customParams['project_id'] = project_id;
 		if (!!user_id) customParams['user_id'] = user_id;
 		if (!!place_id) customParams['place_id'] = place_id;
@@ -65,7 +64,7 @@ export default class Downloader extends Module {
 			filename += "to_" + this.state.d2 + "-";
 		}
 
-		if (!!this.state.rg) filename += "rg-";
+		if (this.state.quality_grade.length > 0) filename += "quality_"+this.state.quality_grade+"-";
 		if (!!this.state.current_ids) filename += "current_ids-";
 		filename += "observations.csv";
 		this.setState({ filename: filename });
@@ -101,12 +100,8 @@ export default class Downloader extends Module {
 							value={this.state.project_id} list={defaultProjects} >
 						</FormControl>
 						<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
-							value={this.state.user_id} list={this.state.users} >
-							{!!this.state.users && this.state.users.length > 0 && <ButtonClear onClickHandler={this.clearDatalistHandler} listName='users'></ButtonClear>}
-						</FormControl>
-						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places}>
-							{!!this.state.places && this.state.places.length > 0 && <ButtonClear onClickHandler={this.clearDatalistHandler} listName='places' />}
-						</FormControl>
+							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName='users' />
+						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places'/>
 					</fieldset>
 					<fieldset>
 						<legend>Настройки даты</legend>
@@ -116,15 +111,16 @@ export default class Downloader extends Module {
 						<FormControl label='Наблюдения до:' type='date' name='d2' onChange={this.changeHandler}
 							value={this.state.d2} >
 						</FormControl>
-						<FormControlCheckbox label={<>Дата загрузки<br /><small>иначе дата рассматривается как дата наблюдения</small></>} name='date_created' onChange={this.checkHandler}
+						<FormControlCheckbox label='Дата загрузки' name='date_created' onChange={this.checkHandler}
+							comment='Иначе дата рассматривается как дата наблюдения'
 							checked={this.state.date_created} />
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Прочее")}</legend>
 						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
-						<FormControlCheckbox label='Исследовательский статус' name='rg' onChange={this.checkHandler}
-							checked={this.state.rg} />
-
+						<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler} value={this.state.quality_grade}
+							values={this.getValues("quality_grade")}
+							/>
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>
@@ -146,7 +142,6 @@ export default class Downloader extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error && !!this.state.data.length > 0 &&
 					<div className='result'>
-						{/* {JSON.stringify(this.state.data)} */}
 						<ObservationsList observations={this.state.data} csv={this.state.csv} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
 					</div>
 				}

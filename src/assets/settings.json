@@ -39,6 +39,17 @@
 		"default": false,
 		"save": true
 	},
+	"quality_grade": {"setting": "quality_grade",
+		"type": "multi",
+		"default": "",
+		"save": true,
+		"values": {
+			"": "Все",
+			"rg": "Только исследовательского уровня",
+			"needs_id": "Требуется идентификация",
+			"casual": "Обыкновенные"
+		}
+	},
 	"contribution": {"setting": "contribution",
 		"type": "boolean",
 		"default": false,

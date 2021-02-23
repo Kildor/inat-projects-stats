@@ -25,7 +25,14 @@ export default class extends React.Component {
 		settingsList.forEach(state => {
 			const setting = settings[state] || {save: false, default: ""};
 			thisState[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
+			if (!!setting.values) {
+				if (!this.values) this.values={};
+				this.values[state] = new Map(Object.entries(setting.values));
+			}
 		});
+	}
+	getValues(settingName) {
+		return this.values[settingName] || {}
 	}
 
 	changeHandler(e) {
