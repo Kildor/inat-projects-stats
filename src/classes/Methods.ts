@@ -18,9 +18,13 @@ const changeTaxonHandler = async function (this: React.Component<any, any>) {
 		taxon = { id: taxonName, name: taxonName, common: taxonName, lookupSuccess: true };
 	}
 	this.setState((prevState: any) => {
+		const newState: any = { taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0 };
+		if (taxon.id > 0) {
 		let taxons = prevState.taxons;
 		taxons.push({ name: taxon.name, title: taxon.common });
-		return { taxon_id: taxon.id, taxon_name: taxon.name, lookupSuccess: taxon.id !== 0, taxons: API.filterArray(taxons) };
+			newState['taxons'] = API.filterArray(taxons);
+		}
+		return newState;
 	})
 	if (taxon.id === 0) {
 		this.setState({ loadingTitle: I18n.t("Поиск не удался, проверьте корректность введёного имени") });

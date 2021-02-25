@@ -5,6 +5,7 @@ import JSONTaxonObject from "./JSONTaxonObject";
 import JSONUserObject from "./JSONUserObject";
 
 export default interface JSONObservationObject {
+	quality_grade: string;
 	observed_on: string;
 	geoprivacy: string;
 	created_at: string;

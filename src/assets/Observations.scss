@@ -1,9 +1,35 @@
-li {
+li.observation {
+	position: relative;
 	.location {
 		&.location-obscured:before {
-			content: '🔘 ';
-			font-size: .5em;
+			content: "🔘 ";
+			font-size: 0.5em;
 		}
+	}
+	> .observation-name {
+		padding-left: 0.3em;
+		border-left: 3px solid transparent;
+		position: relative;
+	&::before {
+		content: "";
+		width: 6px;
+		height: 6px;
+		border:1px solid transparent;
+		transform: rotate(45deg);
+		position: absolute;
+		top: 40%;
+		left: -5px;
+	}
+	}
+}
+li.quality {
+	&-research > .observation-name::before {
+		background: #74ac00;
+		border-color: #416100;
+	}
+	&-casual > .observation-name::before {
+		background: #ccc;
+		border-color: #666;
 	}
 }
 .activity {
@@ -22,22 +48,22 @@ li {
 			&::marker {
 				content: "👁‍🗨 ";
 			}
-		&.identification-outdated {
-			.taxon-link {
-				text-decoration: line-through;
-			}
-			&::before {
-				content: "❌";
-				font-size: 10px;
-				width: 0;				
-				position: absolute;
-				margin: .4em 0 0 -2em;
-			}
-			// &::marker {
+			&.identification-outdated {
+				.taxon-link {
+					text-decoration: line-through;
+				}
+				&::before {
+					content: "❌";
+					font-size: 10px;
+					width: 0;
+					position: absolute;
+					margin: 0.4em 0 0 -2em;
+				}
+				// &::marker {
 				// content: "👁‍🗨❌            ";
 				// letter-spacing: -1.4em;
-			// }
-		}
+				// }
+			}
 		}
 		.comment {
 			margin-left: 1em;

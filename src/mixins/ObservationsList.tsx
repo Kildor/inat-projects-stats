@@ -66,8 +66,10 @@ export default ({ observations, csv, filename, current_ids, hide_activity }: Obs
 	} else {
 		let url = `https://www.inaturalist.org/observations/`;
 		list = <ol className='taxons'>{observations.map(obs => {
-		return (<li key={obs.id} className={!!obs.commonName ? 'has-common-name' : ''}>
-			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer'>
+			let className = 'observation quality-'+obs.quality_grade;
+			if (!!obs.commonName)className += ' has-common-name';
+		return (<li key={obs.id} className={className}>
+			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
 				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
 			</a> <span className={'location'+ (obs.geoprivacy !== null ? ' location-'+obs.geoprivacy : '') }>({obs.location}, {obs.observed.toLocaleString()})</span>
 			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} />}
