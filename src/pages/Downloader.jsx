@@ -3,7 +3,7 @@ import Module from "../classes/Module";
 import Page from "../mixins/Page";
 import React from 'react'
 import Form from "../mixins/Form";
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect } from "../mixins/FormControl";
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/FormControl";
 import Note from "../mixins/Note";
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
@@ -22,7 +22,7 @@ export default class Downloader extends Module {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.state.lookupSuccess = false
-		this.initSettings(["project_id", "projects", "taxon_name", "taxon_id", "taxons", "user_id", "users", "place_id", "places",
+		this.initSettings(["project_id", "projects", "taxon", "taxons", "user_id", "users", "place_id", "places",
 			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
 		], this.state);
 		// if (API.DEBUG) {
@@ -37,7 +37,7 @@ export default class Downloader extends Module {
 
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка наблюдений" });
-		const { project_id, taxon_id, place_id, user_id, date_created, limit, d1, d2} = this.state;
+		const { project_id, taxon, place_id, user_id, date_created, limit, d1, d2} = this.state;
 		let customParams = {};
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
@@ -45,23 +45,22 @@ export default class Downloader extends Module {
 		if (!!user_id) customParams['user_id'] = user_id;
 		if (!!place_id) customParams['place_id'] = place_id;
 
-		const observations = await API.fetchObservations(taxon_id, d1, d2, date_created, limit, customParams, this.setStatusMessage);
+		const observations = await API.fetchObservations(taxon.id, d1, d2, date_created, limit, customParams, this.setStatusMessage);
 		return [...observations.ids].map(id => observations.objects.get(id))
 	}
 
 	setFilename() {
 		let filename = '';
-		filename = this.state.taxon_id + "-"+this.state.taxon_name.toLowerCase().replaceAll(/\s/g,'_') + '-';
+		const prefix = !!this.date_created ? 'created_' : '';
+		filename = this.state.taxon.id + "-"+this.state.taxon.name.toLowerCase().replaceAll(/\s/g,'_') + '-';
 		if (!!this.state.project_id) filename += this.state.project_id + "-"
 		if (!!this.state.place_id) filename += this.state.place_id + "-"
 		if (!!this.state.user_id) filename += this.state.user_id + "-"
 		if (!!this.state.d1) {
-			if (!!this.date_created) filename+='created_';
-			filename += "from_" + this.state.d1 + "-";
+			filename += prefix+"from_" + this.state.d1 + "-";
 		} 
 		if (!!this.state.d2) {
-			if (!!this.date_created) filename += 'created_';
-			filename += "to_" + this.state.d2 + "-";
+			filename += prefix+"to_" + this.state.d2 + "-";
 		}
 
 		if (this.state.quality_grade.length > 0) filename += "quality_"+this.state.quality_grade+"-";
@@ -86,13 +85,10 @@ export default class Downloader extends Module {
 			<Page title={title}>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset className='noborder'>
-					<FormControl className='heading' label={I18n.t("Таксон")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}
-						value={this.state.taxon_name} list={this.state.taxons} clearDatalistHandler={this.clearDatalistHandler} listName="taxons">
-						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
-							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
-								: <span role='img' aria-label='fail'>⚠️</span>
-						) : null}
-					</FormControl>
+						<FormControlTaxon className='heading' label={I18n.t("Таксон")} name="taxon" onBlur={this.changeTaxonHandler}
+							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
+							updateState={(newState) => { this.setState(newState) }}
+						/>
 						</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>

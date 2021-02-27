@@ -1,11 +1,18 @@
 import { ChangeEvent } from "react"
+import LookupTaxon from "./LookupTaxon";
 
-interface GenericFormControlProps {
+interface GenericFormControlProps  {
 	label: string
 	name: string
 	comment?: string
 	className?: string
 	children?: React.ReactNode
+}
+
+interface DatalistFormControlProps extends GenericFormControlProps {
+	list?: Array<Object>
+	clearDatalistHandler?: (e: React.MouseEvent) => void
+	listName?: string
 }
 
 export interface BooleanControlProps extends GenericFormControlProps {
@@ -34,15 +41,20 @@ export interface FormControlSelectProps extends GenericFormControlProps {
 	multiline?: boolean
 }
 
-export interface FormControlProps extends GenericFormControlProps {
+export interface FormControlProps extends DatalistFormControlProps {
 	type: string
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	value: string | number
-	list?: Array<Object>
-	clearDatalistHandler?: (e: React.MouseEvent) => void
-	listName?: string
+	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 
 	min?: string | number
 	max?: string | number
 	step?: string | number
+}
+
+export interface FormControlTaxonProps extends DatalistFormControlProps {
+	onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
+	onChange: (e: ChangeEvent<HTMLInputElement>) => void
+	updateState: (newState: Object)=>void
+	value: LookupTaxon
 }

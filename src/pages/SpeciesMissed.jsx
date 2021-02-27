@@ -11,7 +11,7 @@ import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form';
-import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect } from '../mixins/FormControl';
+import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { changeTaxonHandler } from '../classes/Methods';
@@ -20,15 +20,15 @@ export default class extends Module {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.state.unobserved_by_user_id = '';
-		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users", "taxon_name","taxon_id","taxons"], this.state);
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users","taxon","taxons"], this.state);
 		this.changeTaxonHandler = changeTaxonHandler.bind(this);
 	}
 
 	async counter () {
-		const {project_id, taxon_id, user_id, limit, unobserved_by_user_id} = this.state;
+		const {project_id, taxon, user_id, limit, unobserved_by_user_id} = this.state;
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
-		if (!!taxon_id) customParams['taxon_id'] = taxon_id;
+		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
@@ -51,7 +51,7 @@ export default class extends Module {
 		filename= this.state.unobserved_by_user_id+"-";
 		if (!!this.state.project_id) filename += this.state.project_id + "-"
 		if (!!this.state.user_id) filename += this.state.user_id + "-"
-		if (!!this.state.taxon_name) filename += this.state.taxon_name + "-"
+		if (!!this.state.taxon && this.state.taxon.name !=='') filename += this.state.taxon.name + "-"
 		if (!!this.state.quality_grade) filename += "quality_"+this.state.quality_grade+"-";
 		filename += "missed_species.csv";
 		this.setState({ filename: filename.replaceAll(/\s+/g, '_') });
@@ -72,13 +72,10 @@ export default class extends Module {
 					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControl label={I18n.t("Ограничиться таксоном")} type='text' name='taxon_name' onBlur={this.changeTaxonHandler} onChange={this.changeHandler}
-						value={this.state.taxon_name} list={this.state.taxons} clearDatalistHandler={this.clearDatalistHandler} listName="taxons">
-						{this.state.taxon_id !== "" && this.state.taxon_name !== "" ? (
-							this.state.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${this.state.taxon_id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
-								: <span role='img' aria-label='fail'>⚠️</span>
-						) : null}
-					</FormControl>
+					<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler} onBlur={this.changeTaxonHandler}
+						value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
+						updateState={(newState)=>{this.setState(newState)}}
+						/>
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Прочее")}</legend>

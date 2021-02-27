@@ -4,20 +4,15 @@ export default class Settings {
 
 	static loadFromStorage = () => {
 		try {
-			let val = localStorage.getItem(Settings.SettingsName);
-			if (val === null)
-				val = "{}";
-			return JSON.parse(val);
-		} catch (e) {
-		}
+			const val = localStorage.getItem(Settings.SettingsName);
+			if (val !== null) return JSON.parse(val);
+		} catch (e) {}
 		return {};
 	};
 	static get = (name: string, def: any) => {
 		const settings = Settings.loadFromStorage();
 
-		if (settings.hasOwnProperty(name))
-			return settings[name];
-		return def;
+		return (settings.hasOwnProperty(name) && settings[name] !== '') ? settings[name] : def;
 	};
 	static set = (name: string, value: any) => {
 		const settings = Settings.loadFromStorage();

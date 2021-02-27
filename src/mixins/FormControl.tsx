@@ -1,5 +1,6 @@
-import React, { FunctionComponent, ReactElement } from 'react'
-import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps } from '../interfaces/FormControlTypes'
+import React, { ChangeEvent, FunctionComponent, ReactElement, useState } from 'react'
+import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps, FormControlTaxonProps } from '../interfaces/FormControlTypes'
+import LookupTaxon from '../interfaces/LookupTaxon';
 import DataList from './DataList'
 
 export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
@@ -52,9 +53,29 @@ export const FormControlSelect: FunctionComponent<FormControlSelectProps> = (pro
 			</span>
 		</label>
 	)
-
 }
 
+export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props: FormControlTaxonProps) => {
+	const {updateState, value, ...attr} = props;
+	const [taxon, setTaxon] = useState(value.name);
+	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setTaxon(e.target.value);
+		const newTaxon : LookupTaxon = {id:0, name: e.target.value};
+		updateState({taxon: newTaxon});
+	}
+	console.dir(props);
+	
+	return (
+	// list={props.list} clearDatalistHandler={props.clearDatalistHandler} listName={props.listName}
+		<FormControl type='text' {...attr} onChange={onChange} value={taxon}>
+			{value.id !== 0 && value.name !== ""+value.id ? (
+				value.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
+					: <span role='img' aria-label='fail'>⚠️</span>
+			) : null}
+		</FormControl>
+
+	);
+}
 export const FormControlCSV: FunctionComponent<BooleanControlProps> = ({ handler, value }: BooleanControlProps) => {
 	return (
 		<FormControlCheckbox label='Выводить в CSV' name='csv' onChange={handler} checked={value}></FormControlCheckbox>

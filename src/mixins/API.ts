@@ -5,6 +5,7 @@ import User from '../DataObjects/User';
 import iObjectsList from '../interfaces/ObjectsList';
 import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
 import Observation from '../DataObjects/Observation';
+import LookupTaxon from '../interfaces/LookupTaxon';
 
 // import debug_observation_json from '../assets/debug-observations.json';
 
@@ -28,8 +29,8 @@ const cache = new Map<string, any>();
 API.lookupTaxon = async (taxonName: string) => {
 	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
 	let json;
-	const taxon = {
-		score: 0.0, id: 0, name: taxonName, common: ''
+	const taxon: LookupTaxon = {
+		score: 0.0, id: 0, name: taxonName, commonName: '', lookupSuccess: false
 	}
 	taxonName = taxonName.toLowerCase();
 
@@ -41,13 +42,14 @@ API.lookupTaxon = async (taxonName: string) => {
 
 	if (!!json.total_results) {
 		json.results.forEach((result: JSONLookupTaxonObject) => {
-			if (taxon.score < result.score) {
+			if (!taxon.score || taxon.score < result.score) {
 				taxon.score = result.score;
 				taxon.id = result.record.id;
 				taxon.name = result.record.name;
-				taxon.common = !!result.record.preferred_common_name ? result.record.preferred_common_name : taxon.name;
+				taxon.commonName = !!result.record.preferred_common_name ? result.record.preferred_common_name : taxon.name;
 			}
 		});
+		taxon.lookupSuccess = true;
 		cache.set(taxonName, taxon);
 	}
 	return taxon;

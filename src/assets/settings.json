@@ -75,6 +75,11 @@
 		"default": [],
 		"save": true
 	},
+	"taxon": {"setting": "taxon",
+		"type": "LookupTaxon",
+		"default": {"id":0, "name":"", "commonName":"", "lookupSuccess": false},
+		"save":true
+	},
 	"limit": {"setting": "limit",
 		"type": "number",
 		"default": 0,
