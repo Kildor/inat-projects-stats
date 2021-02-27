@@ -1,6 +1,7 @@
-import React, { ChangeEvent, FunctionComponent, ReactElement, useState } from 'react'
+import React, { ChangeEvent, FunctionComponent, ReactElement, useEffect, useState } from 'react'
 import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps, FormControlTaxonProps } from '../interfaces/FormControlTypes'
 import LookupTaxon from '../interfaces/LookupTaxon';
+import { setTaxon } from './API';
 import DataList from './DataList'
 
 export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
@@ -57,9 +58,12 @@ export const FormControlSelect: FunctionComponent<FormControlSelectProps> = (pro
 
 export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props: FormControlTaxonProps) => {
 	const {updateState, value, ...attr} = props;
-	const [taxon, setTaxon] = useState(value.name);
+	const [taxonName, setTaxonName] = useState(value.name);
+	useEffect(() => {
+		setTaxonName(props.value.name)
+	}, [props.value])
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setTaxon(e.target.value);
+		setTaxonName(e.target.value);
 		const newTaxon : LookupTaxon = {id:0, name: e.target.value};
 		updateState({taxon: newTaxon});
 	}
@@ -67,9 +71,9 @@ export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props
 	
 	return (
 	// list={props.list} clearDatalistHandler={props.clearDatalistHandler} listName={props.listName}
-		<FormControl type='text' {...attr} onChange={onChange} value={taxon}>
+		<FormControl type='text' {...attr} onChange={onChange} onBlur={()=>{setTaxon(props.value, updateState)}} value={taxonName}>
 			{value.id !== 0 && value.name !== ""+value.id ? (
-				value.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✔</span></a>
+				value.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✅</span></a>
 					: <span role='img' aria-label='fail'>⚠️</span>
 			) : null}
 		</FormControl>

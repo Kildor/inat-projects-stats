@@ -12,8 +12,6 @@ import API from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
 import Settings from "../mixins/Settings";
-import { changeTaxonHandler } from "../classes/Methods";
-
 
 const title = I18n.t("Скачивание наблюдений");
 
@@ -25,13 +23,9 @@ export default class Downloader extends Module {
 		this.initSettings(["project_id", "projects", "taxon", "taxons", "user_id", "users", "place_id", "places",
 			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
 		], this.state);
-		// if (API.DEBUG) {
-		// 	this.state.user_id = "kildor";
-		// 	this.state.taxon_id = 123;
-		// 	this.state.taxon_name = "debug";
-		// }
+		
+		this.updateState = this.setState.bind(this);
 
-		this.changeTaxonHandler = changeTaxonHandler.bind(this);
 		document.title = title;
 	}
 
@@ -85,9 +79,9 @@ export default class Downloader extends Module {
 			<Page title={title}>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset className='noborder'>
-						<FormControlTaxon className='heading' label={I18n.t("Таксон")} name="taxon" onBlur={this.changeTaxonHandler}
+						<FormControlTaxon className='heading' label={I18n.t("Таксон")} name="taxon"
 							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
-							updateState={(newState) => { this.setState(newState) }}
+							updateState={this.updateState }
 						/>
 						</fieldset>
 					<fieldset>

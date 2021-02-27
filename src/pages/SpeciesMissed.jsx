@@ -14,14 +14,13 @@ import Form from '../mixins/Form';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
-import { changeTaxonHandler } from '../classes/Methods';
-export default class extends Module {
+export default class SpeciesMissed extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.state.unobserved_by_user_id = '';
 		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users","taxon","taxons"], this.state);
-		this.changeTaxonHandler = changeTaxonHandler.bind(this);
+		this.updateState = this.setState.bind(this);
 	}
 
 	async counter () {
@@ -72,9 +71,9 @@ export default class extends Module {
 					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler} onBlur={this.changeTaxonHandler}
+					<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
 						value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
-						updateState={(newState)=>{this.setState(newState)}}
+						updateState={this.updateState}
 						/>
 					</fieldset>
 					<fieldset>

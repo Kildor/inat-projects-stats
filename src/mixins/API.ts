@@ -6,6 +6,7 @@ import iObjectsList from '../interfaces/ObjectsList';
 import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
 import Observation from '../DataObjects/Observation';
 import LookupTaxon from '../interfaces/LookupTaxon';
+import I18n from '../classes/I18n';
 
 // import debug_observation_json from '../assets/debug-observations.json';
 
@@ -215,3 +216,34 @@ API.concatTaxons = API.concatObjects;
 API.filterArray = (array: Array<any>) => Array.from(new Set(array.map(item => JSON.stringify(item)))).map(json => JSON.parse(json))
 
 export default API;
+
+
+const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
+	let taxonName = "";
+	if (!!taxon && !!taxon.name) taxonName = taxon.name
+	else if (!!taxon.name) taxonName = taxon.name;
+	if (taxonName.trim().length < 3) return;
+	setState({ loading: true, loadingTitle: I18n.t("Поиск ID вида") });
+	const regexp = /[0-9]+/;
+	if (!taxonName.match(regexp)) {
+		taxon = await API.lookupTaxon(taxonName);
+	} else {
+		taxon = { id: parseInt(taxonName), name: taxonName, commonName: taxonName, lookupSuccess: false };
+	}
+	setState((prevState: any) => {
+		const newState: any = { taxon };
+		if (taxon.id > 0) {
+			let taxons = prevState.taxons;
+			taxons.push({ name: taxon.name, title: taxon.commonName });
+			newState['taxons'] = API.filterArray(taxons);
+		}
+		return newState;
+	})
+	if (taxon.id === 0) {
+		setState({ loadingTitle: I18n.t("Поиск не удался, проверьте корректность введёного имени") });
+	} else {
+		setState({ loading: false });
+	}
+}
+
+export { setTaxon };
