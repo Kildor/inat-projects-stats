@@ -5,6 +5,7 @@ import CSV from './CSV';
 import Observation, { getCSVHeader } from '../DataObjects/Observation';
 import ObservationIdentification from '../DataObjects/ObservationIdentification';
 import ObservationComment from '../DataObjects/ObservationComment';
+import { DateTimeFormat } from '../mixins/API';
 
 export interface ObservationsListProps {
 	observations: Array<Observation>
@@ -19,11 +20,12 @@ interface ActivitiesListProps {
 	activities: Array<ObservationComment | ObservationIdentification >
 }
 
+
 const ActivityItem = ({ activity, className, children}: { activity: ObservationComment | ObservationIdentification, className: string, children?: React.ReactNode}) =>{
 	return (
 		<li key={activity.id} className={className}>
 			{/* { isIdentification ? <span role='img' aria-label='Identification'>👁‍🗨</span> : <span role='img' aria-label='Comment'>💬</span> } */}
-			{activity.created.toLocaleString()}, <strong>{activity.user.login}:</strong> {children}<br />
+			{DateTimeFormat.format(activity.created)}, <strong>{activity.user.login}:</strong> {children}<br />
 			<div className="comment">
 				{activity.comment}
 			</div>
@@ -51,7 +53,6 @@ const ActivityList = ({activities, current_ids } : ActivitiesListProps ) => {
 					'taxon' in act ? <ActivityIdentification key={act.id} activity={act} /> : <ActivityComment activity={act} key={act.id}/>
 				)
 			})}
-			{/* {obs.activity.map(act => <li key={act.id}>{act.id} - {act.created.toString()}, {act.user.login}: {act.comment}</li>)} */}
 		</ul>
 
 	)
@@ -71,7 +72,7 @@ export default ({ observations, csv, filename, current_ids, hide_activity }: Obs
 		return (<li key={obs.id} className={className}>
 			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
 				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
-			</a> <span className={'location'+ (obs.geoprivacy !== null ? ' location-'+obs.geoprivacy : '') }>({obs.location}, {obs.observed.toLocaleString()})</span>
+			</a> <span className={'location' + (obs.geoprivacy !== null ? ' location-' + obs.geoprivacy : '')}>({obs.location}, {DateTimeFormat.format(obs.observed)})</span>
 			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} />}
 		</li>)})}</ol>;
 

@@ -247,3 +247,8 @@ const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
 }
 
 export { setTaxon };
+
+export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], {
+	year: 'numeric', month: 'numeric', day: 'numeric',
+	hour: 'numeric', minute: 'numeric', second: 'numeric'
+});

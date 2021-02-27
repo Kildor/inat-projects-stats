@@ -4,6 +4,7 @@ import CSVConvertInterface from "../interfaces/CSVConvertInterface";
 import JSONObservationObject from "../interfaces/JSONObservationObject";
 import Taxon from "./Taxon";
 import User from "./User";
+import { DateTimeFormat } from "../mixins/API";
 
 const getCSVHeader = () => {
 	let str = '';
@@ -25,7 +26,7 @@ class Observation implements CSVConvertInterface {
 	activity: Array<ObservationComment | ObservationIdentification>;
 	toCSV(onlyObservations = false ) {
 		let str = '';	
-		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.quality_grade}\t${this.created.toLocaleString()}\t`
+		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.quality_grade}\t${DateTimeFormat.format(this.created)}\t`
 			+ `${!!this.coordinates ? this.coordinates.toString():'coordinates missed'}${this.geoprivacy===null?'':' ('+this.geoprivacy+')'}\t"${this.location}"\t${this.user.fullName}`;
 		if (onlyObservations!==false) this.activity.forEach(activity=>{
 			str+=activity.toCSV();

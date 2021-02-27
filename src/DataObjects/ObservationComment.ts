@@ -1,8 +1,9 @@
 import CSVConvertInterface from "../interfaces/CSVConvertInterface";
 import User from "./User";
 import JSONCommentObject from "../interfaces/JSONCommentObject";
+import CommentInterface from "../interfaces/CommentInterface";
 
-class ObservationComment implements CSVConvertInterface {
+class ObservationComment implements CSVConvertInterface, CommentInterface {
 	toCSV() {
 		return `\t"${this.user.fullName}, ${this.created.toLocaleDateString()}: ${this.comment}"`;
 	}

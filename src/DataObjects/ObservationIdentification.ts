@@ -3,10 +3,11 @@ import Taxon from "./Taxon";
 import User from "./User";
 import { JSONIdentificationObject } from "../interfaces/JSONIdentificationObject";
 import IdentificationInterface from "../interfaces/IdentificationInterface";
+import { DateTimeFormat } from "../mixins/API";
 
 class ObservationIdentification implements CSVConvertInterface, IdentificationInterface {
 	toCSV() {
-		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${this.created.toLocaleString()}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment+'' : ''}"`;
+		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment+'' : ''}"`;
 	}
 	taxon: Taxon;
 	id: number;
