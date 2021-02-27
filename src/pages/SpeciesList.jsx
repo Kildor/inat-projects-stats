@@ -25,8 +25,10 @@ export default class extends Module {
 		this.setState({ loadingTitle: "Загрузка видов"});
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
-		if (this.state.species_only) customParams['hrank'] = 'species';
-		console.dir(this.state.quality_grade)
+		if (this.state.species_only) {
+			customParams['lrank'] = 'species';
+			customParams['hrank'] = 'species';
+		}
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		
 		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);

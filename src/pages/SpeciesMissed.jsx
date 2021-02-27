@@ -28,7 +28,10 @@ export default class SpeciesMissed extends Module {
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
 		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
-		if (this.state.species_only) customParams['hrank'] = 'species';
+		if (this.state.species_only) {
+			customParams['lrank'] = 'species';
+			customParams['hrank'] = 'species';
+		}
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
 		this.setState({ loadingTitle: "Загрузка видов"});

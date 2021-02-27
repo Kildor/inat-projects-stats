@@ -24,7 +24,7 @@ export default class Downloader extends Module {
 			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
 		], this.state);
 		
-		this.updateState = this.setState.bind(this);
+		this.updateState = (state)=>this.setState(state);
 
 		document.title = title;
 	}
