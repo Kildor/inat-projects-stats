@@ -144,7 +144,8 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 API.fetchObservations = async (
 	taxon_id: number, dateFrom: string, dateTo: string, date_created: boolean, limit: number = 0, customParams: any = {}, callback?: Function
 ) => {
-	let url = API.getBaseUrl('observations', `taxon_id=${taxon_id}`);
+	let url = API.getBaseUrl('observations')
+	if (taxon_id > 0 ) url +=`taxon_id=${taxon_id}`;
 	const datePrefix = date_created ? "created_" : "";
 	if (!!dateFrom) url += `&${datePrefix}d1=${dateFrom}`;
 	if (!!dateTo) url += `&${datePrefix}d2=${dateTo}`;
@@ -181,7 +182,6 @@ API.fetchObservations = async (
 		perPageFromJSON = json.per_page;
 		console.dir(typeof json.results);
 		for (let observation of json.results) {
-			console.dir(observation)
 			let o = new Observation(observation);
 			observations.objects.set(o.id, o);
 			observations.ids.add(o.id);

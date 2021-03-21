@@ -19,7 +19,8 @@ export default class Downloader extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
-		this.state.lookupSuccess = false
+		this.state.lookupSuccess = false;
+		this.state.additional='';
 		this.initSettings(["project_id", "projects", "taxon", "taxons", "user_id", "users", "place_id", "places",
 			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
 		], this.state);
@@ -31,13 +32,20 @@ export default class Downloader extends Module {
 
 	async counter() {
 		this.setState({ loadingTitle: "Загрузка наблюдений" });
-		const { project_id, taxon, place_id, user_id, date_created, limit, d1, d2} = this.state;
+		const { project_id, taxon, place_id, user_id, date_created, limit, d1, d2, additional} = this.state;
 		let customParams = {};
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		if (!!project_id) customParams['project_id'] = project_id;
 		if (!!user_id) customParams['user_id'] = user_id;
 		if (!!place_id) customParams['place_id'] = place_id;
+		if (!!additional) {
+			additional.split('&').forEach(param => {
+				param = param.split('=');
+				if (param.length === 2) customParams[param[0]]=param[1];
+			});
+		};
+
 
 		const observations = await API.fetchObservations(taxon.id, d1, d2, date_created, limit, customParams, this.setStatusMessage);
 		return [...observations.ids].map(id => observations.objects.get(id))
@@ -72,12 +80,16 @@ export default class Downloader extends Module {
 		return { users: filteredUsers };
 	}
 
+	isDisabled() {
+		return this.state.loading || (this.state.project_id === '' && this.state.taxon.id === 0)
+	}
+
 
 	render() {
-		const disabled = this.state.loading || (this.state.project_id === '' && this.state.taxon_id === '');
+		// const disabled = this.state.loading || (this.state.project_id === '' && this.state.taxon_id === '');
 		return (
 			<Page title={title}>
-				<Form onSubmit={this.submitHandler} disabled={disabled}>
+				<Form onSubmit={this.submitHandler} disabled={this.isDisabled()}>
 					<fieldset className='noborder'>
 						<FormControlTaxon className='heading' label={I18n.t("Таксон")} name="taxon"
 							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
@@ -111,6 +123,8 @@ export default class Downloader extends Module {
 						<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler} value={this.state.quality_grade}
 							values={this.getValues("quality_grade")}
 							/>
+						<FormControl label='Дополнительные параметры' type='text' name='additional' onChange={this.changeHandler}
+							value={this.state.additional} ></FormControl>
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>

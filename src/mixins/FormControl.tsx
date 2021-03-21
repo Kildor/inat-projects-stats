@@ -67,15 +67,18 @@ export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props
 		const newTaxon : LookupTaxon = {id:0, name: e.target.value};
 		updateState({taxon: newTaxon});
 	}
-	console.dir(props);
-	
+	let children = null;
+	if (value.id !== 0 && value.name !== "" + value.id) {
+		if (value.lookupSuccess) {
+			children = <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✅{!!value.commonName && <span className='common-name'>{value.commonName}</span>}</span></a>
+		} else {
+			children = <span role='img' aria-label='fail'>⚠️</span>
+		}
+	}
 	return (
 	// list={props.list} clearDatalistHandler={props.clearDatalistHandler} listName={props.listName}
 		<FormControl type='text' {...attr} onChange={onChange} onBlur={()=>{setTaxon(props.value, updateState)}} value={taxonName}>
-			{value.id !== 0 && value.name !== ""+value.id ? (
-				value.lookupSuccess ? <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label='success'>✅</span></a>
-					: <span role='img' aria-label='fail'>⚠️</span>
-			) : null}
+			{children}
 		</FormControl>
 
 	);
