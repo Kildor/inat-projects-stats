@@ -68,7 +68,7 @@ export default ({ observations, csv, filename, current_ids, hide_activity }: Obs
 		let url = `https://www.inaturalist.org/observations/`;
 		list = <ol className='taxons'>{observations.map(obs => {
 			let className = 'observation quality-'+obs.quality_grade;
-			if (!!obs.commonName)className += ' has-common-name';
+			if (!!obs.commonName) className += ' has-common-name';
 		return (<li key={obs.id} className={className}>
 			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
 				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}

@@ -145,7 +145,7 @@ API.fetchObservations = async (
 	taxon_id: number, dateFrom: string, dateTo: string, date_created: boolean, limit: number = 0, customParams: any = {}, callback?: Function
 ) => {
 	let url = API.getBaseUrl('observations')
-	if (taxon_id > 0 ) url +=`taxon_id=${taxon_id}`;
+	if (taxon_id > 0 ) url +=`&taxon_id=${taxon_id}`;
 	const datePrefix = date_created ? "created_" : "";
 	if (!!dateFrom) url += `&${datePrefix}d1=${dateFrom}`;
 	if (!!dateTo) url += `&${datePrefix}d2=${dateTo}`;
