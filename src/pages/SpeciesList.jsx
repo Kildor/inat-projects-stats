@@ -13,15 +13,16 @@ import Error from '../mixins/Error';
 import Form from '../mixins/Form';
 import {FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect} from '../mixins/FormControl';
 import Module from '../classes/Module';
+import I18n from '../classes/I18n';
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
-		this.initSettings(["project_id","user_id","limit", "species_only","quality_grade", "contribution", "users"],this.state);
+		this.initSettings(["project_id","user_id","place_id","limit", "species_only","quality_grade", "contribution", "users"],this.state);
 	}
 
 	async counter () {
-		const {project_id, user_id, limit, contribution} = this.state;
+		const {project_id, user_id, place_id, limit, contribution} = this.state;
 		this.setState({ loadingTitle: "Загрузка видов"});
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
@@ -30,7 +31,8 @@ export default class extends Module {
 			customParams['hrank'] = 'species';
 		}
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
-		
+		if (!!place_id) customParams['place_id'] = place_id;
+
 		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);
 		if (contribution) {
 			this.setState({ loadingTitle: "Загрузка видов пользователя"});
@@ -80,6 +82,7 @@ export default class extends Module {
 					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" >
 					</FormControl>
+					<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' />
 					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
@@ -99,7 +102,7 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} filename={this.state.filename} />
+						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} place_id={this.state.place_id} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} filename={this.state.filename} />
 					</div>
 				}
 			</Page>
