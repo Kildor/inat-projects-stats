@@ -8,7 +8,7 @@ import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
 import Form from '../mixins/Form';
-import Note from '../mixins/Note';
+// import Note from '../mixins/Note';
 import Module from '../classes/Module';
 
 const title = 'Участники проекта';
@@ -50,8 +50,8 @@ export default class extends Module {
 					</FormControl>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 				</Form>
-				<Note defCollapsed={false}>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных
-				</Note>
+				{/* <Note defCollapsed={false}>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных
+				</Note> */}
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

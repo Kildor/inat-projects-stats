@@ -106,7 +106,7 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 	let users: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
-	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=id&order=asc`;
+	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=login&order=asc`;
 
 	let totalCount = 0;
 	let page = 0;
