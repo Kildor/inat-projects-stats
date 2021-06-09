@@ -1,5 +1,10 @@
 li.observation {
 	position: relative;
+	margin-bottom: .75em ;
+	&::marker {
+		font-weight: bold;		
+		}
+
 	.location {
 		&.location-obscured:before {
 			content: "🔘 ";
