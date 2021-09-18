@@ -35,7 +35,7 @@ export default ()=>{
 					</dt>
 					<dd><p>{I18n.t("Конвертер для табличных данных с йната, а так же редактор для постов.")}</p></dd>
 				<dt style={{borderTop:"1px solid", marginTop:".5em", paddingTop: ".5em"}}>
-					<a href='/about'>{I18n.t("О сайте")}</a>
+					<Link to='/about'>{I18n.t("О сайте")}</Link>
 					</dt>
 					<dd><p>{I18n.t("Некоторая информация об этом сайте.")}</p></dd>
 			</dl>
