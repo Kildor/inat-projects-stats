@@ -11,8 +11,9 @@ type tState = React.Dispatch<React.SetStateAction<boolean>>;
 const ListLangugeItem = (language: iLanguage, setState: tState) => {
 	const context = useContext(LanguageContext);
 	return <li
-		className={language.code === context.code ? "active" : ""}
-		onClick={() => { setState(false); context.changeLanguage(language.code); }} key={language.code}><span role='button'>{language.language}</span></li>;
+		className={language.code === context.code ? "active" : ""} key={language.code}>
+			<span role='button' onClick={() => { setState(false); context.changeLanguage(language.code); }} >{language.language}</span>
+			</li>;
 };
 			
 const ListLinkItem = (module: { url: string; title: string; }, setstate: any): JSX.Element => {
@@ -33,14 +34,14 @@ const HeaderMenuWrapper = ({title, className, children} : {title: string; classN
 	const Children = children;
 	return (
 		<div className={'header-menu menu-'+className}>
-			<button className={'button btn-menu ' + (state ? 'open' : '')} onClick={() => setState(!state)}>{title}</button>
+			<button className={'button btn-menu ' + (state ? 'open' : '')} onClick={() => setState(prevState => !prevState)}>{title}</button>
 				<Children setState={setState} />
 		</div>
 	)
 }
 		
 export const MenuPages = ({ setState }: { setState: tState }) => (
-		<ul>
+		<ul className='menu'>
 			{modules.map(module => ListLinkItem(module, setState))}
 		</ul>
 	);

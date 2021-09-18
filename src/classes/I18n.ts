@@ -30,11 +30,18 @@ const I18n = {
 		DICTIONARY = strings;
 	},
 	initDefault( code: string ) {
-		if (code !== 'ru') I18n.init({
+		if (code === 'ru') I18n.init({
+			"Загружается": "Загружается",
+			"Загружается язык приложения": "Загружается язык приложения"
+		});
+		else I18n.init({
 			"Загружается": "Loading",
 			"Загружается язык приложения": "App language is loading"
 		});
 	},
+	showDictionary() {
+		console.dir(DICTIONARY);
+	}
 };
 
 export default I18n;

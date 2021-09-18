@@ -25,6 +25,7 @@ const App = () => {
 
   const context = {
     changeLanguage: (languageCode: string) => {
+      I18n.initDefault(languageCode);
       setCurrentLanguage(languageCode);
       saveLanguage(languageCode);
     },
@@ -36,13 +37,13 @@ const App = () => {
   return (
     <LanguageContext.Provider value={context}>
       <div className="App">
-        <Screen/>
+        <Screen code={currentLanguage} />
       </div>
     </LanguageContext.Provider>
   );
 };
 
-const AppLoader = () => (
+const AppLoader = ({code} : {code: string}) => (
   <div className="AppLoader">
     <Loader title={I18n.t("Загружается")} show={true}
       message={I18n.t("Загружается язык приложения")}
@@ -50,7 +51,7 @@ const AppLoader = () => (
     </div>
 );
 
-const InnerApp = () => {
+const InnerApp = ({ code }: { code: string }) => {
     return (
     <Router basename='inat'>
       <Header />
