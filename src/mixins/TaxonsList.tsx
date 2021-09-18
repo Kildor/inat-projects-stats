@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react'
 import Taxon, { getCSVHeader } from '../DataObjects/Taxon';
 import '../assets/Taxons.scss';
 import CSV from './CSV';
+import I18n from '../classes/I18n';
 
 export interface TaxonListProps {
 	taxons: Array<Taxon>
@@ -15,7 +16,7 @@ export interface TaxonListProps {
 }
 export default ({ taxons, d1, d2, project_id, user_id, place_id, csv, filename }: TaxonListProps) => {
 	if (taxons.length === 0) return (
-		<div>Нет данных</div>
+		<div>{I18n.t("Нет данных")}</div>
 	);
 	let list: ReactElement;
 	if (csv) {
@@ -38,7 +39,7 @@ export default ({ taxons, d1, d2, project_id, user_id, place_id, csv, filename }
 
 	return(
 		<>
-			<p>{taxons.length} видов:</p>
+			<p>{I18n.t("{1} видов:", [taxons.length])}</p>
 			{list}
 			</>
 	)

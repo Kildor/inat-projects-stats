@@ -10,18 +10,17 @@ import UsersList from '../mixins/UsersList';
 import Form from '../mixins/Form';
 // import Note from '../mixins/Note';
 import Module from '../classes/Module';
+import I18n from '../classes/I18n';
 
-const title = 'Участники проекта';
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.initSettings(["project_id", "projects"], this.state);
-		document.title = title;
 	}
 
 	async counter() {
-		this.setState({ loadingTitle: "Загрузка участников" });
+		this.setState({ loadingTitle: I18n.t("Загрузка участников") });
 		const members = await API.fetchMembers(this.state.project_id, this.setStatusMessage);
 		return { total: members.total, members: [...members.ids].map(id => members.objects.get(id))};
 
@@ -43,9 +42,9 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || this.state.project_id === '';
 		return (
-			<Page title={title} className='page-members'>
+			<Page title={I18n.t("Участники проекта")} className='page-members'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} >
 					</FormControl>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />

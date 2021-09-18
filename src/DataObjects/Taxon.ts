@@ -1,5 +1,5 @@
 import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import JSONTaxonObject from "../interfaces/JSONTaxonObject";
+import JSONTaxonObject from "../interfaces/JSON/JSONTaxonObject";
 
 const getCSVHeader = (useRank: boolean) => {
 	let str = '';

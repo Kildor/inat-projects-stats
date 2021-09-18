@@ -14,12 +14,12 @@ import Form from '../mixins/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/FormControl';
+
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.getDefaultSettings();
 		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "users"], this.state);
-		// document.title='Новые виды проекта';
 	}
 
 	async counter () {
@@ -80,28 +80,25 @@ export default class extends Module {
 		return (
 			<Page title={I18n.t('Новые виды проекта')} className='page-newSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
-					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControl label='Дата загрузки наблюдений (с которой считать новые виды):' type='date' name='d1' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Дата загрузки наблюдений (с которой считать новые виды)")} type='date' name='d1' onChange={this.changeHandler}
 						value={this.state.d1} >
 					</FormControl>
-					<FormControl label='Дата загрузки наблюдений (по которую считать новые виды):' type='date' name='d2' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Дата загрузки наблюдений (по которую считать новые виды)")} type='date' name='d2' onChange={this.changeHandler}
 						value={this.state.d2} >
 					</FormControl>
-					<FormControlCheckbox label='Показывать виды, впервые зарегистрированные в этот период' name='show_first' onChange={this.checkHandler}
+					<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
 						checked={this.state.show_first} >
 					</FormControlCheckbox>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					
 				</Form>
 				<Note>
-					Скрипт выбирает все виды из проекта, загруженные на сайт до выбранной даты (Дата создания), выбирает все виды, загруженные после выбранной даты,
-					после чего сравнивает списки и оставляет только новые. К сожалению, API iNaturalist не даёт возможности выбрать виды, добавленные в проект относительно даты,
-					поэтому если в требованиях проекта выставлен "Исследовательский статус", есть вероятность того, что наблюдение, добавленное раньше указанной даты, было добавлено в проект уже после неё,
-					но при этом в списке его не будет. Аналогично с теми наблюдениями, которые были переопределены после указанной даты.
+					{I18n.t("pages.species.note.text")}
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

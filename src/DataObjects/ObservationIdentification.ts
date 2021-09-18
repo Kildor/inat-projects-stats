@@ -1,7 +1,7 @@
 import CSVConvertInterface from "../interfaces/CSVConvertInterface";
 import Taxon from "./Taxon";
 import User from "./User";
-import { JSONIdentificationObject } from "../interfaces/JSONIdentificationObject";
+import { JSONIdentificationObject } from "../interfaces/JSON/JSONIdentificationObject";
 import IdentificationInterface from "../interfaces/IdentificationInterface";
 import { DateTimeFormat } from "../mixins/API";
 

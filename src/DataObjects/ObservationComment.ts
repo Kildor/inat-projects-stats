@@ -1,6 +1,6 @@
 import CSVConvertInterface from "../interfaces/CSVConvertInterface";
 import User from "./User";
-import JSONCommentObject from "../interfaces/JSONCommentObject";
+import JSONCommentObject from "../interfaces/JSON/JSONCommentObject";
 import CommentInterface from "../interfaces/CommentInterface";
 
 class ObservationComment implements CSVConvertInterface, CommentInterface {

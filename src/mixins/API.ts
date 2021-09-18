@@ -1,9 +1,9 @@
-import JSONTaxonObject from '../interfaces/JSONTaxonObject';
-import JSONUserObject from '../interfaces/JSONUserObject';
+import JSONTaxonObject from '../interfaces/JSON/JSONTaxonObject';
+import JSONUserObject from '../interfaces/JSON/JSONUserObject';
 import Taxon from '../DataObjects/Taxon'
 import User from '../DataObjects/User';
 import iObjectsList from '../interfaces/ObjectsList';
-import JSONLookupTaxonObject from '../interfaces/JSONLookupTaxonObject';
+import JSONLookupTaxonObject from '../interfaces/JSON/JSONLookupTaxonObject';
 import Observation from '../DataObjects/Observation';
 import LookupTaxon from '../interfaces/LookupTaxon';
 import I18n from '../classes/I18n';
@@ -83,7 +83,7 @@ API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string,
 		page++;
 
 		if (!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPage > 0 ? ` из ${1 + ~~(totalCount / perPage)}` : ''), true);
+			callback(createCallbackMessage(page, perPage, totalCount), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
 		const json = await fetch(url + '&page=' + page).then(res => res.json()).catch(e => { throw e });
@@ -118,7 +118,7 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 		page++;
 
 		if (!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ? ` из ${1 + ~~(totalCount / perPageFromJSON)}` : ''), true);
+			callback(createCallbackMessage(page, perPageFromJSON, totalCount), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
 		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw e });
@@ -174,7 +174,7 @@ API.fetchObservations = async (
 		page++;
 
 		if (!!callback) {
-			callback(`Загрузка ${page} cтраницы` + (perPageFromJSON > 0 ? ` из ${1 + ~~(totalCount / perPageFromJSON)}` : ''), true);
+			callback(createCallbackMessage(page, perPageFromJSON, totalCount), true);
 		}
 		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw e });
 		totalCount = json.total_results;
@@ -252,3 +252,9 @@ export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], 
 	year: 'numeric', month: 'numeric', day: 'numeric',
 	hour: 'numeric', minute: 'numeric', second: 'numeric'
 });
+function createCallbackMessage(page: number, perPageFromJSON: number, totalCount: number): string {
+	return perPageFromJSON > 0 ?
+				I18n.t('Загрузка {1} cтраницы из {2}', [page, ~~(totalCount / perPageFromJSON) ]) :
+				I18n.t('Загрузка {1} cтраницы', [page] )
+}
+

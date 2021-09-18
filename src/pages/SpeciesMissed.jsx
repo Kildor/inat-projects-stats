@@ -14,6 +14,7 @@ import Form from '../mixins/Form';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
+import { TranslateJSX } from '../mixins/Translation';
 export default class SpeciesMissed extends Module {
 	constructor(props) {
 		super(props);
@@ -62,16 +63,16 @@ export default class SpeciesMissed extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.unobserved_by_user_id === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title='Пропущенные виды' className='page-listSpecies'>
+			<Page title={I18n.t("Пропущенные виды")} className='page-listSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 				<fieldset>
 					<legend>{I18n.t("Фильтрация")}</legend>
-					<FormControl label='Id или имя пользователя:' type='text' name='unobserved_by_user_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='unobserved_by_user_id' onChange={this.changeHandler}
 						value={this.state.unobserved_by_user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControl label='Id или имя проекта для сравнения:' type='text' name='project_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя проекта для сравнения")} type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
-					<FormControl label='Id или имя пользователя для сравнения:' type='text' name='user_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя пользователя для сравнения")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
 					<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
@@ -82,10 +83,10 @@ export default class SpeciesMissed extends Module {
 					<fieldset>
 						<legend>{I18n.t("Прочее")}</legend>
 					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
-					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
+					<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
 					</FormControlCheckbox>
-					<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler}
+					<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler}
 						value={this.state.quality_grade} values={this.getValues("quality_grade")} />
 					</fieldset>
 					<fieldset>
@@ -94,9 +95,9 @@ export default class SpeciesMissed extends Module {
 					</fieldset>
 		</Form>
 				<Note>
-					Скрипт отображает все виды, пропущенные пользователем, в сравнении с другим пользователем или проектом <br/>
-					В случае сравнения с проектом, показываются виды включённые в проект, не встреченные данным пользователем.<br/>
-					Могут быть расхождения в случае если пользователь не встретил какие-то из подвидов встреченного им вида.
+					<TranslateJSX replace={[<br/>]}>
+						pages.species-missed.note.text
+					</TranslateJSX>
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

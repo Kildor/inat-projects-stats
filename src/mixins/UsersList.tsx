@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
 import CSV from './CSV';
 import User, { getCSVHeader } from '../DataObjects/User';
+import I18n from '../classes/I18n';
 
 export interface UsersListProps {
 	users?: Array<User> | null
@@ -28,8 +29,8 @@ export default ({ users, total, csv = false, filename }: UsersListProps) => {
 	}
 	return (
 		<>
-			<p>{users.length} пользователей:</p>
-			{users.length !== total && <p>* Список неполон, должно быть {total} пользователей!</p>}
+			<p>{I18n.t("{1} пользователей:", [users.length])}</p>
+			{users.length !== total && <p>{I18n.t("* Список неполон, должно быть {1} пользователей!", [''+total])}</p>}
 			{list}
 		</>
 	)

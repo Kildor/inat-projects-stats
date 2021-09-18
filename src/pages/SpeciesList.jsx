@@ -75,28 +75,28 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title='Виды проекта' className='page-listSpecies'>
+			<Page title={I18n.t("Виды проекта")} className='page-listSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
-					<FormControl label='Id или имя проекта:' type='text' name='project_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
-					<FormControl label='Id или имя пользователя:' type='text' name='user_id' onChange={this.changeHandler}
+					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" >
 					</FormControl>
 					<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' />
 					<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
-					<FormControlCheckbox label='Выводить только виды' name='species_only' onChange={this.checkHandler}
+					<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} >
 					</FormControlCheckbox>
-					<FormControlSelect label="Статус наблюдения" name="quality_grade" onChange={this.changeHandler} 
+					<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler} 
 						value={this.state.quality_grade} values={this.getValues("quality_grade")}
 					/>
-					<FormControlCheckbox label='Виды, встреченные только этим пользователем' name='contribution' onChange={this.checkHandler}
+					<FormControlCheckbox label={I18n.t("Виды, встреченные только этим пользователем")} name='contribution' onChange={this.checkHandler}
 						checked={this.state.contribution} >
 					</FormControlCheckbox> 
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 		</Form>
 				<Note>
-					Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.
+					{I18n.t("Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.")}
 				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />

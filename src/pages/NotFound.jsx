@@ -1,14 +1,14 @@
 import React from 'react'
 import Page from '../mixins/Page';
 import { Link } from 'react-router-dom';
+import I18n from '../classes/I18n';
 
 export default () => {
-	document.title = 'Страница не найдена';
 	return (
-		<Page className='page-404' title="404">
+		<Page className='page-404' title={I18n.t('Страница не найдена')}>
 			<p>
-				Страница не найдена<br/>
-				<Link to='/'>Вернуться на главную</Link>
+				{I18n.t("Страница не найдена")}<br/>
+				<Link to='/'>{I18n.t("Вернуться на главную")}</Link>
 
 			</p>
 		</Page>

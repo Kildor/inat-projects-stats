@@ -20,7 +20,7 @@ export default ({ header, children, useRank = true, filename = "stats.csv" }: CS
 	return (
 		<div className="csv-wrapper" style={{ width: "90vw" }}>
 			<textarea value={value} readOnly style={{ width: "100%", height: "500px", }} onFocus={(e) => { e.target.select() }} />
-			<button style={{display:"block", margin:"5px auto"}} className="button button-download" onClick={e=>{download(value, filename)}}>{I18n.t("Download")}</button>
+			<button style={{display:"block", margin:"5px auto"}} className="button button-download" onClick={e=>{download(value, filename)}}>{I18n.t("Скачать")}</button>
 		</div>
 	)
 }

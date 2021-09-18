@@ -1,0 +1,19 @@
+{
+	"surround.custom": {
+		// command name must be unique
+		"{I18n}": {
+			// label must be unique
+			"label": "{I18n.t}",
+			"description": "Convert to I18n",
+			"snippet": "{I18n.t(\"$TM_SELECTED_TEXT\")}", // <-- snippet goes here.
+			"languageIds": [
+				"html",
+				"javascript",
+				"typescript",
+				"markdown",
+				"*"
+			]
+		},
+		// You can add more ...
+	}
+}

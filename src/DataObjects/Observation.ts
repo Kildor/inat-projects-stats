@@ -1,7 +1,7 @@
 import ObservationComment from "./ObservationComment";
 import ObservationIdentification from "./ObservationIdentification";
 import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import JSONObservationObject from "../interfaces/JSONObservationObject";
+import JSONObservationObject from "../interfaces/JSON/JSONObservationObject";
 import Taxon from "./Taxon";
 import User from "./User";
 import { DateTimeFormat } from "../mixins/API";

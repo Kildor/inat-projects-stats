@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import '../assets/Form.scss'
+import I18n from '../classes/I18n'
 
 export interface FormProps {
 	onSubmit: any
@@ -13,8 +14,7 @@ export default ({onSubmit, disabled, children}: FormProps)=>{
 			<fieldset>
 				{children}
 			</fieldset>
-			<button disabled={disabled} type='submit' className="btn-submit">Запустить</button>
+			<button disabled={disabled} type='submit' className="btn-submit">{I18n.t("Запустить")}</button>
 		</form>
-
 	)
 }

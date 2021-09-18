@@ -17,17 +17,23 @@
 		.btn-menu {
 			position: absolute;
 			top: 20px;
-			right: 10px;
+			right: 5px;
 			background: rgba(0, 0, 0, 0.2);
 			border: none;
 			color: #fff;
 			font-size: 1em;
-			line-height: 1.2;
+			line-height: 1;
 			/* font-weight: bold; */
 			padding: 5px 15px;
 			&.open {
 				box-shadow: 0 0 3px #fff;
 			}
+		}
+		.menu-languages .btn-menu {
+			top: 5px;
+		}
+		.menu-pages .btn-menu {
+			top: 30px;
 		}
 		ul {
 			display: inline-flex;
@@ -53,14 +59,20 @@
 				}
 			}
 		}
-		a {
+		a, span {
 			color: #fff;
 			display: block;
 			padding: 4px 10px;
+			cursor: pointer;
 		}
 		@media screen and (min-width: 600px) {
 			.btn-menu {
 				display: none;
+			}
+			.header-menu.menu-languages {
+				position: absolute;
+				top: 1em;
+				right: 1em;
 			}
 		}
 		@media screen and (max-width: 600px) {
@@ -88,6 +100,20 @@
 			height: 1.2em;
 		}
 	}
+	.AppLoader {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.loader {
+			text-align: center;
+			svg {
+				display: block;
+				margin: auto;
+				width: 2.5em;
+				height: 2.5em;
+			}
+		}
+	}
 	footer.app-footer {
 		padding: 0.5rem;
 		text-align: center;
@@ -96,14 +122,13 @@
 			text-decoration: none;
 		}
 		i:before {
-			content: '';
+			content: "";
 			width: 3px;
 			height: 3px;
 			border-radius: 50%;
 			background-color: #000;
 			margin: 2px 3px 3px;
 			display: inline-block;
-
 		}
 	}
 }

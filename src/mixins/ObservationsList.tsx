@@ -6,6 +6,7 @@ import Observation, { getCSVHeader } from '../DataObjects/Observation';
 import ObservationIdentification from '../DataObjects/ObservationIdentification';
 import ObservationComment from '../DataObjects/ObservationComment';
 import { DateTimeFormat } from '../mixins/API';
+import I18n from '../classes/I18n';
 
 export interface ObservationsListProps {
 	observations: Array<Observation>
@@ -81,7 +82,7 @@ export default ({ observations, csv, filename, current_ids, hide_activity }: Obs
 
 	return(
 		<>
-			<p>Наблюдений: {observations.length}</p>
+			<p>{I18n.t("Наблюдений:")} {observations.length}</p>
 			{list}
 			</>
 	)
