@@ -23,7 +23,7 @@ export default class extends Module {
 
 	async counter () {
 		const {project_id, user_id, place_id, limit, contribution} = this.state;
-		this.setState({ loadingTitle: "Загрузка видов"});
+		this.setState({ loadingTitle: I18n.t("Загрузка видов")});
 		let customParams = {};
 		if (limit > 0) customParams['limit'] = limit;
 		if (this.state.species_only) {
@@ -35,18 +35,18 @@ export default class extends Module {
 
 		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, this.setStatusMessage, customParams);
 		if (contribution) {
-			this.setState({ loadingTitle: "Загрузка видов пользователя"});
+			this.setState({ loadingTitle: I18n.t("Загрузка видов пользователя") });
 			const userTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
 			if (userTaxa.total === 0) return [];
 
-			this.setState({ loadingTitle: "Обработка загруженных данных" });
+			this.setState({ loadingTitle: I18n.t("Обработка загруженных данных") });
 			return [...userTaxa.ids].filter(id => {
 				return !allTaxa.ids.has(id) || allTaxa.objects.get(id).count === userTaxa.objects.get(id).count;
 			}).map(id => userTaxa.objects.get(id));
 
 		}
 
-		this.setState({loadingTitle: "Обработка загруженных данных"});
+		this.setState({loadingTitle: I18n.t("Обработка загруженных данных") });
 
 		return [...allTaxa.ids].map(id => allTaxa.objects.get(id));
 

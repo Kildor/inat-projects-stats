@@ -12,7 +12,7 @@ export interface UsersListProps {
 export default ({ users, total, csv = false, filename }: UsersListProps) => {
 	let url = `https://www.inaturalist.org/people/`;
 	if (!users || users.length === 0) return (
-		<div>Нет данных</div>
+		<div>{I18n.t("Нет данных")}</div>
 	);
 
 

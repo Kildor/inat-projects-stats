@@ -50,7 +50,7 @@ export const FormControlSelect: FunctionComponent<FormControlSelectProps> = (pro
 			<span>{props.label}</span>
 			<span className="form-control">
 				<select name={props.name} onChange={props.onChange} value={props.value}>
-					{[...props.values].map(entry => <option key={entry[0]} value={entry[0]}>{entry[1]}</option>)}
+					{[...props.values].map(entry => <option key={entry[0]} value={entry[0]}>{I18n.t(entry[1])}</option>)}
 				</select>
 			</span>
 		</label>

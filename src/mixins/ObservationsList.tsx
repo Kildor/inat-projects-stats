@@ -60,7 +60,7 @@ const ActivityList = ({activities, current_ids } : ActivitiesListProps ) => {
 }
 export default ({ observations, csv, filename, current_ids, hide_activity }: ObservationsListProps) => {
 	if (observations.length === 0) return (
-		<div>Нет данных</div>
+		<div>{I18n.t("Нет данных")}</div>
 	);
 	let list: ReactElement;
 	if (csv) {
