@@ -7,6 +7,9 @@ import JSONLookupTaxonObject from '../interfaces/JSON/JSONLookupTaxonObject';
 import Observation from '../DataObjects/Observation';
 import LookupTaxon from '../interfaces/LookupTaxon';
 import I18n from '../classes/I18n';
+import LookupPlace from '../interfaces/LookupPlace';
+import JSONPlaceObject from '../interfaces/JSON/JSONPlaceObject';
+import Settings from './Settings';
 
 // import debug_observation_json from '../assets/debug-observations.json';
 
@@ -27,17 +30,17 @@ function addCustomParams(customParams: any): string {
 
 const cache = new Map<string, any>();
 
-API.lookupTaxon = async (taxonName: string) => {
+API.lookupTaxon = async (queryString: string) => {
 	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
 	let json;
 	const taxon: LookupTaxon = {
-		score: 0.0, id: 0, name: taxonName, commonName: '', lookupSuccess: false
+		score: 0.0, id: 0, name: queryString, commonName: '', lookupSuccess: false
 	}
-	taxonName = taxonName.toLowerCase();
+	queryString = queryString.toLowerCase();
 
 	// if (cache.has(taxonName)) json = cache.get(taxonName);
-	if (cache.has(taxonName)) return cache.get(taxonName);
-		let url = API.getBaseUrl('search', `q=${encodeURIComponent(taxonName)}&sources=taxa`);
+	if (cache.has(queryString)) return cache.get(queryString);
+		let url = API.getBaseUrl('search', `q=${encodeURIComponent(queryString)}&sources=taxa`);
 		json = await fetch(url).then(res => res.json());
 		// cache.set(taxonName, json);
 
@@ -51,12 +54,45 @@ API.lookupTaxon = async (taxonName: string) => {
 			}
 		});
 		taxon.lookupSuccess = true;
-		cache.set(taxonName, taxon);
+		cache.set(queryString, taxon);
 	}
 	return taxon;
 }
+
+API.lookupPlaces = async (queryString: string) => {
+	// https://api.inaturalist.org/v1/places/autocomplete?q=iskitim
+	let json;
+	let places: LookupPlace[] = [{
+		id: 0, name: queryString, displayName: '', lookupSuccess: false
+	}];
+	queryString = queryString.toLowerCase();
+
+	// if (cache.has(taxonName)) json = cache.get(taxonName);
+	if (cache.has(queryString)) return cache.get(queryString);
+		let url = API.getBaseUrl('search', `q=${encodeURIComponent(queryString)}&sources=taxa`);
+		json = await fetch(url).then(res => res.json());
+		// cache.set(taxonName, json);
+
+	if (!!json.total_results) {
+		places = json.results.map((result: JSONPlaceObject) => (
+			{
+				id: result.id,
+				name: result.name,
+				commonName: !!result.display_name ? result.display_name : result.name,
+				lookupSuccess: true,
+			})
+		);
+		cache.set(queryString, places);
+	}
+	return places;
+}
+
 API.getBaseUrl = (endpoint: string, tail: string = '') =>{
-	let url = `${API.BASE_URL}${endpoint}?locale=${window.navigator.language}&preferred_place_id=7161`;
+	let locale = Settings.get("default_language",window.navigator.language);
+	let place = Settings.get("default_place","");
+	if (place === "0") place = "7161";
+	
+	let url = `${API.BASE_URL}${endpoint}?locale=${locale}&preferred_place_id=${place}`;
 	if (tail !=='') url+='&'+tail;
 	return url;
 
@@ -218,7 +254,7 @@ API.filterArray = (array: Array<any>) => Array.from(new Set(array.map(item => JS
 export default API;
 
 
-const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
+export const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
 	let taxonName = "";
 	if (!!taxon && !!taxon.name) taxonName = taxon.name
 	else if (!!taxon.name) taxonName = taxon.name;
@@ -246,12 +282,11 @@ const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
 	}
 }
 
-export { setTaxon };
-
 export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], {
 	year: 'numeric', month: 'numeric', day: 'numeric',
 	hour: 'numeric', minute: 'numeric', second: 'numeric'
 });
+
 function createCallbackMessage(page: number, perPageFromJSON: number, totalCount: number): string {
 	return perPageFromJSON > 0 ?
 				I18n.t('Загрузка {1} cтраницы из {2}', [page, ~~(totalCount / perPageFromJSON) ]) :

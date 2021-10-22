@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import modules from '../../assets/modules.json';
 import I18n, { applicationLanguage } from '../../classes/I18n';
 import { iLanguage } from '../../interfaces/LanguageInterface';
+import { iModule } from '../../interfaces/ModulesInterface';
 import { LanguageContext } from '../LanguageContext';
 			
 type tState = React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,15 +17,17 @@ const ListLangugeItem = (language: iLanguage, setState: tState) => {
 			</li>;
 };
 			
-const ListLinkItem = (module: { url: string; title: string; }, setstate: any): JSX.Element => {
+const ListLinkItem = (module: iModule, setstate: any): JSX.Element => {
 // const ListLinkItem = (module: { url: string; title: string; }, setstate: tState): JSX.Element => {
 	let match = useRouteMatch({
 		path: module.url,
 		exact: true
 		});
+
+	const title = typeof module.title === 'object' && module.title.menu ? module.title.menu : module.title;
 		
 	return <li key={module.url} className={match ? 'active' : ''}>
-		<Link onClick={() => {setstate(false);}} to={module.url}>{I18n.t(module.title)}</Link>
+		<Link onClick={() => {setstate(false);}} to={module.url}>{I18n.t(title as string)}</Link>
 	</li>;
 };
 			

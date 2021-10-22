@@ -35,6 +35,10 @@ const Content = () => {
 				<h2>Changelog</h2>
 				<Changelog changes={[
 					{
+						date: "10/22/2021",
+						changes: "Add user settings page."
+						},
+					{
 						date: "09/18/2021",
 						changes: "Add internationalisation support. Many internal changes."
 					},
@@ -63,6 +67,10 @@ const Content = () => {
 		</p>
 		<h2>Изменения</h2>
 		<Changelog changes={[
+			{
+				date: "22.10.2021",
+				changes: "Добавлена форма пользовательских настроек (язык и место для предпочтительного названия таксонов). "
+			},
 			{
 				date: "18.09.2021",
 				changes: "Добавлена интернационализация, множество разных изменений"

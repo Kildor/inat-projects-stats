@@ -7,14 +7,15 @@ export interface FormProps {
 	onSubmit: any
 	disabled: boolean
 	children: ReactNode
+	submitTitle?: string
 }
-export default ({onSubmit, disabled, children}: FormProps)=>{
+export default ({onSubmit, disabled, children, submitTitle = I18n.t("Запустить")}: FormProps) => {
 	return (
 		<form onSubmit={onSubmit}>
 			<fieldset>
 				{children}
 			</fieldset>
-			<button disabled={disabled} type='submit' className="btn-submit">{I18n.t("Запустить")}</button>
+			<button disabled={disabled} type='submit' className="btn-submit">{submitTitle}</button>
 		</form>
 	)
 }

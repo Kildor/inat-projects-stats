@@ -84,5 +84,25 @@
 		"type": "number",
 		"default": 0,
 		"save": true
+	},
+	"_place": {"setting": "place",
+		"type": "LookupPlace",
+		"default": {"id":0, "name":"", "displayName":"", "lookupSuccess": false},
+		"save":true
+	},
+	"place": {"setting": "place",
+		"type": "string",
+		"default": "",
+		"save":true
+	},
+	"default_place": {"setting": "default_place",
+		"type": "string",
+		"default": "",
+		"save":true
+	},
+	"default_language": {"setting": "default_language",
+		"type": "string",
+		"default": "ru-RU",
+		"save":true
 	}
 }

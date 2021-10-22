@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import modules from '../assets/modules.json';
 import I18n from '../classes/I18n';
 import Page from '../mixins/Page'
+import '../assets/pages/page-list.scss'
+
 
 interface iDescription {
 	description?: string
@@ -16,15 +18,16 @@ const Description = ({ description, note }: iDescription) => {
 	);
 };
 
-export default ()=>{
+export default () => {
 	return (
 		<Page className='page-main' title={I18n.t("Список утилит")} backlink={false}>
-			<dl>
+			<dl className='pages-list'>
 				{
 					modules.map(module=>{
 						if(module.url==='/') return null;
+						const title = typeof module.title === 'object' && module.title.list ? module.title.list : module.title;
 						return (
-							<React.Fragment key={module.url}><dt><Link to={module.url}>{I18n.t(module.title)}</Link></dt>
+							<React.Fragment key={module.url}><dt><Link to={module.url}>{I18n.t(title as string)}</Link></dt>
 								<Description description={module.description} note={module.note} ></Description>
 							</React.Fragment>
 						)

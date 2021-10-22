@@ -22,13 +22,13 @@ interface ActivitiesListProps {
 }
 
 
-const ActivityItem = ({ activity, className, children}: { activity: ObservationComment | ObservationIdentification, className: string, children?: React.ReactNode}) =>{
+const ActivityItem = ({ activity: { id, created, user: { login }, comment }, className, children}: { activity: ObservationComment | ObservationIdentification, className: string, children?: React.ReactNode}) =>{
 	return (
-		<li key={activity.id} className={className}>
+		<li key={id} className={className}>
 			{/* { isIdentification ? <span role='img' aria-label='Identification'>👁‍🗨</span> : <span role='img' aria-label='Comment'>💬</span> } */}
-			{DateTimeFormat.format(activity.created)}, <strong>{activity.user.login}:</strong> {children}<br />
+			{DateTimeFormat.format(created)}, <strong>{login}:</strong> {children}<br />
 			<div className="comment">
-				{activity.comment}
+				{comment}
 			</div>
 		</li>
 
@@ -58,7 +58,7 @@ const ActivityList = ({activities, current_ids } : ActivitiesListProps ) => {
 
 	)
 }
-export default ({ observations, csv, filename, current_ids, hide_activity }: ObservationsListProps) => {
+export const ObservationList =  ({ observations, csv, filename, current_ids, hide_activity }: ObservationsListProps) => {
 	if (observations.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -87,3 +87,5 @@ export default ({ observations, csv, filename, current_ids, hide_activity }: Obs
 			</>
 	)
 }
+
+export default ObservationList;

@@ -14,7 +14,7 @@ const download = (csv: string, filename?: string)=>{
 	const blob = new Blob([csv], {type: 'text/csv'});
 	FileSaver.saveAs(blob, filename || "stats.csv");
 }
-export default ({ header, children, useRank = true, filename = "stats.csv" }: CSVProps): ReactElement => {
+export const CSV = ({ header, children, useRank = true, filename = "stats.csv" }: CSVProps): ReactElement => {
 	let value = header(useRank) +
 		children.map((element: CSVConvertInterface, index: number) => element.toCSV(useRank ? index : false)).join("\n");
 	return (
@@ -24,3 +24,5 @@ export default ({ header, children, useRank = true, filename = "stats.csv" }: CS
 		</div>
 	)
 }
+
+export default CSV;

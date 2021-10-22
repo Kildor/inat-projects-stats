@@ -84,6 +84,7 @@ export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props
 	
 	);
 }
+
 export const FormControlCSV: FunctionComponent<BooleanControlProps> = ({ handler, value }: BooleanControlProps) => {
 	return (
 		<FormControlCheckbox label={I18n.t('Выводить в CSV')} name='csv' onChange={handler} checked={value}></FormControlCheckbox>
@@ -96,3 +97,36 @@ export const FormControlLimit: FunctionComponent<NumberControlProps> =  ({ handl
 			value={value} min="0" step="1" />
 	);
 }
+/*
+export const FormControlPlace: FunctionComponent<FormControlPlaceProps> = (props: FormControlPlaceProps) => {
+	const {updateState, value, ...attr} = props;
+	console.dir(props);
+	const [placeName, setPlaceName] = useState(value.name);
+	const [placeId, setPlaceId] = useState(value.id);
+
+	useEffect(() => {
+		setPlaceName(value.name)
+		setPlaceId(value.id)
+	}, [value])
+	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setPlaceName(e.target.value);
+		const newPlace : LookupPlace = {id: 0, name: e.target.value};
+		updateState({place: newPlace});
+	}
+	let children = null;
+	if (value.id !== 0 && value.name !== "" + value.id) {
+		if (value.lookupSuccess) {
+			children = <a href={`https://www.inaturalist.org/taxa/${value.id}`} target='_blank' rel='noopener noreferrer'><span role='img' aria-label={I18n.t("Успешно")}>✅{!!value.displayName && <span className='common-name'>{value.displayName}</span>}</span></a>
+		} else {
+			children = <span role='img' aria-label={I18n.t("Неуспешно")}>⚠️</span>
+		}
+	}
+	return (
+	// list={props.list} clearDatalistHandler={props.clearDatalistHandler} listName={props.listName}
+		<FormControl type='text' {...attr} onChange={onChange} onBlur={()=>{setTaxon(props.value, updateState)}} value={placeName}>
+			{children}
+		</FormControl>
+	
+	);
+}
+*/

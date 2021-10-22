@@ -66,7 +66,7 @@ export default class extends React.Component {
 		this.counter().then((data) => {
 			this.setState({ data, loading: false });
 		}).catch(e => {
-			console.dir('error')
+			console.error(e);
 			this.setState({ data: [], loading: false, error: e.message })
 		})
 	}

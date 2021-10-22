@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom';
 
-import '../assets/Page.scss';
+import '../assets/pages/Page.scss';
 
 
 interface iHeader {

@@ -7,6 +7,7 @@ import Members from '../pages/Members';
 import SpeciesList from '../pages/SpeciesList';
 import SpeciesMissed from '../pages/SpeciesMissed';
 import Downloader from '../pages/Downloader';
+import UserSettings from '../pages/UserSettings';
 
 interface iComponentListItem {
   path: string
@@ -24,5 +25,6 @@ export const components: iComponentListItem[] = [
   { path: '/download-observations', component: <Downloader /> },
   { path: '/missed-species', component: <SpeciesMissed /> },
   { path: '/about', component: <About /> },
+  { path: '/user-settings', component: <UserSettings /> },
   { path: '*', component: <NotFound /> },
 ];

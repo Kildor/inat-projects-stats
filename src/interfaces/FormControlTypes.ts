@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react"
+import LookupPlace from "./LookupPlace";
 import LookupTaxon from "./LookupTaxon";
 
 interface GenericFormControlProps  {
@@ -57,4 +58,11 @@ export interface FormControlTaxonProps extends DatalistFormControlProps {
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	updateState: (newState: Object)=>void
 	value: LookupTaxon
+}
+
+export interface FormControlPlaceProps extends DatalistFormControlProps {
+	onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
+	onChange: (e: ChangeEvent<HTMLInputElement>) => void
+	updateState: (newState: Object)=>void
+	value: LookupPlace
 }
