@@ -289,7 +289,7 @@ export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], 
 
 function createCallbackMessage(page: number, perPageFromJSON: number, totalCount: number): string {
 	return perPageFromJSON > 0 ?
-				I18n.t('Загрузка {1} cтраницы из {2}', [page, ~~(totalCount / perPageFromJSON) ]) :
+				I18n.t('Загрузка {1} cтраницы из {2}', [page, 1 + ~~(totalCount / perPageFromJSON) ]) :
 				I18n.t('Загрузка {1} cтраницы', [page] )
 }
 
