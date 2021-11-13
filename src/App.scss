@@ -12,7 +12,7 @@
 		position: relative;
 		h1 {
 			margin: 0;
-			padding: 0.5rem;
+			padding: 1rem 0.5rem;
 			font-size: 1.2rem;
 		}
 		.btn-menu {
@@ -42,9 +42,11 @@
 			padding: 0;
 			margin: 0;
 			border-radius: 5px;
-			background: #000 linear-gradient(to bottom, #222, #000);
-			box-shadow: 0 0 1px #000;
+			background: #444 linear-gradient(180deg,#404040,#202020);
+			box-shadow: 0 0 2px #444;
+			overflow: hidden;
 			li {
+				text-shadow: 1px 1px #000;
 				& + li {
 					border-left: 1px solid #444;
 				}
@@ -52,7 +54,7 @@
 					color: #000;
 				}
 				&.active {
-					background: #444 linear-gradient(to bottom, #404040, #202020);
+					background: #000 linear-gradient(180deg,#222,#000);
 					text-shadow: 1px 1px #000;
 				}
 				a {
@@ -83,6 +85,7 @@
 			.btn-menu.open + ul {
 				display: flex;
 				flex-direction: column;
+				background: #444 linear-gradient(180deg,#505050 0, #303030 60px);
 				li {
 					& + li {
 						border-left: none;
