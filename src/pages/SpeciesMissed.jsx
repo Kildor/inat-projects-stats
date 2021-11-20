@@ -10,8 +10,8 @@ import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
-import Form from '../mixins/Form';
-import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/FormControl';
+import Form from '../mixins/Form/Form';
+import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { TranslateJSX } from '../mixins/Translation';

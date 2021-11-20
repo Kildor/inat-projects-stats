@@ -1,9 +1,9 @@
 import React from 'react'
 import Page from '../mixins/Page';
 import Settings from "../mixins/Settings";
-import {FormControl} from '../mixins/FormControl';
+import {FormControl} from '../mixins/Form/FormControl';
 import defaultPlaces from '../assets/places.json';
-import Form from '../mixins/Form';
+import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import Loader from '../mixins/Loader';
@@ -47,7 +47,7 @@ export default class UserSettings extends Module {
 						type="number"
 						name="default_place"
 						label={I18n.t("Место по умолчанию")}
-						comment={I18n.t("Цифровое значение")+". "+I18n.t("Используется для показа региональных имён таксонов.") + I18n.t("Можно оставить пустым.")}
+						comment={`${I18n.t("Цифровое значение")}. ${I18n.t("Используется для показа региональных имён таксонов")}. ${I18n.t("Можно оставить пустым.")}`}
 						value={this.state.default_place}
 						onChange={this.changeHandler}
 						list={defaultPlaces}

@@ -10,10 +10,11 @@ import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
-import Form from '../mixins/Form';
+import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
-import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/FormControl';
+import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/Form/FormControl';
+import { DataControlsBlock } from '../mixins/Form/FormControlSets';
 
 export default class extends Module {
 	constructor(props) {
@@ -97,18 +98,10 @@ export default class extends Module {
 					<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 						checked={this.state.species_only} />
 					</fieldset>
-					<fieldset>
-						<legend>{I18n.t("Настройки даты")}</legend>
-					<FormControl label={I18n.t("Наблюдения после")} type='date' name='d1' onChange={this.changeHandler}
-						value={this.state.d1} />
-						<FormControl label={I18n.t("Наблюдения до")} type='date' name='d2' onChange={this.changeHandler}
-						value={this.state.d2} />
-						<FormControlCheckbox label={I18n.t("Дата загрузки на сайт")} name='date_created' onChange={this.checkHandler}
-							comment={I18n.t("Иначе дата рассматривается как дата, когда наблюдение было сделано")}
-							checked={this.state.date_created} />
-					<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
-						checked={this.state.show_first} />
-					</fieldset>
+					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} >
+						<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
+							checked={this.state.show_first} />
+							</DataControlsBlock>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />

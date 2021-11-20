@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FunctionComponent, ReactElement, useEffect, useState } from 'react'
-import I18n from '../classes/I18n';
-import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps, FormControlTaxonProps } from '../interfaces/FormControlTypes'
-import LookupTaxon from '../interfaces/LookupTaxon';
-import { setTaxon } from './API';
-import DataList from './DataList'
+import I18n from '../../classes/I18n';
+import { FormControlProps, FormControlCheckboxProps, BooleanControlProps, NumberControlProps, FormControlRadioProps, FormControlSelectProps, FormControlTaxonProps } from '../../interfaces/FormControlTypes'
+import LookupTaxon from '../../interfaces/LookupTaxon';
+import { setTaxon } from '../API';
+import DataList from '../DataList'
 	
 export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
 	const datalistId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;

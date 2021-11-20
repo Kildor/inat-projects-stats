@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
-import '../assets/Form.scss'
-import I18n from '../classes/I18n'
+import '../../assets/Form.scss'
+import I18n from '../../classes/I18n'
 
 export interface FormProps {
 	onSubmit: any

@@ -2,8 +2,8 @@ import I18n from "../classes/I18n";
 import Module from "../classes/Module";
 import Page from "../mixins/Page";
 import React from 'react'
-import Form from "../mixins/Form";
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/FormControl";
+import Form from "../mixins/Form/Form";
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/Form/FormControl";
 import Note from "../mixins/Note";
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
@@ -12,6 +12,7 @@ import API, { fillDateParams } from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
 import Settings from "../mixins/Settings";
+import { DataControlsBlock } from "../mixins/Form/FormControlSets";
 
 export default class Downloader extends Module {
 	constructor(props) {
@@ -102,22 +103,7 @@ export default class Downloader extends Module {
 							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName='users' />
 						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places'/>
 					</fieldset>
-					<fieldset>
-						<legend>{I18n.t("Настройки даты")}</legend>
-						<FormControlCheckbox label={I18n.t("За всё время")} name='date_any' onChange={this.checkHandler}
-							checked={this.state.date_any} />
-						<fieldset className={"noborder" + (this.state.date_any ? " hidden" : "")}>
-							<FormControl label={I18n.t("Наблюдения после")} type='date' name='d1' onChange={this.changeHandler}
-								value={this.state.d1} >
-							</FormControl>
-							<FormControl label={I18n.t("Наблюдения до")} type='date' name='d2' onChange={this.changeHandler}
-								value={this.state.d2} >
-							</FormControl>
-							<FormControlCheckbox label={I18n.t("Дата загрузки")} name='date_created' onChange={this.checkHandler}
-								comment={I18n.t("Иначе дата рассматривается как дата наблюдения")}
-								checked={this.state.date_created} />
-						</fieldset>
-					</fieldset>
+					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} />
 					<fieldset>
 						<legend>{I18n.t("Прочее")}</legend>
 						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
@@ -163,5 +149,4 @@ export default class Downloader extends Module {
 			</Page>
 		)
 	}
-
 }
