@@ -19,6 +19,16 @@
 		"default": "",
 		"save": true
 	},
+	"date_created": {"setting": "date_created",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
+	"date_any": {"setting": "date_any",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
 	"csv": {"setting": "csv",
 		"type": "boolean",
 		"default": false,
@@ -34,19 +44,15 @@
 		"default": true,
 		"save": true
 	},
-	"rg": {"setting": "rg",
-		"type": "boolean",
-		"default": false,
-		"save": true
-	},
 	"quality_grade": {"setting": "quality_grade",
 		"type": "multi",
-		"default": "",
+		"default": "needs_id,research",
 		"save": true,
 		"values": {
 			"": "Все",
-			"rg": "Только исследовательского уровня",
+			"research": "Только исследовательского уровня",
 			"needs_id": "Требуется идентификация",
+			"needs_id,research": "Проверяемые наблюдения",
 			"casual": "Обыкновенные"
 		}
 	},

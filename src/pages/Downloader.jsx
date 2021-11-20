@@ -8,20 +8,20 @@ import Note from "../mixins/Note";
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
 import defaultProjects from '../assets/projects.json';
-import API from "../mixins/API";
+import API, { fillDateParams } from "../mixins/API";
 // import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
 import Settings from "../mixins/Settings";
 
-
 export default class Downloader extends Module {
 	constructor(props) {
 		super(props);
-		this.state = this.getDefaultSettings();
+		this.state = this.initDefaultSettings();
 		this.state.lookupSuccess = false;
 		this.state.additional='';
 		this.initSettings(["project_id", "projects", "taxon", "taxons", "user_id", "users", "place_id", "places",
-			"d1", "d2", "limit", "quality_grade", "date_created", "current_ids", "hide_activity"
+			"d1", "d2", "date_created", "date_any",
+			"limit", "quality_grade", "current_ids", "hide_activity", "show_discussion"
 		], this.state);
 
 		this.updateState = (state)=>this.setState(state);
@@ -29,8 +29,8 @@ export default class Downloader extends Module {
 
 	async counter() {
 		this.setState({ loadingTitle: I18n.t("Загрузка наблюдений") });
-		const { project_id, taxon, place_id, user_id, date_created, limit, d1, d2, additional} = this.state;
-		let customParams = {};
+		const { project_id, taxon, place_id, user_id, limit, additional} = this.state;
+		let customParams = {...fillDateParams(this.state)};
 		if (this.state.species_only) customParams['hrank'] = 'species';
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		if (!!project_id) customParams['project_id'] = project_id;
@@ -39,12 +39,12 @@ export default class Downloader extends Module {
 		if (!!additional) {
 			additional.split('&').forEach(param => {
 				param = param.split('=');
-				if (param.length === 2) customParams[param[0]]=param[1];
+				if (param.length === 2) customParams[param[0]] = param[1];
 			});
 		};
 
 
-		const observations = await API.fetchObservations(taxon.id, d1, d2, date_created, limit, customParams, this.setStatusMessage);
+		const observations = await API.fetchObservations(taxon.id, limit, customParams, this.setStatusMessage);
 		return [...observations.ids].map(id => observations.objects.get(id))
 	}
 
@@ -104,15 +104,19 @@ export default class Downloader extends Module {
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Настройки даты")}</legend>
-						<FormControl label={I18n.t("Наблюдения после")} type='date' name='d1' onChange={this.changeHandler}
-							value={this.state.d1} >
-						</FormControl>
-						<FormControl label={I18n.t("Наблюдения до")} type='date' name='d2' onChange={this.changeHandler}
-							value={this.state.d2} >
-						</FormControl>
-						<FormControlCheckbox label={I18n.t("Дата загрузки")} name='date_created' onChange={this.checkHandler}
-							comment={I18n.t("Иначе дата рассматривается как дата наблюдения")}
-							checked={this.state.date_created} />
+						<FormControlCheckbox label={I18n.t("За всё время")} name='date_any' onChange={this.checkHandler}
+							checked={this.state.date_any} />
+						<fieldset className={"noborder" + (this.state.date_any ? " hidden" : "")}>
+							<FormControl label={I18n.t("Наблюдения после")} type='date' name='d1' onChange={this.changeHandler}
+								value={this.state.d1} >
+							</FormControl>
+							<FormControl label={I18n.t("Наблюдения до")} type='date' name='d2' onChange={this.changeHandler}
+								value={this.state.d2} >
+							</FormControl>
+							<FormControlCheckbox label={I18n.t("Дата загрузки")} name='date_created' onChange={this.checkHandler}
+								comment={I18n.t("Иначе дата рассматривается как дата наблюдения")}
+								checked={this.state.date_created} />
+						</fieldset>
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Прочее")}</legend>
@@ -125,10 +129,16 @@ export default class Downloader extends Module {
 					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>
-						<FormControlCheckbox label={I18n.t("Не отображать отозванные определения")} name='current_ids' onChange={this.checkHandler}
-							checked={this.state.current_ids} />
-						<FormControlCheckbox label={I18n.t("Показывать только наблюдения")} name='hide_activity' onChange={this.checkHandler}
-							checked={this.state.hide_activity} />
+						<p className='info'>{I18n.t("Не требует повторного скачивания наблюдений")}</p>
+						{
+							[
+								{ label: I18n.t("Не отображать отозванные определения"), name: 'current_ids' },
+								{ label: I18n.t("Показывать дискуссии"), name: 'show_discussion' },
+								{ label: I18n.t("Показывать только наблюдения"), name: 'hide_activity' },
+							].map(({ label, name }) => (
+								<FormControlCheckbox key={name} label={label} name={name} onChange={this.checkHandler} checked={this.state[name]} />
+							))
+						}
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
@@ -144,9 +154,9 @@ export default class Downloader extends Module {
 				</Result> */}
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
-				{!this.state.loading && !this.state.error && !!this.state.data.length > 0 &&
+				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<ObservationsList observations={this.state.data} csv={this.state.csv} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
+						<ObservationsList observations={this.state.data} csv={this.state.csv} show_discussion={this.state.show_discussion} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
 					</div>
 				}
 

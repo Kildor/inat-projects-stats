@@ -22,6 +22,14 @@
 				}
 			}
 		}
+		legend {
+			font-weight: 500;
+			font-size: 1.01em;
+			padding: 0 5px;
+			background: #fff;
+			box-shadow: 1px 1px 1.5px 1px #ccc, 5px 0 #fff, -5px 0 #fff;
+			border-radius: 3px;
+			}
 		> fieldset {
 			display: block;
 			border: 1px solid #666;
@@ -38,9 +46,19 @@
 					padding: 5px 15px 0;
 					margin-bottom: 0;
 				}
+				fieldset.noborder {
+					border: none;
+					padding: 0;
+					margin: 0;
+				}
 				
 			}
 		}
+		.info {
+			font-size: .95em;
+			font-style: italic;
+		}
+
 		.btn-small {
 			font-size: .9em;
 			padding: 0;

@@ -13,11 +13,13 @@ export interface ObservationsListProps {
 	csv: boolean | false
 	current_ids: boolean | false
 	hide_activity: boolean | false
+	show_discussion: boolean | false
 	filename?: string | "observations.csv"
 }
 
 interface ActivitiesListProps {
 	current_ids: boolean|false
+	show_discussion: boolean|false
 	activities: Array<ObservationComment | ObservationIdentification >
 }
 
@@ -46,22 +48,41 @@ const ActivityComment = ({ activity }: { activity: ObservationComment})=>{
 	return <ActivityItem className='comment' activity={activity}/>
 }
 
-const ActivityList = ({activities, current_ids } : ActivitiesListProps ) => {
+interface FilterFunction {
+	(act: ObservationComment | ObservationIdentification) : boolean
+}
+const getFilterForActivities = (current_ids = false, show_discussion = false): FilterFunction => {
+	if (current_ids) {
+		if (show_discussion) {
+			return (act) => ('current' in act) && act.current && !!act.comment
+		}
+		return (act) => ('current' in act) && act.current
+	} else if (show_discussion) {
+		return (act) => !!act.comment
+	}
+	return (act) => true
+}
+
+const ActivityList = ({activities, current_ids, show_discussion } : ActivitiesListProps ) => {
+	const filter = getFilterForActivities(current_ids, show_discussion);
+	activities = activities.filter(filter);
+	if (activities.length === 0) return null;
+
 	return (
 		<ul className='activity'>
-			{activities.filter(act => !current_ids || !('current' in act) || act.current).map(act => {
+			{activities.map(act => {
 				return (
 					'taxon' in act ? <ActivityIdentification key={act.id} activity={act} /> : <ActivityComment activity={act} key={act.id}/>
 				)
 			})}
 		</ul>
-
 	)
 }
-export const ObservationList =  ({ observations, csv, filename, current_ids, hide_activity }: ObservationsListProps) => {
+export const ObservationList =  ({ observations, csv, filename, current_ids, hide_activity, show_discussion }: ObservationsListProps) => {
 	if (observations.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
+
 	let list: ReactElement;
 	if (csv) {
 		list = <CSV header={getCSVHeader} useRank={!hide_activity} filename={filename}>{observations}</CSV>
@@ -74,11 +95,10 @@ export const ObservationList =  ({ observations, csv, filename, current_ids, hid
 			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
 				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
 			</a> <span className={'location' + (obs.geoprivacy !== null ? ' location-' + obs.geoprivacy : '')}>({obs.location}, {DateTimeFormat.format(obs.observed)})</span>
-			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} />}
+			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} show_discussion={show_discussion} />}
 		</li>)})}</ol>;
 
 	}
-
 
 	return(
 		<>

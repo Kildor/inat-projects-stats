@@ -12,7 +12,10 @@ import Error from '../mixins/Error';
 export default class UserSettings extends Module {
 	constructor(props) {
 		super(props);
-		this.state = this.getDefaultSettings();
+		this.state = {
+			loadingTitle: null,
+			error: null,
+		};
 		this.initSettings(["default_place", "default_language"], this.state);
 		this.updateState = (state) => this.setState(state);
 	}
@@ -39,6 +42,7 @@ export default class UserSettings extends Module {
 		return (
 			<Page title={I18n.t("Настройки пользователя")} className='page-settings'>
 				<Form onSubmit={this.submitHandler} disabled={false} submitTitle={I18n.t("Сохранить")}>
+					<fieldset className="noborder">
 					<FormControl 
 						type="number"
 						name="default_place"
@@ -53,6 +57,7 @@ export default class UserSettings extends Module {
 					<FormControl label={I18n.t("Язык по умолчанию")} comment={I18n.t("Оставьте пустым для использования языка из настроек браузера")} name="default_language"
 					value={this.state.default_language} onChange={this.changeHandler}
 					/>
+					</fieldset>
 					</Form>
 					<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />

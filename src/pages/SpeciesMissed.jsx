@@ -18,7 +18,7 @@ import { TranslateJSX } from '../mixins/Translation';
 export default class SpeciesMissed extends Module {
 	constructor(props) {
 		super(props);
-		this.state = this.getDefaultSettings();
+		this.state = this.initDefaultSettings();
 		this.state.unobserved_by_user_id = '';
 		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users","taxon","taxons"], this.state);
 		this.updateState = this.setState.bind(this);
@@ -36,7 +36,7 @@ export default class SpeciesMissed extends Module {
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
 		this.setState({ loadingTitle: I18n.t("Загрузка видов") });
-		const unobservedTaxa = await API.fetchSpecies(project_id, user_id, null, null, this.setStatusMessage, customParams);
+		const unobservedTaxa = await API.fetchSpecies(project_id, user_id, null, null, false, this.setStatusMessage, customParams);
 
 		return [...unobservedTaxa.ids].map(id => unobservedTaxa.objects.get(id));
 	}

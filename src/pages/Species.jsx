@@ -18,27 +18,34 @@ import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/Form
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = this.getDefaultSettings();
-		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "species_only", "users"], this.state);
+		this.state = this.initDefaultSettings();
+		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only", "users"], this.state, {
+			"date_created": true
+		});
 	}
 
 	async counter () {
-		const {project_id, user_id, d1, d2, show_first} = this.state;
+		const {project_id, user_id, d1, d2, date_created, show_first, species_only} = this.state;
 		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
-		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, this.setStatusMessage);
+		const customParams = {};
+		if (species_only) {
+			customParams['lrank'] = 'species';
+			customParams['hrank'] = 'species';
+		}
+
+		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, date_created, this.setStatusMessage, customParams);
 		if (newTaxa.total === 0) return [];
 		this.setState({ loadingTitle: I18n.t("Загрузка всех видов") });
 		let allTaxa = [];
 		if (d1 !== '') {
 			const alld2 = new Date(d1);
 			alld2.setDate(alld2.getDate() - 1);
-			// allTaxa = await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), this.setStatusMessage);
-			allTaxa = API.concatTaxons(await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), this.setStatusMessage));
+			allTaxa = API.concatTaxons(await API.fetchSpecies(project_id, user_id, null, alld2.toISOString().substring(0, 10), date_created, this.setStatusMessage, customParams));
 		}
 		if (d2 !== '' && !show_first) {
 			const alld1 = new Date(d2);
 			alld1.setDate(alld1.getDate() + 1);
-			allTaxa = API.concatTaxons(allTaxa, await API.fetchSpecies(project_id, user_id, alld1.toISOString().substring(0, 10), null, this.setStatusMessage));
+			allTaxa = API.concatTaxons(allTaxa, await API.fetchSpecies(project_id, user_id, alld1.toISOString().substring(0, 10), null, date_created, this.setStatusMessage, customParams));
 		}
 		// console.dir(allTaxa);
 		// console.dir(newTaxa);
@@ -80,22 +87,32 @@ export default class extends Module {
 		return (
 			<Page title={I18n.t('Новые виды проекта')} className='page-newSpecies'>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
+					<fieldset>
+						<legend>{I18n.t("Фильтрация")}</legend>
 					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 						value={this.state.project_id} list={defaultProjects} />
 					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControl label={I18n.t("Дата загрузки наблюдений (с которой считать новые виды)")} type='date' name='d1' onChange={this.changeHandler}
-						value={this.state.d1} >
-					</FormControl>
-					<FormControl label={I18n.t("Дата загрузки наблюдений (по которую считать новые виды)")} type='date' name='d2' onChange={this.changeHandler}
-						value={this.state.d2} >
-					</FormControl>
+					<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
+						checked={this.state.species_only} />
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Настройки даты")}</legend>
+					<FormControl label={I18n.t("Наблюдения после")} type='date' name='d1' onChange={this.changeHandler}
+						value={this.state.d1} />
+						<FormControl label={I18n.t("Наблюдения до")} type='date' name='d2' onChange={this.changeHandler}
+						value={this.state.d2} />
+						<FormControlCheckbox label={I18n.t("Дата загрузки на сайт")} name='date_created' onChange={this.checkHandler}
+							comment={I18n.t("Иначе дата рассматривается как дата, когда наблюдение было сделано")}
+							checked={this.state.date_created} />
 					<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
-						checked={this.state.show_first} >
-					</FormControlCheckbox>
+						checked={this.state.show_first} />
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Отображение")}</legend>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
-					
+					</fieldset>
 				</Form>
 				<Note>
 					{I18n.t("pages.species.note.text")}
@@ -104,7 +121,7 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} filename={this.state.filename} />
+						<TaxonsList taxons={this.state.data} d1={this.state.d1} d2={this.state.d2} date_created={this.state.date_created} project_id={this.state.project_id} user_id={this.state.user_id} csv={this.state.csv} filename={this.state.filename} />
 					</div>
 				}
 			</Page>

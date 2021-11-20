@@ -18,15 +18,8 @@ const API = () => { };
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
 API.LOCALE = 'ru';
 API.DEBUG = !1;
-function addCustomParams(customParams: any): string {
-	let url = '';
-	for (let key in customParams) {
-		if (customParams.hasOwnProperty(key)) {
-			url += `&${key}=${customParams[key]}`;
-		}
-	}
-	return url;
-}
+export const addCustomParams = (customParams: Record<string, string | number>): string =>
+	Object.keys(customParams).reduce((url,key) => url + `&${key}=${customParams[key]}`, '');
 
 const cache = new Map<string, any>();
 
@@ -97,14 +90,13 @@ API.getBaseUrl = (endpoint: string, tail: string = '') =>{
 	return url;
 
 }
-API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, callback: Function, customParams: any = {}) => {
+API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, dateCreated: boolean, callback: Function, customParams: Record<string, string | number> = {}) => {
 	let taxons: iObjectsList = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	let url = API.getBaseUrl('observations/species_counts');
 	if (!!project_id) url += '&project_id=' + project_id;
 	if (!!user_id) url += '&user_id=' + user_id;
-	if (!!dateFrom) url += '&created_d1=' + dateFrom;
-	if (!!dateTo) url += '&created_d2=' + dateTo;
+	url += addCustomParams(fillDateParams({ d1: dateFrom, d2: dateTo, date_created: dateCreated }));
 	url += addCustomParams(customParams);
 
 	let limit = customParams.limit || 0;
@@ -178,13 +170,11 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 }
 
 API.fetchObservations = async (
-	taxon_id: number, dateFrom: string, dateTo: string, date_created: boolean, limit: number = 0, customParams: any = {}, callback?: Function
+	taxon_id: number, limit: number = 0, customParams: Record<string, string | number> = {}, callback?: Function
 ) => {
 	let url = API.getBaseUrl('observations')
 	if (taxon_id > 0 ) url +=`&taxon_id=${taxon_id}`;
-	const datePrefix = date_created ? "created_" : "";
-	if (!!dateFrom) url += `&${datePrefix}d1=${dateFrom}`;
-	if (!!dateTo) url += `&${datePrefix}d2=${dateTo}`;
+
 	url += addCustomParams(customParams);
 	console.dir(url);
 
@@ -216,7 +206,6 @@ API.fetchObservations = async (
 		totalCount = json.total_results;
 		page = json.page;
 		perPageFromJSON = json.per_page;
-		console.dir(typeof json.results);
 		for (let observation of json.results) {
 			let o = new Observation(observation);
 			observations.objects.set(o.id, o);
@@ -293,3 +282,13 @@ function createCallbackMessage(page: number, perPageFromJSON: number, totalCount
 				I18n.t('Загрузка {1} cтраницы', [page] )
 }
 
+export const fillDateParams = ({ d1, d2, date_created, date_any = false }: {d1?: string, d2?: string, date_created?: boolean, date_any?: boolean}) : Record <string, string> => {
+	const dateParams: Record<string, string> = {}
+	if (date_any) return dateParams;
+
+	const datePrefix = date_created ? 'created_' : '';
+
+	if (!!d1) dateParams[`${datePrefix}d1`] = d1;
+	if (!!d2) dateParams[`${datePrefix}d2`] = d2;
+	return dateParams;
+}

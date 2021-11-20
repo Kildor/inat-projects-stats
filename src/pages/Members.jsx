@@ -15,7 +15,7 @@ import I18n from '../classes/I18n';
 export default class extends Module {
 	constructor(props) {
 		super(props);
-		this.state = this.getDefaultSettings();
+		this.state = this.initDefaultSettings();
 		this.initSettings(["project_id", "projects"], this.state);
 	}
 

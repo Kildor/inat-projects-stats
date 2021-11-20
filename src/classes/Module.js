@@ -12,7 +12,7 @@ export default class extends React.Component {
 		this.setStatusMessage = this.setStatusMessage.bind(this);
 	}
 
-	getDefaultSettings() {
+	initDefaultSettings() {
 		const state = {
 			loading: false, loadingTitle: null, loadingMessage: null,
 			error: null,
@@ -21,9 +21,9 @@ export default class extends React.Component {
 		this.initSettings(["filename", "csv"], state);
 		return state;
 	}
-	initSettings(settingsList, thisState) {
+	initSettings(settingsList, thisState, defaultValues = {}) {
 		settingsList.forEach(state => {
-			const setting = settings[state] || {save: false, default: ""};
+			const setting = settings[state] || { setting: state, save: false, default: defaultValues[state] || ""};
 			thisState[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
 			if (!!setting.values) {
 				if (!this.values) this.values={};

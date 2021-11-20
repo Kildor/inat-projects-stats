@@ -22,9 +22,9 @@ export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, 
 	
 }
 	
-export const FormControlCheckbox: FunctionComponent<FormControlCheckboxProps> = ({ label, name, comment, onChange, checked, children }: FormControlCheckboxProps): ReactElement => {
+export const FormControlCheckbox: FunctionComponent<FormControlCheckboxProps> = ({ label, name, className, comment, onChange, checked, children }: FormControlCheckboxProps): ReactElement => {
 	return (
-		<label>
+		<label className={className}>
 			<span>{label}</span> <span className='form-control'>
 				<input type='checkbox' name={name} onChange={onChange} value='1' checked={checked} />
 				{children}
