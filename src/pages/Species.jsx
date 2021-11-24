@@ -3,12 +3,10 @@ import React from 'react'
 import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import API from '../mixins/API';
-import Settings from "../mixins/Settings";
+import API, { saveDatalist } from '../mixins/API';
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
-import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
@@ -20,7 +18,8 @@ export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
-		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only", "users"], this.state, {
+		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
+		"users", "projects"], this.state, {
 			"date_created": true
 		});
 	}
@@ -75,14 +74,12 @@ export default class extends Module {
 	}
 
 	storageHandler() {
-		let users = this.state.users;
-		users.push({ name: this.state.user_id, title: this.state.user_id });
-		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
-		Settings.set('users', filteredUsers);
-		return {users: filteredUsers };
+		const state = {};
+		state.users = saveDatalist(this.state.user_id, this.state.users, 'users');
+		state.projects = saveDatalist(this.state.project_id, this.state.projects, 'projects')
+		return state;
 	}
 
-	
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
@@ -91,7 +88,7 @@ export default class extends Module {
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
-						value={this.state.project_id} list={defaultProjects} />
+						value={this.state.project_id} list={this.state.projects} />
 					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>

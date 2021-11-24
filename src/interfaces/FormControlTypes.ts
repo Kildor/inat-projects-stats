@@ -1,8 +1,9 @@
 import { ChangeEvent } from "react"
+import { iDataListItem } from "./DataListInterface";
 import LookupPlace from "./LookupPlace";
 import LookupTaxon from "./LookupTaxon";
 
-interface GenericFormControlProps  {
+interface GenericFormControlProps {
 	label: string
 	name: string
 	comment?: string
@@ -11,7 +12,7 @@ interface GenericFormControlProps  {
 }
 
 interface DatalistFormControlProps extends GenericFormControlProps {
-	list?: Array<Object>
+	list?: Array<iDataListItem>
 	clearDatalistHandler?: (e: React.MouseEvent) => void
 	listName?: string
 }
@@ -65,4 +66,9 @@ export interface FormControlPlaceProps extends DatalistFormControlProps {
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	updateState: (newState: Object)=>void
 	value: LookupPlace
+}
+
+export interface MultilineControlProps extends GenericFormControlProps {
+	value: string | iDataListItem[]
+	handler: (e: ChangeEvent<HTMLTextAreaElement>) => void
 }

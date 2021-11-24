@@ -10,6 +10,7 @@ import I18n from '../classes/I18n';
 import LookupPlace from '../interfaces/LookupPlace';
 import JSONPlaceObject from '../interfaces/JSON/JSONPlaceObject';
 import Settings from './Settings';
+import { iDataListItem } from "../interfaces/DataListInterface";
 
 // import debug_observation_json from '../assets/debug-observations.json';
 
@@ -238,7 +239,11 @@ API.concatObjects = function (...objects: Array<iObjectsList>) {
 }
 API.concatTaxons = API.concatObjects;
 
-API.filterArray = (array: Array<any>) => Array.from(new Set(array.map(item => JSON.stringify(item)))).map(json => JSON.parse(json))
+API.filterArray = (array: Array<Object>) => Array.from(new Set(array.map(item => JSON.stringify(item)))).map(json => JSON.parse(json))
+
+API.filterDatalist = (datalist: iDataListItem[]) => Array.from(
+	datalist.reduce((m, item) => m.set(item.name, item), new Map()).values()
+)
 
 export default API;
 
@@ -256,11 +261,9 @@ export const setTaxon = async function (taxon: LookupTaxon, setState: Function) 
 		taxon = { id: parseInt(taxonName), name: taxonName, commonName: taxonName, lookupSuccess: false };
 	}
 	setState((prevState: any) => {
-		const newState: any = { taxon };
+		const newState: Record<string, LookupTaxon | iDataListItem[]> = { taxon };
 		if (taxon.id > 0) {
-			let taxons = prevState.taxons;
-			taxons.push({ name: taxon.name, title: taxon.commonName });
-			newState['taxons'] = API.filterArray(taxons);
+			newState['taxons'] = saveDatalist(taxon.name, taxon.commonName, prevState.taxons, 'taxons')
 		}
 		return newState;
 	})
@@ -291,4 +294,14 @@ export const fillDateParams = ({ d1, d2, date_created, date_any = false }: {d1?:
 	if (!!d1) dateParams[`${datePrefix}d1`] = d1;
 	if (!!d2) dateParams[`${datePrefix}d2`] = d2;
 	return dateParams;
+}
+
+export const saveDatalist = (name: string, title = name, datalist: iDataListItem[], settingName: string): iDataListItem[] => {
+	console.dir(datalist)
+	if (name.trim().length > 2 && !datalist.some(item => item.name === name)) {
+		datalist.push({ name: name, title: title });
+		datalist = API.filterDatalist(datalist);
+		Settings.set(settingName, datalist);
+	}
+	return datalist;
 }

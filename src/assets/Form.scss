@@ -4,7 +4,7 @@
 			flex-wrap: wrap;
 			margin-bottom: .5rem;
 			&.heading {
-				>span {
+				> span {
 					font-weight: bold;
 				}
 			}
@@ -13,12 +13,22 @@
 			}
 			> .form-control {
 				flex: 1 1 50%;
+				@media screen and (max-width: 640px) {
+					&.fc-checkbox {
+						flex: 1 1 0;
+					}
+				}
+				textarea,
 				select,
 				input:not([type='checkbox']) {
-					width: 250px;
+					min-width: 250px;
+					width: calc(100% - 3em);
 					max-width: 80vw;
 					box-sizing: content-box;
 					padding: 1px 2px;
+				}
+				textarea {
+					min-height: 10em;
 				}
 			}
 		}

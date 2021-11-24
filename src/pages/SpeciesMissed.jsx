@@ -3,7 +3,7 @@ import React from 'react'
 import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import API from '../mixins/API';
+import API, { saveDatalist } from '../mixins/API';
 import Settings from "../mixins/Settings";
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
@@ -42,12 +42,11 @@ export default class SpeciesMissed extends Module {
 	}
 
 	storageHandler() {
-		let users = this.state.users;
-		users.push({ name: this.state.user_id, title: this.state.user_id });
-		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
-		Settings.set('users', filteredUsers);
 		Settings.set('taxons', this.state.taxons);
-		return { users: filteredUsers };
+		const state = {};
+		state.users = saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users');
+		state.projects = saveDatalist(this.state.project_id, this.state.projects, 'projects')
+		return state;
 	}
 	setFilename() {
 		let filename='';

@@ -1,8 +1,9 @@
 import React from 'react'
 import Page from '../mixins/Page';
 import Settings from "../mixins/Settings";
-import {FormControl} from '../mixins/Form/FormControl';
+import {FormControl, FormControlMultiline} from '../mixins/Form/FormControl';
 import defaultPlaces from '../assets/places.json';
+import defaultProjects from '../assets/projects.json'
 import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
@@ -16,7 +17,10 @@ export default class UserSettings extends Module {
 			loadingTitle: null,
 			error: null,
 		};
-		this.initSettings(["default_place", "default_language"], this.state);
+		this.initSettings(["default_place", "default_language", 
+			"projects", "users", "taxons"], this.state, {
+			"projects": defaultProjects
+		});
 		this.updateState = (state) => this.setState(state);
 	}
 
@@ -37,6 +41,16 @@ export default class UserSettings extends Module {
 		this.setState({loadingTitle: null});
 		super.changeHandler(e);
 	}
+	changeMultilineHandler = (e) => {
+		let newState = { error: null };
+		newState[e.target.name] = e.target.value.trim().split('\n').filter(s => s.trim().length > 2).map(s => {
+			const [ name, title ] = s.trim().split(/(?<=^(?:\S|[^:])+):\s/);
+			return {name, title: title || name}
+		})
+		Settings.set(e.target.name, newState[e.target.name]);
+		this.setState(newState);
+	}
+
 
 	render() {
 		return (
@@ -57,6 +71,33 @@ export default class UserSettings extends Module {
 					<FormControl label={I18n.t("Язык по умолчанию")} comment={I18n.t("Оставьте пустым для использования языка из настроек браузера")} name="default_language"
 					value={this.state.default_language} onChange={this.changeHandler}
 					/>
+					<FormControlMultiline
+						name='projects'
+						label={I18n.t("Сохранённые проекты")}
+						value={this.state.projects}
+						handler={this.changeMultilineHandler}
+							comment={<>{I18n.t("Записи разделяются переводом строки.")}<br />{I18n.t("Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.")}</>}
+					/>
+					<FormControlMultiline
+						name='users'
+						label={I18n.t("Сохранённые пользователи")}
+						value={this.state.users}
+						handler={this.changeMultilineHandler}
+							comment={I18n.t("Записи разделяются переводом строки.")}
+					/>
+					<FormControlMultiline
+						name='taxons'
+						label={I18n.t("Сохранённые таксоны")}
+						value={this.state.taxons}
+						handler={this.changeMultilineHandler}
+							comment={<>{I18n.t("Записи разделяются переводом строки.")}<br />{I18n.t("Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.")}</>}
+					/>
+{/* 					<FormControlMultiline
+						name='places'
+						label={I18n.t("Сохранённые места")}
+						value={this.state.places}
+						handler={this.changeMultilineHandler}
+					/> */}
 					</fieldset>
 					</Form>
 					<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />

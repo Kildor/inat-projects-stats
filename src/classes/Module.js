@@ -1,6 +1,11 @@
 import React from 'react'
 import Settings from "../mixins/Settings";
 import settings from '../assets/settings.json';
+import defaultProjects from '../assets/projects.json';
+
+const defaults = {
+	projects: defaultProjects
+}
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
@@ -23,8 +28,9 @@ export default class extends React.Component {
 	}
 	initSettings(settingsList, thisState, defaultValues = {}) {
 		settingsList.forEach(state => {
-			const setting = settings[state] || { setting: state, save: false, default: defaultValues[state] || ""};
-			thisState[state] = setting.save ? Settings.get(state, setting.default) : setting.default;
+			const setting = settings[state] || { setting: state, save: false};
+			const defValue = defaults[state] || defaultValues[state] || setting.default || "";
+			thisState[state] = setting.save ? Settings.get(state, defValue) : defValue;
 			if (!!setting.values) {
 				if (!this.values) this.values={};
 				this.values[state] = new Map(Object.entries(setting.values));
@@ -38,7 +44,7 @@ export default class extends React.Component {
 	changeHandler(e) {
 		let newState = { error: null };
 		newState[e.target.name] = e.target.value.toLowerCase();
-		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
+		if (!!settings[e.target.name] && newState[e.target.name].trim().length > 1 && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 
