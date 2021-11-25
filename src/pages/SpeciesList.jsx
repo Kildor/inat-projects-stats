@@ -3,8 +3,7 @@ import React from 'react'
 import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import API, { fillDateParams } from '../mixins/API';
-import Settings from "../mixins/Settings";
+import API, { fillDateParams, saveDatalist } from '../mixins/API';
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
@@ -68,11 +67,10 @@ export default class extends Module {
 	}
 
 	storageHandler() {
-		let users = this.state.users;
-		users.push({ name: this.state.user_id, title: this.state.user_id });
-		const filteredUsers = Array.from(new Set(users.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
-		Settings.set('users', filteredUsers);
-		return { users: filteredUsers };
+		return {
+			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+		};
 	}
 
 	render() {

@@ -9,6 +9,7 @@ import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
+import API, { saveDatalist } from '../mixins/API';
 
 export default class UserSettings extends Module {
 	constructor(props) {
@@ -29,12 +30,10 @@ export default class UserSettings extends Module {
 	}
 
 	storageHandler() {
-		let projects = this.state.projects;
-		if (!this.state.project_id) return;
-		projects.push({ name: this.state.project_id, title: this.state.project_id });
-		const filteredProjects = Array.from(new Set(projects.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
-		Settings.set('projects', filteredProjects);
-		return {projects: filteredProjects };
+		return {
+			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+		};
 	}
 
 	changeHandler = (e) => {
@@ -43,10 +42,10 @@ export default class UserSettings extends Module {
 	}
 	changeMultilineHandler = (e) => {
 		let newState = { error: null };
-		newState[e.target.name] = e.target.value.trim().split('\n').filter(s => s.trim().length > 2).map(s => {
+		newState[e.target.name] = API.filterDatalist(e.target.value.trim().split('\n').filter(s => s.trim().length > 2).map(s => {
 			const [ name, title ] = s.trim().split(/(?<=^(?:\S|[^:])+):\s/);
 			return {name, title: title || name}
-		})
+		}));
 		Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}

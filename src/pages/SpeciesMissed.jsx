@@ -8,7 +8,6 @@ import Settings from "../mixins/Settings";
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
-import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
@@ -20,7 +19,7 @@ export default class SpeciesMissed extends Module {
 		super(props);
 		this.state = this.initDefaultSettings();
 		this.state.unobserved_by_user_id = '';
-		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users","taxon","taxons"], this.state);
+		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users", "projects", "taxon","taxons"], this.state);
 		this.updateState = this.setState.bind(this);
 	}
 
@@ -43,10 +42,10 @@ export default class SpeciesMissed extends Module {
 
 	storageHandler() {
 		Settings.set('taxons', this.state.taxons);
-		const state = {};
-		state.users = saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users');
-		state.projects = saveDatalist(this.state.project_id, this.state.projects, 'projects')
-		return state;
+		return {
+			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+		};
 	}
 	setFilename() {
 		let filename='';
@@ -70,7 +69,7 @@ export default class SpeciesMissed extends Module {
 						value={this.state.unobserved_by_user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
 					<FormControl label={I18n.t("Id или имя проекта для сравнения")} type='text' name='project_id' onChange={this.changeHandler}
-						value={this.state.project_id} list={defaultProjects} />
+						value={this.state.project_id} list={this.state.projects} />
 					<FormControl label={I18n.t("Id или имя пользователя для сравнения")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>

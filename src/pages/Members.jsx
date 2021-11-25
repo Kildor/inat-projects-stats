@@ -1,7 +1,6 @@
 import React from 'react'
 import Page from '../mixins/Page';
-import API from '../mixins/API';
-import Settings from "../mixins/Settings";
+import API, { saveDatalist } from '../mixins/API';
 import {FormControl, FormControlCSV} from '../mixins/Form/FormControl';
 import defaultProjects from '../assets/projects.json';
 import Loader from '../mixins/Loader';
@@ -31,12 +30,9 @@ export default class extends Module {
 		this.setState({filename: filename});
 	}
 	storageHandler() {
-		let projects = this.state.projects;
-		if (!this.state.project_id) return;
-		projects.push({ name: this.state.project_id, title: this.state.project_id });
-		const filteredProjects = Array.from(new Set(projects.map(u => JSON.stringify(u)))).map(json => JSON.parse(json))
-		Settings.set('projects', filteredProjects);
-		return {projects: filteredProjects };
+		return {
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+		};
 	}
 
 	render() {
