@@ -7,7 +7,6 @@ import API, { fillDateParams, saveDatalist } from '../mixins/API';
 import Loader from '../mixins/Loader';
 import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
-import defaultProjects from '../assets/projects.json'
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import {FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect} from '../mixins/Form/FormControl';
@@ -18,7 +17,7 @@ export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
-		this.initSettings(["project_id", "user_id", "place_id", "limit", "species_only", "quality_grade", "contribution", "users", "d1", "d2", "date_created", "date_any"],this.state, {
+		this.initSettings(["project_id", "user_id", "place_id", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "d1", "d2", "date_created", "date_any"],this.state, {
 			date_any: true
 		});
 	}
@@ -81,7 +80,7 @@ export default class extends Module {
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
-							value={this.state.project_id} list={defaultProjects} />
+							value={this.state.project_id} list={this.state.projects} />
 						<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" >
 						</FormControl>

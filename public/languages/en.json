@@ -87,7 +87,7 @@
 		"Список утилит": "List of utilities",
 		"Статус наблюдения": "Observation status",
 		"Страница не найдена": "Page not found",
-		"Таксон": "Taxa",
+		"Таксон": "Taxon",
 		"Только исследовательского уровня": "Research grade only",
 		"Требуется идентификация": "Needs ID",
 		"Успешно": "Success",
@@ -107,9 +107,14 @@
 		"Можно оставить пустым.": "You can leave it empty",
 		"Настройки сохранены": "Settings are saved",
 		"За всё время": "All the time",
-		"Не требует повторного скачивания наблюдений": "Do not require redownload the observations",
+		"Не требует повторного скачивания наблюдений": "Does not require redownloading of the observations",
 		"Показывать дискуссии": "Show only discussions",
 		"Проверяемые наблюдения": "Verifiable observations",
+		"Сохранённые пользователи": "Saved users",
+		"Сохранённые проекты": "Saved projects",
+		"Сохранённые таксоны": "Saved taxons",
+		"Записи разделяются переводом строки.": "Entries are separated by linebreak",
+		"Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.": "First the ID, then, separated by a colon and space, the displayed name",
 		"": ""
 	}
 }

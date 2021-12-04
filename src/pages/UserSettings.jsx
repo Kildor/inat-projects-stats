@@ -9,7 +9,7 @@ import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import Loader from '../mixins/Loader';
 import Error from '../mixins/Error';
-import API, { saveDatalist } from '../mixins/API';
+import API from '../mixins/API';
 
 export default class UserSettings extends Module {
 	constructor(props) {
@@ -29,12 +29,12 @@ export default class UserSettings extends Module {
 		this.setState({ loadingTitle: I18n.t("Настройки сохранены") });
 	}
 
-	storageHandler() {
-		return {
-			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
-			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
-		};
-	}
+	// storageHandler() {
+	// 	return {
+	// 		users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
+	// 		projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+	// 	};
+	// }
 
 	changeHandler = (e) => {
 		this.setState({loadingTitle: null});
