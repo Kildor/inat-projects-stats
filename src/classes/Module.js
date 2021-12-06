@@ -44,7 +44,7 @@ export default class extends React.Component {
 	changeHandler(e) {
 		let newState = { error: null };
 		newState[e.target.name] = e.target.value.toLowerCase();
-		if (!!settings[e.target.name] && newState[e.target.name].trim().length > 1 && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
+		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 
