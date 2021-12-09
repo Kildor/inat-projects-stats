@@ -5,7 +5,6 @@ import '../assets/Species.scss';
 
 import API, { fillDateParams, saveDatalist } from '../mixins/API';
 import Loader from '../mixins/Loader';
-import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
@@ -75,7 +74,7 @@ export default class extends Module {
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title={I18n.t("Виды проекта")} className='page-listSpecies'>
+			<Page title={I18n.t("Виды проекта")} className='page-listSpecies' infoText={I18n.t("Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.")}>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
@@ -103,9 +102,6 @@ export default class extends Module {
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
-				<Note>
-					{I18n.t("Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.")}
-				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

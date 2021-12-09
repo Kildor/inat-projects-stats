@@ -1,13 +1,15 @@
-import React, { ReactChildren, useState } from 'react'
+import React, { memo, ReactChildren } from 'react'
 import I18n from '../classes/I18n';
+import '../assets/Note.scss'
+import { useToggler } from './hooks';
 
-export default ({defCollapsed=true, children}: {defCollapsed: boolean, children: ReactChildren})=>{
-	const [collapsed, setCollapsed] = useState(defCollapsed);
+export const Note = memo(({defCollapsed=true, children}: {defCollapsed?: boolean, children: ReactChildren})=>{
+	const [collapsed, setCollapsed] = useToggler(defCollapsed);
 	return (
-		<p className={'note ' + (collapsed ? 'collapsed' : '')}>
-			<strong onClick={() => setCollapsed(!collapsed)}>{I18n.t("Описание работы")}:</strong><br />
-			{children}
-		</p>
+		<div className={'note ' + (collapsed ? 'collapsed' : '')}>
+			<span role='img' className='icon' aria-label={I18n.t("Описание работы")} title={I18n.t("Описание работы")} onClick={setCollapsed}>ℹ️</span>
+			<p>{children}</p>
+		</div>
 
 	);
-}
+});

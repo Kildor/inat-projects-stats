@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 import modules from '../../assets/modules.json';
 import I18n, { applicationLanguage } from '../../classes/I18n';
 import { iLanguage } from '../../interfaces/LanguageInterface';
 import { iModule } from '../../interfaces/ModulesInterface';
+import { useToggler } from '../hooks';
 import { LanguageContext } from '../LanguageContext';
 			
 type tState = React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,15 +31,14 @@ const ListLinkItem = (module: iModule, setstate: any): JSX.Element => {
 		<Link onClick={() => {setstate(false);}} to={module.url}>{I18n.t(title as string)}</Link>
 	</li>;
 };
-			
-			
-const HeaderMenuWrapper = ({title, className, children} : {title: string; className: string; children: any } ) => {
-	const [state, setState] = useState(false);
-	const Children = children;
+
+
+const HeaderMenuWrapper = ({title, className, children: Children} : {title: string; className: string; children: any } ) => {
+	const [open, setOpen] = useToggler(false);
 	return (
 		<div className={'header-menu menu-'+className}>
-			<button className={'button btn-menu ' + (state ? 'open' : '')} onClick={() => setState(prevState => !prevState)}>{title}</button>
-				<Children setState={setState} />
+			<button className={'button btn-menu ' + (open ? 'open' : '')} onClick={setOpen}>{title}</button>
+				<Children setState={setOpen} />
 		</div>
 	)
 }

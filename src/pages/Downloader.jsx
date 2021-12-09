@@ -4,7 +4,6 @@ import Page from "../mixins/Page";
 import React from 'react'
 import Form from "../mixins/Form/Form";
 import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/Form/FormControl";
-import Note from "../mixins/Note";
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
 import API, { fillDateParams, saveDatalist } from "../mixins/API";
@@ -27,6 +26,12 @@ export default class Downloader extends Module {
 		this.updateState = (state)=>this.setState(state);
 	}
 
+	infoText = <>
+		{I18n.t("В поле таксона можно вводить как цифровой идентификатор, так и название (латинское или русское).")}
+		{I18n.t("Если введён не ID, скрипт, после потери полем фокуса ввода, попытается найти таксон в базе iNaturalist, и подставить наиболее подходящий (по мнению айната) вариант.")}
+		<br />{I18n.t("В поле места требуется вводить только цифровой идентификатор.")}
+		<br />{I18n.t("В поле проекта можно ввести либо цифровой, либо строковый id (можно скопировать из адресной строки браузера).")}
+	</>
 	async counter() {
 		this.setState({ loadingTitle: I18n.t("Загрузка наблюдений") });
 		const { project_id, taxon, place_id, user_id, limit, additional} = this.state;
@@ -82,9 +87,8 @@ export default class Downloader extends Module {
 
 
 	render() {
-		// const disabled = this.state.loading || (this.state.project_id === '' && this.state.taxon_id === '');
 		return (
-			<Page title={I18n.t("Скачивание наблюдений")}>
+			<Page title={I18n.t("Скачивание наблюдений")} infoText={this.infoText}>
 				<Form onSubmit={this.submitHandler} disabled={this.isDisabled()}>
 					<fieldset className='noborder'>
 						<FormControlTaxon className='heading'value={this.state.taxon} list={this.state.taxons} listName="taxons"
@@ -125,13 +129,6 @@ export default class Downloader extends Module {
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
-				<Note defCollapsed={true}>
-					{I18n.t("В поле таксона можно вводить как цифровой идентификатор, так и название (латинское или русское).")}
-					{I18n.t("Если введён не ID, скрипт, после потери полем фокуса ввода, попытается найти таксон в базе iNaturalist, и подставить наиболее подходящий (по мнению айната) вариант.")}
-					<br/>{I18n.t("В поле места требуется вводить только цифровой идентификатор.")}
-					<br/>{I18n.t("В поле проекта можно ввести либо цифровой, либо строковый id (можно скопировать из адресной строки браузера).")}
-
-				</Note>
 				{/* <Result {...this.state}>
 					<ObservationsList observations={this.state.data} csv={this.state.csv} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
 				</Result> */}

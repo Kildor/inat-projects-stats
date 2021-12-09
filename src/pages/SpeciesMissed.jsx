@@ -6,7 +6,6 @@ import '../assets/Species.scss';
 import API, { saveDatalist } from '../mixins/API';
 import Settings from "../mixins/Settings";
 import Loader from '../mixins/Loader';
-import Note from '../mixins/Note';
 import TaxonsList from '../mixins/TaxonsList';
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
@@ -21,8 +20,12 @@ export default class SpeciesMissed extends Module {
 		this.state.unobserved_by_user_id = '';
 		this.initSettings(["project_id","user_id","csv","limit", "species_only","quality_grade", "users", "projects", "taxon","taxons"], this.state);
 		this.updateState = this.setState.bind(this);
+		this.swapStateValues = this.swapStateValues.bind(this);
 	}
 
+	infoText = <TranslateJSX replace={[<br />]}>
+		pages.species-missed.note.text
+	</TranslateJSX>
 	async counter () {
 		const {project_id, taxon, user_id, limit, unobserved_by_user_id} = this.state;
 		let customParams = {};
@@ -58,21 +61,30 @@ export default class SpeciesMissed extends Module {
 		this.setState({ filename: filename.replaceAll(/\s+/g, '_') });
 
 	}
+
+	swapStateValues(state1, state2) {
+		this.setState(prevState => ({
+			[state1]: prevState[state2],
+			[state2]: prevState[state1],
+		}));
+	}
+
 	render() {
 		const disabled = this.state.loading || (this.state.unobserved_by_user_id === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
-			<Page title={I18n.t("Пропущенные виды")} className='page-listSpecies'>
+			<Page title={I18n.t("Пропущенные виды")} className='page-listSpecies' infoText={this.infoText}>
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 				<fieldset>
 					<legend>{I18n.t("Фильтрация")}</legend>
 					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='unobserved_by_user_id' onChange={this.changeHandler}
 						value={this.state.unobserved_by_user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
-					<FormControl label={I18n.t("Id или имя проекта для сравнения")} type='text' name='project_id' onChange={this.changeHandler}
-						value={this.state.project_id} list={this.state.projects} />
+						<span tabIndex='0' className='icon-swap' role='button' onClick={() => { this.swapStateValues('unobserved_by_user_id', 'user_id'); return false}} >⇅</span>
 					<FormControl label={I18n.t("Id или имя пользователя для сравнения")} type='text' name='user_id' onChange={this.changeHandler}
 						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 					</FormControl>
+					<FormControl label={I18n.t("Id или имя проекта для сравнения")} type='text' name='project_id' onChange={this.changeHandler}
+						value={this.state.project_id} list={this.state.projects} />
 					<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
 						value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
 						updateState={this.updateState}
@@ -92,11 +104,6 @@ export default class SpeciesMissed extends Module {
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 		</Form>
-				<Note>
-					<TranslateJSX replace={[<br/>]}>
-						pages.species-missed.note.text
-					</TranslateJSX>
-				</Note>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

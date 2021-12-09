@@ -1,96 +1,116 @@
-	form {
-		label {
-			display: flex;
-			flex-wrap: wrap;
-			margin-bottom: .5rem;
-			&.heading {
-				> span {
-					font-weight: bold;
-				}
-			}
+form {
+	label {
+		display: flex;
+		flex-wrap: wrap;
+		margin-bottom: 0.5rem;
+		&.heading {
 			> span {
-				flex: 1 1 50%;
-			}
-			> .form-control {
-				flex: 1 1 50%;
-				@media screen and (max-width: 640px) {
-					&.fc-checkbox {
-						flex: 1 1 0;
-					}
-				}
-				textarea,
-				select,
-				input:not([type='checkbox']) {
-					min-width: 250px;
-					width: calc(100% - 3em);
-					max-width: 80vw;
-					box-sizing: content-box;
-					padding: 1px 2px;
-				}
-				textarea {
-					min-height: 10em;
-				}
+				font-weight: bold;
 			}
 		}
-		legend {
-			font-weight: 500;
-			font-size: 1.01em;
-			padding: 0 5px;
-			background: #fff;
-			box-shadow: 1px 1px 1.5px 1px #ccc, 5px 0 #fff, -5px 0 #fff;
-			border-radius: 3px;
-			}
-		> fieldset {
-			display: block;
-			border: 1px solid #666;
-			border-radius: 5px;
-			margin: 0;
-			padding: 0 15px;
-			> fieldset {
-				border: solid #ddd;
-				border-width: 1px 0;
-				margin: 0 -5px 1em;
-				padding: 0 15px;
-				&.noborder {
-					border: none;
-					padding: 5px 15px 0;
-					margin-bottom: 0;
+		> span {
+			flex: 1 1 50%;
+		}
+		> .form-control {
+			flex: 1 1 50%;
+			@media screen and (max-width: 640px) {
+				&.fc-checkbox {
+					flex: 1 1 0;
 				}
-				fieldset.noborder {
-					border: none;
-					padding: 0;
-					margin: 0;
-				}
-				
 			}
-		}
-		.info {
-			font-size: .95em;
-			font-style: italic;
-		}
-
-		.btn-small {
-			font-size: .9em;
-			padding: 0;
-			border: none;
-			background: transparent;
-			margin-left: .5em;
-		}
-		.btn-submit {
-			margin: 1rem auto;
-			display: block;
-			color: #fff;
-			text-shadow: 1px 1px 1px #000;
-			border: 1px solid rgb(8, 88, 8);
-			border-radius: 4px;
-			background: linear-gradient(to bottom, rgb(10, 110, 10), rgb(8, 88, 8));
-			padding: 3px 1em;
-
-			&:disabled {
-			background: linear-gradient(to bottom, rgb(196, 196, 196), rgb(100, 100, 100));
-			border: 1px solid rgb(88, 88, 88);
-
+			textarea,
+			select,
+			input:not([type="checkbox"]) {
+				min-width: 250px;
+				width: calc(100% - 3em);
+				max-width: 80vw;
+				box-sizing: content-box;
+				padding: 1px 2px;
 			}
-
+			textarea {
+				min-height: 10em;
+			}
 		}
 	}
+	legend {
+		font-weight: 500;
+		font-size: 1.01em;
+		padding: 0 5px;
+		background: #fff;
+		box-shadow: 1px 1px 1.5px 1px #ccc, 5px 0 #fff, -5px 0 #fff;
+		border-radius: 3px;
+	}
+	> fieldset {
+		display: block;
+		border: 1px solid #666;
+		border-radius: 5px;
+		margin: 0;
+		padding: 0 15px;
+		> fieldset {
+			border: solid #ddd;
+			border-width: 1px 0;
+			margin: 0 -5px 1em;
+			padding: 0 15px;
+			&.noborder {
+				border: none;
+				padding: 5px 15px 0;
+				margin-bottom: 0;
+			}
+			fieldset.noborder {
+				border: none;
+				padding: 0;
+				margin: 0;
+			}
+		}
+	}
+	.info {
+		font-size: 0.95em;
+		font-style: italic;
+	}
+
+	.btn-small {
+		font-size: 0.9em;
+		padding: 0;
+		border: none;
+		background: transparent;
+		margin-left: 0.5em;
+	}
+	.btn-submit {
+		margin: 1rem auto;
+		display: block;
+		color: #fff;
+		text-shadow: 1px 1px 1px #000;
+		border: 1px solid rgb(8, 88, 8);
+		border-radius: 4px;
+		background: linear-gradient(to bottom, rgb(10, 110, 10), rgb(8, 88, 8));
+		padding: 3px 1em;
+
+		&:disabled {
+			background: linear-gradient(to bottom, rgb(196, 196, 196), rgb(100, 100, 100));
+			border: 1px solid rgb(88, 88, 88);
+		}
+	}
+
+	.icon-swap {
+		background: #fff;
+		font-weight: bold;
+		box-shadow: 0 0 1px #000;
+		border-radius: 50%;
+		width: 1.3em;
+		height: 1.3em;
+		text-align: center;
+		right: 49.4%;
+		position: absolute;
+		margin-top: -0.8em;
+		// margin: -0.3em auto 0;
+		display: block;
+		// position: relative;
+		z-index: 3;
+		cursor: pointer;
+			// @media screen and (max-width: 640px) {
+			// 	position: absolute;
+			// 	margin: -.8em 0 0 0;
+			// }
+
+	}
+}
