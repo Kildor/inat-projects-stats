@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactChildren } from 'react'
+import React, { FunctionComponent, memo, ReactChildren } from 'react'
 import { Link } from 'react-router-dom';
 
 import '../assets/pages/Page.scss';
@@ -13,6 +13,7 @@ interface iHeader {
 }
 interface iPage {
 	title?: string
+	children: ReactChildren | JSX.Element
 	pageTitle?: string
 	backlink?: string | false
 	className?: string
@@ -20,7 +21,7 @@ interface iPage {
 	defCollapsed?: boolean | true
 }
 
-const Header = ({title, backlink, infoText, defCollapsed}: iHeader) => {
+const Header = memo(({title, backlink, infoText, defCollapsed}: iHeader) => {
 	if (!title && !backlink) return null;
 	return (
 		<header className={'page-title' + (!title?' no-title':'')}>
@@ -29,8 +30,9 @@ const Header = ({title, backlink, infoText, defCollapsed}: iHeader) => {
 			{!!infoText && <Note defCollapsed={defCollapsed}>{infoText}</Note>}
 		</header>
 	);
-}
-export const Page: FunctionComponent<iPage> = ({title, children, backlink='/', className, pageTitle=title, infoText, defCollapsed})=>{
+});
+
+export const Page: FunctionComponent<iPage> = memo(({title, children, backlink='/', className, pageTitle=title, infoText, defCollapsed})=>{
 	if (!!pageTitle) document.title = pageTitle;
 	else if(!!title) document.title = title;
 
@@ -42,5 +44,6 @@ export const Page: FunctionComponent<iPage> = ({title, children, backlink='/', c
 			</div>
 		</div>
 	)
-}
+});
+
 export default Page;

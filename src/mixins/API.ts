@@ -305,3 +305,14 @@ export const saveDatalist = (name: string, title = name, datalist: iDataListItem
 	}
 	return datalist;
 }
+
+export const getTitleForUserRole = (role: string | null): string => {
+	switch (role) {
+		case 'manager': 
+			return I18n.t('Менеджер проекта');
+		case 'curator':
+			return I18n.t('Куратор');
+	}
+
+	return '';
+}

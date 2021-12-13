@@ -16,6 +16,7 @@ const Changelog = ({ changes } : {changes: Array<iChanges>}) => <dl className='c
 		<dd>{change.changes}</dd>
 	</React.Fragment> )}
 </dl>
+
 const Content = () => {
 	const { code } = useContext(LanguageContext);
 	switch (code) {

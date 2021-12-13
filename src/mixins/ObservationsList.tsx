@@ -20,14 +20,17 @@ export interface ObservationsListProps {
 interface ActivitiesListProps {
 	current_ids: boolean|false
 	show_discussion: boolean|false
+	activityFilter: FilterFunction
 	activities: Array<ObservationComment | ObservationIdentification >
+}
+interface FilterFunction {
+	(act: ObservationComment | ObservationIdentification) : boolean
 }
 
 
 const ActivityItem = ({ activity: { id, created, user: { login }, comment }, className, children}: { activity: ObservationComment | ObservationIdentification, className: string, children?: React.ReactNode}) =>{
 	return (
 		<li key={id} className={className}>
-			{/* { isIdentification ? <span role='img' aria-label='Identification'>👁‍🗨</span> : <span role='img' aria-label='Comment'>💬</span> } */}
 			{DateTimeFormat.format(created)}, <strong>{login}:</strong> {children}<br />
 			<div className="comment">
 				{comment}
@@ -44,28 +47,22 @@ const ActivityIdentification = ({ activity }: { activity: ObservationIdentificat
 		<a className='taxon-link' href={'https://www.inaturalist.org/taxa/'+activity.taxon.id}>{activity.taxon.commonName} <em>{activity.taxon.name}</em></a>
 	</ActivityItem>
 }
+
 const ActivityComment = ({ activity }: { activity: ObservationComment})=>{
 	return <ActivityItem className='comment' activity={activity}/>
 }
 
-interface FilterFunction {
-	(act: ObservationComment | ObservationIdentification) : boolean
-}
 const getFilterForActivities = (current_ids = false, show_discussion = false): FilterFunction => {
 	if (current_ids) {
-		if (show_discussion) {
-			return (act) => ('current' in act) && act.current && !!act.comment
-		}
-		return (act) => ('current' in act) && act.current
+		return (act) => !('current' in act) || act.current
 	} else if (show_discussion) {
 		return (act) => !!act.comment
 	}
 	return (act) => true
 }
 
-const ActivityList = ({activities, current_ids, show_discussion } : ActivitiesListProps ) => {
-	const filter = getFilterForActivities(current_ids, show_discussion);
-	activities = activities.filter(filter);
+const ActivityList = ({activities, current_ids, show_discussion, activityFilter } : ActivitiesListProps ) => {
+	activities = activities.filter(activityFilter);
 	if (activities.length === 0) return null;
 
 	return (
@@ -78,7 +75,8 @@ const ActivityList = ({activities, current_ids, show_discussion } : ActivitiesLi
 		</ul>
 	)
 }
-export const ObservationList =  ({ observations, csv, filename, current_ids, hide_activity, show_discussion }: ObservationsListProps) => {
+
+export const ObservationList = ({ observations, csv, filename, current_ids, hide_activity, show_discussion }: ObservationsListProps) => {
 	if (observations.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -89,22 +87,24 @@ export const ObservationList =  ({ observations, csv, filename, current_ids, hid
 	} else {
 		let url = `https://www.inaturalist.org/observations/`;
 		list = <ol className='taxons'>{observations.map(obs => {
-			let className = 'observation quality-'+obs.quality_grade;
+			let className = 'observation quality-' + obs.quality_grade;
 			if (!!obs.commonName) className += ' has-common-name';
-		return (<li key={obs.id} className={className}>
-			<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
-				{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
-			</a> <span className={'location' + (obs.geoprivacy !== null ? ' location-' + obs.geoprivacy : '')}>({obs.location}, {DateTimeFormat.format(obs.observed)})</span>
-			{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} show_discussion={show_discussion} />}
-		</li>)})}</ol>;
+
+			return (<li key={obs.id} className={className}>
+				<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
+					{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
+				</a> <span className={'location' + (obs.geoprivacy !== null ? ' location-' + obs.geoprivacy : '')}>({obs.location}, {DateTimeFormat.format(obs.observed)})</span>
+				{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} show_discussion={show_discussion} activityFilter={getFilterForActivities(current_ids, show_discussion)} />}
+			</li>)
+		})}</ol>;
 
 	}
 
-	return(
+	return (
 		<>
 			<p>{I18n.t("Наблюдений:")} {observations.length}</p>
 			{list}
-			</>
+		</>
 	)
 }
 

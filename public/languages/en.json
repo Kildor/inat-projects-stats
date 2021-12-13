@@ -115,6 +115,8 @@
 		"Сохранённые таксоны": "Saved taxons",
 		"Записи разделяются переводом строки.": "Entries are separated by linebreak",
 		"Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.": "First the ID, then, separated by a colon and space, the displayed name",
+		"Менеджер проекта": "Project Manager",
+		"Куратор": "Curator",
 		"": ""
 	}
 }

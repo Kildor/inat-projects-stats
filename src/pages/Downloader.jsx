@@ -119,11 +119,11 @@ export default class Downloader extends Module {
 						<p className='info'>{I18n.t("Не требует повторного скачивания наблюдений")}</p>
 						{
 							[
-								{ label: I18n.t("Не отображать отозванные определения"), name: 'current_ids' },
-								{ label: I18n.t("Показывать дискуссии"), name: 'show_discussion' },
+								{ label: I18n.t("Не отображать отозванные определения"), name: 'current_ids', hidden: this.state.hide_activity || this.state.show_discussion  },
+								{ label: I18n.t("Показывать дискуссии"), name: 'show_discussion', hidden: this.state.hide_activity || this.state.current_ids },
 								{ label: I18n.t("Показывать только наблюдения"), name: 'hide_activity' },
-							].map(({ label, name }) => (
-								<FormControlCheckbox key={name} label={label} name={name} onChange={this.checkHandler} checked={this.state[name]} />
+							].map(({ label, name, hidden }) => (
+								<FormControlCheckbox key={name} label={label} name={name} onChange={this.checkHandler} checked={this.state[name]} className={hidden ? 'hidden' : null} />
 							))
 						}
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
