@@ -17,7 +17,10 @@
 		"В поле таксона можно вводить как цифровой идентификатор, так и название (латинское или русское).": "In the taxon field, you can enter either a numeric id or a name (Latin or Russian).",
 		"Вернуться на главную": "Back to Home page",
 		"Виды проекта": "Project species",
+		"Вклад пользователя": "User contribution",
+		"Виды, встреченные пользователем": "Species observed by this user",
 		"Виды, встреченные только этим пользователем": "Species observed only by this user",
+		"Виды, не встреченные этим пользователем": "Species not observed by this user",
 		"Все": "All",
 		"Выводить в CSV": "CSV output",
 		"Выводить только виды": "Display only species",
@@ -106,7 +109,7 @@
 		"Используется для показа региональных имён таксонов": "Place preference for regional taxon common names",
 		"Можно оставить пустым.": "You can leave it empty",
 		"Настройки сохранены": "Settings are saved",
-		"За всё время": "All the time",
+		"За всё время": "For all the time",
 		"Не требует повторного скачивания наблюдений": "Does not require redownloading of the observations",
 		"Показывать дискуссии": "Show only discussions",
 		"Проверяемые наблюдения": "Verifiable observations",
@@ -115,6 +118,7 @@
 		"Сохранённые таксоны": "Saved taxons",
 		"Записи разделяются переводом строки.": "Entries are separated by linebreak",
 		"Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.": "First the ID, then, separated by a colon and space, the displayed name",
+		"Можно вводить несколько идентификаторов через запятую.": "You can enter multiple identifiers separated with commas.",
 		"": ""
 	}
 }

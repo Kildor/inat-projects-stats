@@ -57,6 +57,16 @@
 		}
 	},
 	"contribution": {"setting": "contribution",
+		"type": "multi",
+		"default": "0",
+		"save": true,
+		"values": {
+			"0": "Виды, встреченные пользователем",
+			"1": "Виды, встреченные только этим пользователем",
+			"2": "Виды, не встреченные этим пользователем"
+		}
+	},
+	"-contribution": {"setting": "contribution",
 		"type": "boolean",
 		"default": false,
 		"save": true

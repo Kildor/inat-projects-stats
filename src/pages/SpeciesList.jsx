@@ -8,7 +8,7 @@ import Loader from '../mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
 import Error from '../mixins/Error';
 import Form from '../mixins/Form/Form';
-import {FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect} from '../mixins/Form/FormControl';
+import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { DataControlsBlock } from '../mixins/Form/FormControlSets';
@@ -16,37 +16,54 @@ export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
-		this.initSettings(["project_id", "user_id", "place_id", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "d1", "d2", "date_created", "date_any"],this.state, {
+		this.state.additional = '';
+		this.initSettings(["project_id", "user_id", "place_id", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "d1", "d2", "date_created", "date_any"], this.state, {
 			date_any: true
 		});
 	}
 
-	async counter () {
-		const {project_id, user_id, place_id, limit, contribution } = this.state;
-		this.setState({ loadingTitle: I18n.t("Загрузка видов")});
-		let customParams = { ...fillDateParams(this.state)};
+	async counter() {
+		const { project_id, user_id, place_id, limit, contribution, species_only, additional } = this.state;
+		this.setState({ loadingTitle: I18n.t("Загрузка видов") });
+		let customParams = { ...fillDateParams(this.state) };
+
+		if (!!additional) {
+			additional.split('&').forEach(param => {
+				param = param.split('=');
+				if (param.length === 2) customParams[param[0]] = param[1];
+			});
+		}
+
 		if (limit > 0) customParams['limit'] = limit;
-		if (this.state.species_only) {
+		if (species_only) {
 			customParams['lrank'] = 'species';
 			customParams['hrank'] = 'species';
 		}
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		if (!!place_id) customParams['place_id'] = place_id;
 
-		let allTaxa = await API.fetchSpecies(project_id, contribution ? '' : user_id, null, null, false, this.setStatusMessage, customParams);
-		if (contribution && user_id !== '') {
+		console.dir(contribution)
+		let allTaxa = await API.fetchSpecies(project_id, contribution !== '0' ? '' : user_id, null, null, false, this.setStatusMessage, customParams);
+
+		if (contribution !== '0' && user_id !== '') {
 			this.setState({ loadingTitle: I18n.t("Загрузка видов пользователя") });
 			const userTaxa = await API.fetchSpecies(project_id, user_id, null, null, false, this.setStatusMessage, customParams);
-			if (userTaxa.total === 0) return [];
-
 			this.setState({ loadingTitle: I18n.t("Обработка загруженных данных") });
-			return [...userTaxa.ids].filter(id => {
-				return !allTaxa.ids.has(id) || allTaxa.objects.get(id).count === userTaxa.objects.get(id).count;
-			}).map(id => userTaxa.objects.get(id));
+			if (contribution === '1') {
+				if (userTaxa.total === 0) return [];
+				return [...userTaxa.ids].filter(id => {
+					return !allTaxa.ids.has(id) || allTaxa.objects.get(id).count === userTaxa.objects.get(id).count;
+				}).map(id => userTaxa.objects.get(id));
+			} else if (contribution === '2') {
+				return [...allTaxa.ids].filter(id => {
+					return !userTaxa.ids.has(id)
 
+				}).map(id => allTaxa.objects.get(id));
+
+			}
 		}
 
-		this.setState({loadingTitle: I18n.t("Обработка загруженных данных") });
+		this.setState({ loadingTitle: I18n.t("Обработка загруженных данных") });
 
 		return [...allTaxa.ids].map(id => allTaxa.objects.get(id));
 
@@ -54,13 +71,13 @@ export default class extends Module {
 
 	setFilename() {
 		let filename = "";
-		filename+=this.state.project_id+"-";
+		filename += this.state.project_id + "-";
 		if (!!this.state.user_id) {
-			filename+=this.state.user_id+"-";
+			filename += this.state.user_id + "-";
 			if (!!this.state.contribution && !!this.state.project_id) filename += "only-";
 		}
-		if (!!this.state.quality_grade) filename += "quality_"+this.state.quality_grade+"-";
-		filename+= "species.csv";
+		if (!!this.state.quality_grade) filename += "quality_" + this.state.quality_grade + "-";
+		filename += "species.csv";
 		this.setState({ filename: filename });
 	}
 
@@ -81,20 +98,21 @@ export default class extends Module {
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 							value={this.state.project_id} list={this.state.projects} />
 						<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
-							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" >
-						</FormControl>
-						<FormControlCheckbox label={I18n.t("Виды, встреченные только этим пользователем")} name='contribution' onChange={this.checkHandler}
+							comment={I18n.t("Можно вводить несколько идентификаторов через запятую.")}
+							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" />
+						<FormControlSelect label={I18n.t("Вклад пользователя")} name='contribution' onChange={this.changeHandler}
 							className={!!this.state.user_id ? '' : 'hidden'}
-							checked={this.state.contribution} >
-						</FormControlCheckbox>
+							value={this.state.contribution} values={this.getValues("contribution")}
+						/>
 						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' />
 						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
-							checked={this.state.species_only} >
-						</FormControlCheckbox>
+							checked={this.state.species_only} />
 						<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler}
 							value={this.state.quality_grade} values={this.getValues("quality_grade")}
 						/>
+						<FormControl label={I18n.t("Дополнительные параметры")} type='text' name='additional' onChange={this.changeHandler}
+							value={this.state.additional} ></FormControl>
 					</fieldset>
 					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} />
 					<fieldset>
@@ -102,7 +120,7 @@ export default class extends Module {
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
-				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
+				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
@@ -114,7 +132,7 @@ export default class extends Module {
 							date_any={this.state.date_any}
 							place_id={this.state.place_id}
 							project_id={this.state.project_id}
-							user_id={this.state.user_id}
+							user_id={this.state.contribution !== '2' && this.state.user_id}
 							csv={this.state.csv}
 							filename={this.state.filename} />
 					</div>
