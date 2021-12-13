@@ -45,7 +45,7 @@ export const FormControlRadio: FunctionComponent<FormControlRadioProps> = (props
 }
 export const FormControlSelect: FunctionComponent<FormControlSelectProps> = (props: FormControlSelectProps) => {
 	return (
-		<label>
+		<label className={props.className}>
 			<span>{props.label}</span>
 			<span className="form-control">
 				<select name={props.name} onChange={props.onChange} value={props.value}>
