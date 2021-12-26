@@ -74,8 +74,8 @@ export default class extends Module {
 
 	storageHandler() {
 		const state = {};
-		state.users = saveDatalist(this.state.user_id, this.state.users, 'users');
-		state.projects = saveDatalist(this.state.project_id, this.state.projects, 'projects')
+		state.users = saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users');
+		state.projects = saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
 		return state;
 	}
 
