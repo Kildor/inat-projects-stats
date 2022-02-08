@@ -36,11 +36,25 @@ export default class SpeciesMissed extends Module {
 			customParams['hrank'] = 'species';
 		}
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
-		customParams['unobserved_by_user_id'] = unobserved_by_user_id;
+
 		this.setState({ loadingTitle: I18n.t("Загрузка видов") });
+
+		// unobserved_by_user_id excludes all taxons, not only included to the project
+		if (!project_id) {
+			customParams['unobserved_by_user_id'] = unobserved_by_user_id;
+			const unobservedTaxa = await API.fetchSpecies(null, user_id, null, null, false, this.setStatusMessage, customParams);
+
+			return [...unobservedTaxa.ids].map(id => unobservedTaxa.objects.get(id));
+		}
+
 		const unobservedTaxa = await API.fetchSpecies(project_id, user_id, null, null, false, this.setStatusMessage, customParams);
 
-		return [...unobservedTaxa.ids].map(id => unobservedTaxa.objects.get(id));
+		this.setState({ loadingTitle: I18n.t("Загрузка видов пользователя") });
+		
+		const observedTaxa = await API.fetchSpecies(project_id, unobserved_by_user_id, null, null, false, this.setStatusMessage, customParams);
+
+
+		return [...unobservedTaxa.ids].filter(id => !observedTaxa.ids.has(id)).map(id => unobservedTaxa.objects.get(id));
 	}
 
 	storageHandler() {
