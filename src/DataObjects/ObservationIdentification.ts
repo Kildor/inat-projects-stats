@@ -7,7 +7,7 @@ import { DateTimeFormat } from "../mixins/API";
 
 class ObservationIdentification implements CSVConvertInterface, IdentificationInterface {
 	toCSV() {
-		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment+'' : ''}"`;
+		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}"`;
 	}
 	taxon: Taxon;
 	id: number;

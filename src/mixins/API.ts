@@ -297,7 +297,6 @@ export const fillDateParams = ({ d1, d2, date_created, date_any = false }: {d1?:
 }
 
 export const saveDatalist = (name: string, title = name, datalist: iDataListItem[], settingName: string): iDataListItem[] => {
-	console.dir(datalist)
 	if (name.trim().length > 2 && !datalist.some(item => item.name === name)) {
 		datalist.push({ name: name, title: title });
 		datalist = API.filterDatalist(datalist);

@@ -6,10 +6,7 @@ import Taxon from "./Taxon";
 import User from "./User";
 import { DateTimeFormat } from "../mixins/API";
 
-const getCSVHeader = () => {
-	let str = '';
-	return str+`ID\tName\tCommon name\tQuality grade\tData\tCoordinates\tLocation\tUser\n`
-}
+export const getCSVHeader = () => (`ID\tName\tCommon name\tQuality grade\tData\tCoordinates\tLocation\tUser\n`);
 
 class Observation implements CSVConvertInterface {
 	created: Date;
@@ -20,19 +17,17 @@ class Observation implements CSVConvertInterface {
 	taxon: Taxon;
 	user: User;
 	coordinates: Array<number> | null;
-	location: string|null|undefined;
+	location: string | null | undefined;
 	quality_grade: string;
 	geoprivacy: string;
 	activity: Array<ObservationComment | ObservationIdentification>;
-	toCSV(onlyObservations = false ) {
-		let str = '';	
-		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.quality_grade}\t${DateTimeFormat.format(this.created)}\t`
-			+ `${!!this.coordinates ? this.coordinates.toString():'coordinates missed'}${this.geoprivacy===null?'':' ('+this.geoprivacy+')'}\t"${this.location}"\t${this.user.fullName}`;
-		if (onlyObservations!==false) this.activity.forEach(activity=>{
-			str+=activity.toCSV();
-		})
-		return str;
 
+	toCSV(onlyObservations = false) {
+		let str = '';
+		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.quality_grade}\t${DateTimeFormat.format(this.created)}\t`
+			+ `${!!this.coordinates ? this.coordinates.toString() : 'coordinates missed'}${this.geoprivacy === null ? '' : ' (' + this.geoprivacy + ')'}\t"${this.location}"\t${this.user.fullName}`;
+		if (onlyObservations !== false) str += this.activity.reduce((prev, activity) => prev += activity.toCSV(), '');
+		return str;
 	}
 	constructor(jsonObservation: JSONObservationObject) {
 		this.id = jsonObservation.id;
@@ -46,16 +41,16 @@ class Observation implements CSVConvertInterface {
 		this.geoprivacy = jsonObservation.geoprivacy;
 		this.created = new Date(jsonObservation.created_at);
 		this.observed = new Date(jsonObservation.time_observed_at !== null ? jsonObservation.time_observed_at : jsonObservation.observed_on);
-		this.activity = new Array<ObservationIdentification | ObservationComment> ();
-		jsonObservation.identifications.forEach(ident=>{
+		this.activity = new Array<ObservationIdentification | ObservationComment>();
+
+		jsonObservation.identifications.forEach(ident => {
 			this.activity.push(new ObservationIdentification(ident))
 		});
-		jsonObservation.comments.forEach(item=>{
+		jsonObservation.comments.forEach(item => {
 			this.activity.push(new ObservationComment(item))
 		});
 		this.activity.sort((a, b) => +a.created - +b.created)
 	}
 }
 
-export {getCSVHeader};
 export default Observation;

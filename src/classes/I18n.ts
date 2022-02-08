@@ -1,7 +1,7 @@
 import { iLanguage } from "../interfaces/LanguageInterface";
 import Settings from "../mixins/Settings";
 
-const appLanguages: any = {
+const appLanguages: Record<string, iLanguage> = {
 	"en": { "language": "English", "code": "en" },
 	"ru": { "language": "Русский", "code": "ru" }
 };
@@ -16,11 +16,11 @@ let DICTIONARY = !!window.I18n && !!window.I18n.DICTIONARY ? window.I18n.DICTION
 const I18n = {
 	SETTING_NAME: 'LANGUAGE',
 	DICTIONARY,
-	t(key: string, replace: Array<string|number> = []) {
+	t(key: string, replace: Array<string | number> = []) {
 		key = DICTIONARY.hasOwnProperty(key) ? DICTIONARY[key] : key;
 		if (Array.isArray(replace)) {
 			replace.forEach((item, index) => {
-				key = key.replace(new RegExp("(\\{" + (index + 1) + "\\}|%" + (index + 1) + ")", 'g'), ''+item);
+				key = key.replace(new RegExp("(\\{" + (index + 1) + "\\}|%" + (index + 1) + ")", 'g'), '' + item);
 			});
 		}
 		return key;
@@ -29,7 +29,7 @@ const I18n = {
 	init(strings: object) {
 		DICTIONARY = strings;
 	},
-	initDefault( code: string ) {
+	initDefault(code: string) {
 		if (code === 'ru') I18n.init({
 			"Загружается": "Загружается",
 			"Загружается язык приложения": "Загружается язык приложения"
@@ -49,10 +49,9 @@ export default I18n;
 export const applicationLanguage: iLanguage[] = Object.keys(appLanguages).map(language => appLanguages[language]);
 
 export const getLanguage = () => {
-	const savedLanguage = Settings.get(I18n.SETTING_NAME,'');
-	if (appLanguages[savedLanguage]) return appLanguages[savedLanguage];
+	const savedLanguage = Settings.get(I18n.SETTING_NAME, '');
 
-	for (const language of navigator.languages) {
+	for (const language of [savedLanguage, ...navigator.languages]) {
 		if (appLanguages[language]) return appLanguages[language];
 	}
 	return appLanguages['ru'];
@@ -60,5 +59,4 @@ export const getLanguage = () => {
 
 export const saveLanguage = (language: string): void => {
 	if (appLanguages[language]) Settings.set(I18n.SETTING_NAME, language);
-	// window.location.reload();
 }
