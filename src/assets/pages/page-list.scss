@@ -1,4 +1,12 @@
 .pages-list {
+  .description-note {
+    display: block;
+    margin: 3px 0 0 3px;
+    &::before {
+      content: '* ';
+      font-weight: bold;
+    }
+  }
   p {
     margin: .4em 0 1em 0;
   }

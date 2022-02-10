@@ -7,7 +7,6 @@ import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, For
 import Loader from "../mixins/Loader";
 import Error from "../mixins/Error";
 import API, { fillDateParams, saveDatalist } from "../mixins/API";
-// import Settings from "../mixins/Settings";
 import ObservationsList from "../mixins/ObservationsList";
 import Settings from "../mixins/Settings";
 import { DataControlsBlock } from "../mixins/Form/FormControlSets";
@@ -46,7 +45,7 @@ export default class Downloader extends Module {
 				param = param.split('=');
 				if (param.length === 2) customParams[param[0]] = param[1];
 			});
-		};
+		}
 
 
 		const observations = await API.fetchObservations(taxon.id, limit, customParams, this.setStatusMessage);

@@ -8,12 +8,12 @@ import Page from '../mixins/Page'
 interface iChanges {
 	date: string
 	changes: React.ReactNode
-};
+}
 
-const Changelog = ({ changes }: { changes: Array<iChanges> }) => (<dl className='changelog'>
-	{changes.map(change => (<React.Fragment key={change.date}>
-		<dt>{change.date}</dt>
-		<dd>{change.changes}</dd>
+const Changelog: React.FC<{ changelog: iChanges[] }> = ({ changelog }) => (<dl className='changelog'>
+	{changelog.map(({ date, changes }) => (<React.Fragment key={date}>
+		<dt>{date}</dt>
+		<dd>{changes}</dd>
 	</React.Fragment>))
 	}
 </dl>);
@@ -35,7 +35,7 @@ const Content = memo(() => {
 						The source code is available at <a href="https://github.com/Kildor/inat-projects-stats" target='_blank'>github</a> under the GPL.
 					</p>
 					<h2>Changelog</h2>
-					<Changelog changes={[
+					<Changelog changelog={[
 						{
 							date: "12/12/2021",
 							changes: "Allow to exclude species observed by certain users for the list of project species."
@@ -72,7 +72,7 @@ const Content = memo(() => {
 					Исходники доступны на <a href="https://github.com/Kildor/inat-projects-stats" target='_blank'>гитхабе</a> под лицензией GPL.
 				</p>
 				<h2>Изменения</h2>
-				<Changelog changes={[
+				<Changelog changelog={[
 					{
 						date: "12.12.2021",
 						changes: "Добавлена возможность исключать виды встреченные определёнными пользователями из списка видов проекта."
