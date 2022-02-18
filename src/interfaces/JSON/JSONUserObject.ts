@@ -1,4 +1,4 @@
-export default interface JSONUserObject {
+export interface JSONUserObject {
 	id: number
 	name: string
 	role?: string|null

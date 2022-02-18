@@ -4,10 +4,10 @@ import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
 import API, { saveDatalist } from '../mixins/API';
-import Settings from "../mixins/Settings";
-import Loader from '../mixins/Loader';
+import { Settings } from "../mixins/Settings";
+import { Loader } from 'mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
-import Error from '../mixins/Error';
+import { Error } from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';

@@ -2,33 +2,39 @@ import React, { ReactElement } from 'react'
 import '../assets/Taxons.scss';
 import '../assets/Observations.scss';
 import CSV from './CSV';
-import Observation, { getCSVHeader } from '../DataObjects/Observation';
-import ObservationIdentification from '../DataObjects/ObservationIdentification';
-import ObservationComment from '../DataObjects/ObservationComment';
+import { getCSVHeader, Observation } from '../DataObjects/Observation';
+import { ObservationIdentification } from '../DataObjects/ObservationIdentification';
+import { ObservationComment } from '../DataObjects/ObservationComment';
 import { DateTimeFormat } from '../mixins/API';
 import I18n from '../classes/I18n';
 
-export interface ObservationsListProps {
-	observations: Array<Observation>
-	csv: boolean | false
+interface iCommon {
 	current_ids: boolean | false
 	hide_activity: boolean | false
 	show_discussion: boolean | false
+}
+
+interface ObservationsListProps extends iCommon {
+	observations: Array<Observation>
+	csv: boolean | false
 	filename?: string | "observations.csv"
 }
 
-interface ActivitiesListProps {
-	current_ids: boolean|false
-	show_discussion: boolean|false
+interface ActivitiesListProps extends Omit<iCommon, 'hide_activity'> {
 	activityFilter: FilterFunction
 	activities: Array<ObservationComment | ObservationIdentification >
 }
+
+interface ObservationItemProps extends iCommon {
+	observation: Observation
+}
+
 interface FilterFunction {
 	(act: ObservationComment | ObservationIdentification) : boolean
 }
 
 
-const ActivityItem = ({ activity: { id, created, user: { login }, comment }, className, children}: { activity: ObservationComment | ObservationIdentification, className: string, children?: React.ReactNode}) =>{
+const ActivityItem: React.FC<{ activity: ObservationComment | ObservationIdentification; className: string}> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{
 	return (
 		<li key={id} className={className}>
 			{DateTimeFormat.format(created)}, <strong>{login}:</strong> {children}<br />
@@ -39,7 +45,7 @@ const ActivityItem = ({ activity: { id, created, user: { login }, comment }, cla
 
 	)
 }
-const ActivityIdentification = ({ activity }: { activity: ObservationIdentification})=>{
+const ActivityIdentification: React.FC<{ activity: ObservationIdentification }> = ({ activity })=>{
 	const isCurrent = 'current' in activity && activity.current;
 	let className = 'identification ' + (isCurrent ? 'identification-current' : 'identification-outdated');
 	if (!!activity.taxon.commonName) className+= ' has-common-name';
@@ -76,7 +82,22 @@ const ActivityList = ({activities, current_ids, show_discussion, activityFilter 
 	)
 }
 
-export const ObservationList = ({ observations, csv, filename, current_ids, hide_activity, show_discussion }: ObservationsListProps) => {
+const BASE_URL = `https://www.inaturalist.org/observations/`;
+
+const ObservationItem: React.FC<ObservationItemProps> = ({ observation, hide_activity, current_ids, show_discussion } ) => {
+	let className = 'observation quality-' + observation.quality_grade;
+	if (!!observation.commonName) className += ' has-common-name';
+	let url = BASE_URL;
+
+	return (<li className={className}>
+		<a href={url + '' + observation.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
+			{observation.commonName} <em>{observation.name}</em>, @{observation.user.login}
+		</a> <span className={'location' + (observation.geoprivacy !== null ? ' location-' + observation.geoprivacy : '')}>({observation.location}, {DateTimeFormat.format(observation.observed)})</span>
+		{(!hide_activity && observation.activity.length > 0) && <ActivityList activities={observation.activity} current_ids={current_ids} show_discussion={show_discussion} activityFilter={getFilterForActivities(current_ids, show_discussion)} />}
+	</li>)
+}
+
+export const ObservationList: React.FC<ObservationsListProps> = ({ observations, csv, filename, current_ids, hide_activity, show_discussion }) => {
 	if (observations.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -85,19 +106,7 @@ export const ObservationList = ({ observations, csv, filename, current_ids, hide
 	if (csv) {
 		list = <CSV header={getCSVHeader} useRank={!hide_activity} filename={filename}>{observations}</CSV>
 	} else {
-		let url = `https://www.inaturalist.org/observations/`;
-		list = <ol className='taxons'>{observations.map(obs => {
-			let className = 'observation quality-' + obs.quality_grade;
-			if (!!obs.commonName) className += ' has-common-name';
-
-			return (<li key={obs.id} className={className}>
-				<a href={url + '' + obs.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
-					{obs.commonName} <em>{obs.name}</em>, @{obs.user.login}
-				</a> <span className={'location' + (obs.geoprivacy !== null ? ' location-' + obs.geoprivacy : '')}>({obs.location}, {DateTimeFormat.format(obs.observed)})</span>
-				{(!hide_activity && obs.activity.length > 0) && <ActivityList activities={obs.activity} current_ids={current_ids} show_discussion={show_discussion} activityFilter={getFilterForActivities(current_ids, show_discussion)} />}
-			</li>)
-		})}</ol>;
-
+		list = <ol className='taxons'>{observations.map(obs => <ObservationItem key={obs.id} observation={obs} hide_activity={hide_activity} current_ids={current_ids} show_discussion={show_discussion} />)}</ol>;
 	}
 
 	return (

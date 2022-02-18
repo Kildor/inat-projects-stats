@@ -1,11 +1,9 @@
-import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import Taxon from "./Taxon";
-import User from "./User";
-import { JSONIdentificationObject } from "../interfaces/JSON/JSONIdentificationObject";
-import IdentificationInterface from "../interfaces/IdentificationInterface";
-import { DateTimeFormat } from "../mixins/API";
+import { iCSVConvert, iIdentification, JSONIdentificationObject } from "interfaces";
+import { DateTimeFormat } from "mixins/API";
+import { Taxon } from "./Taxon";
+import { User } from "./User";
 
-class ObservationIdentification implements CSVConvertInterface, IdentificationInterface {
+export class ObservationIdentification implements iCSVConvert, iIdentification {
 	toCSV() {
 		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}"`;
 	}
@@ -28,5 +26,3 @@ class ObservationIdentification implements CSVConvertInterface, IdentificationIn
 
 	}
 }
-
-export default ObservationIdentification;

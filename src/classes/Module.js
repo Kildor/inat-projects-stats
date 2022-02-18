@@ -1,5 +1,5 @@
 import React from 'react'
-import Settings from "../mixins/Settings";
+import { Settings } from "../mixins/Settings";
 import settings from '../assets/settings.json';
 import defaultProjects from '../assets/projects.json';
 
@@ -66,11 +66,11 @@ export default class extends React.Component {
 
 	async submitHandler(e) {
 		e.preventDefault();
-		this.setState({ loading: true, data: [] });
+		this.setState({ loading: true, data: [], error: null });
 		if (!!this.storageHandler) this.setState(this.storageHandler());
 		if (!!this.setFilename) this.setFilename();
 		this.counter().then((data) => {
-			this.setState({ data, loading: false });
+			this.setState({ data, loading: false, error: null });
 		}).catch(e => {
 			console.error(e);
 			this.setState({ data: [], loading: false, error: e.message })

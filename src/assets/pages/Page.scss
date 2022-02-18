@@ -1,3 +1,5 @@
+@import '../config.scss';
+
 .page {
 	margin: 1vh 1vw;
 	padding: .5rem 1rem;
@@ -5,12 +7,13 @@
 	border-radius: 5px;
 	box-shadow: 0 0 2px #000;
 	@media screen and (max-width: 400px) {
-		max-width: 1vh 0;		
+		margin: 1vh 0;		
 		padding: 0;
 	}
 
 	.page-title {
-		background: #555;
+					background: darken($main-block-bg-color, 20%)
+						linear-gradient(180deg, darken($main-block-bg-color, 15%), darken($main-block-bg-color, 30%));
 		color: #fff;
 		margin: 0 -.5rem 1rem -.5rem;
 		border-radius: 5px;

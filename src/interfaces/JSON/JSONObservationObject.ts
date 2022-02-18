@@ -1,9 +1,9 @@
-import  JSONCommentObject from "./JSONCommentObject";
+import  { JSONCommentObject } from "./JSONCommentObject";
 import { JSONIdentificationObject } from "./JSONIdentificationObject";
-import JSONTaxonObject from "./JSONTaxonObject";
-import JSONUserObject from "./JSONUserObject";
+import { JSONTaxonObject } from "./JSONTaxonObject";
+import { JSONUserObject } from "./JSONUserObject";
 
-export default interface JSONObservationObject {
+export interface JSONObservationObject {
 	quality_grade: string;
 	observed_on: string;
 	geoprivacy: string;

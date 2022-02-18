@@ -1,8 +1,8 @@
 import React from 'react'
 import I18n from '../classes/I18n';
 import ButtonClear from './ButtonClear';
-import { iDataList } from '../interfaces/DataListInterface';
 import API from './API';
+import { iDataList } from 'interfaces';
 
 export default ({ list = [], id, clearDatalistHandler, listName }: iDataList) => {
 	const clearButton = !!clearDatalistHandler && !!listName && list.length > 0 ? <ButtonClear onClickHandler={clearDatalistHandler} listName={listName} /> : null;

@@ -1,3 +1,3 @@
-export default interface JSONGeoJSONObject {
+export interface JSONGeoJSONObject {
 	coordinates: Array<number>
 }

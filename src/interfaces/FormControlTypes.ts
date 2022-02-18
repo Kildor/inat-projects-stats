@@ -1,7 +1,5 @@
+import { iDataListItem, iLookupPlace, iLookupTaxon } from "interfaces";
 import { ChangeEvent } from "react"
-import { iDataListItem } from "./DataListInterface";
-import LookupPlace from "./LookupPlace";
-import LookupTaxon from "./LookupTaxon";
 
 interface GenericFormControlProps {
 	label: string
@@ -58,14 +56,14 @@ export interface FormControlTaxonProps extends DatalistFormControlProps {
 	onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	updateState: (newState: Object)=>void
-	value: LookupTaxon
+	value: iLookupTaxon
 }
 
 export interface FormControlPlaceProps extends DatalistFormControlProps {
 	onBlur: (e: React.FocusEvent<HTMLInputElement>) => void
 	onChange: (e: ChangeEvent<HTMLInputElement>) => void
 	updateState: (newState: Object)=>void
-	value: LookupPlace
+	value: iLookupPlace
 }
 
 export interface MultilineControlProps extends GenericFormControlProps {

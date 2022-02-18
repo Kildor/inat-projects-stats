@@ -1,3 +1,5 @@
+@import './config.scss';
+
 .users {
   li.has-role {
     &::after {
@@ -15,7 +17,7 @@
       border-radius: 3px;
     }
     &.has-role-manager::after {
-      background: rgb(6, 56, 17) radial-gradient( ellipse at 50% 0, rgb(1, 124, 32) 0, rgb(6, 56, 17) 100%);
+      background: rgb(6, 56, 17) radial-gradient( ellipse at 50% 0, $secondary-color 0, $ui-color 100%);
     }
     &.has-role-curator::after {
       background: rgb(17, 6, 56) radial-gradient( ellipse at 50% 0, rgb(1, 3, 124) 0, rgb(11, 6, 56) 100%);

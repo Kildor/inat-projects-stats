@@ -1,4 +1,4 @@
-export default interface JSONTaxonObject {
+export interface JSONTaxonObject {
 	id: number
 	name: string
 	rank: string

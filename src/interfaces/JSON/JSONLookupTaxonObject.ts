@@ -1,6 +1,6 @@
-import JSONTaxonObject from "./JSONTaxonObject";
+import { JSONTaxonObject } from "./JSONTaxonObject";
 
-export default interface JSONLookupTaxonObject {
+export interface JSONLookupTaxonObject {
 	score: number
 	record: JSONTaxonObject
 }

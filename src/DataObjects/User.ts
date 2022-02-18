@@ -1,9 +1,8 @@
-import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import JSONUserObject from "../interfaces/JSON/JSONUserObject";
+import { iCSVConvert, JSONUserObject } from "interfaces";
 
 export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tLogin\tName\tRole\n`);
 
-class User implements CSVConvertInterface {
+export class User implements iCSVConvert {
 	id: number;
 	name: string;
 	login: string;
@@ -35,5 +34,3 @@ class User implements CSVConvertInterface {
 	}
 
 }
-
-export default User;

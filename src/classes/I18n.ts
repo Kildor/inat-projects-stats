@@ -1,5 +1,5 @@
-import { iLanguage } from "../interfaces/LanguageInterface";
-import Settings from "../mixins/Settings";
+import { iLanguage } from 'interfaces';
+import { Settings } from "mixins/Settings";
 
 const appLanguages: Record<string, iLanguage> = {
 	"en": { "language": "English", "code": "en" },

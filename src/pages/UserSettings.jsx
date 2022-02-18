@@ -1,14 +1,14 @@
 import React from 'react'
 import Page from '../mixins/Page';
-import Settings from "../mixins/Settings";
+import { Settings } from "../mixins/Settings";
 import {FormControl, FormControlMultiline} from '../mixins/Form/FormControl';
 import defaultPlaces from '../assets/places.json';
 import defaultProjects from '../assets/projects.json'
 import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
-import Loader from '../mixins/Loader';
-import Error from '../mixins/Error';
+import { Loader } from 'mixins/Loader';
+import { Error } from '../mixins/Error';
 import API from '../mixins/API';
 
 export default class UserSettings extends Module {

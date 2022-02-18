@@ -1,18 +1,10 @@
-import JSONTaxonObject from '../interfaces/JSON/JSONTaxonObject';
-import JSONUserObject from '../interfaces/JSON/JSONUserObject';
-import Taxon from '../DataObjects/Taxon'
-import User from '../DataObjects/User';
-import iObjectsList from '../interfaces/ObjectsList';
-import JSONLookupTaxonObject from '../interfaces/JSON/JSONLookupTaxonObject';
-import Observation from '../DataObjects/Observation';
-import LookupTaxon from '../interfaces/LookupTaxon';
-import I18n from '../classes/I18n';
-import LookupPlace from '../interfaces/LookupPlace';
-import JSONPlaceObject from '../interfaces/JSON/JSONPlaceObject';
-import Settings from './Settings';
-import { iDataListItem } from "../interfaces/DataListInterface";
-
 // import debug_observation_json from '../assets/debug-observations.json';
+
+import I18n from "classes/I18n";
+import { Observation, Taxon, User } from "DataObjects";
+import { iDataListItem, iLookupPlace, iLookupTaxon, iObjectsList } from "interfaces";
+import { JSONLookupTaxonObject, JSONPlaceObject, JSONTaxonObject, JSONUserObject } from "interfaces/JSON";
+import { Settings } from "./Settings";
 
 
 const API = () => { };
@@ -27,7 +19,7 @@ const cache = new Map<string, any>();
 API.lookupTaxon = async (queryString: string) => {
 	// https://api.inaturalist.org/v1/search?q=Ophioglossum%20vulgatum&sources=taxa
 	let json;
-	const taxon: LookupTaxon = {
+	const taxon: iLookupTaxon = {
 		score: 0.0, id: 0, name: queryString, commonName: '', lookupSuccess: false
 	}
 	queryString = queryString.toLowerCase();
@@ -56,7 +48,7 @@ API.lookupTaxon = async (queryString: string) => {
 API.lookupPlaces = async (queryString: string) => {
 	// https://api.inaturalist.org/v1/places/autocomplete?q=iskitim
 	let json;
-	let places: LookupPlace[] = [{
+	let places: iLookupPlace[] = [{
 		id: 0, name: queryString, displayName: '', lookupSuccess: false
 	}];
 	queryString = queryString.toLowerCase();
@@ -248,7 +240,7 @@ API.filterDatalist = (datalist: iDataListItem[]) => Array.from(
 export default API;
 
 
-export const setTaxon = async function (taxon: LookupTaxon, setState: Function) {
+export const setTaxon = async function (taxon: iLookupTaxon, setState: Function) {
 	let taxonName = "";
 	if (!!taxon && !!taxon.name) taxonName = taxon.name
 	else if (!!taxon.name) taxonName = taxon.name;
@@ -261,7 +253,7 @@ export const setTaxon = async function (taxon: LookupTaxon, setState: Function) 
 		taxon = { id: parseInt(taxonName), name: taxonName, commonName: taxonName, lookupSuccess: false };
 	}
 	setState((prevState: any) => {
-		const newState: Record<string, LookupTaxon | iDataListItem[]> = { taxon };
+		const newState: Record<string, iLookupTaxon | iDataListItem[]> = { taxon };
 		if (taxon.id > 0) {
 			newState['taxons'] = saveDatalist(taxon.name, taxon.commonName, prevState.taxons, 'taxons')
 		}

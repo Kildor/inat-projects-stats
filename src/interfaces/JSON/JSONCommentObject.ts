@@ -1,7 +1,6 @@
-import JSONUserObject from "./JSONUserObject";
+import { JSONUserObject } from "./JSONUserObject";
 
-
-export default interface JSONCommentObject {
+export interface JSONCommentObject {
 	id: number;
 	user: JSONUserObject;
 	created_at: string;

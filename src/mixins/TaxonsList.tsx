@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
-import Taxon, { getCSVHeader } from '../DataObjects/Taxon';
-import '../assets/Taxons.scss';
+import { getCSVHeader, Taxon } from '../DataObjects/Taxon';
+import 'assets/Taxons.scss';
 import CSV from './CSV';
 import I18n from '../classes/I18n';
 import { addCustomParams, fillDateParams } from './API';

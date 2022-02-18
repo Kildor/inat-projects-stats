@@ -1,9 +1,8 @@
-import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import JSONTaxonObject from "../interfaces/JSON/JSONTaxonObject";
+import { iCSVConvert, JSONTaxonObject } from "interfaces";
 
 export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tName\tCommon name\tRank\tCount\n`);
 
-class Taxon implements CSVConvertInterface {
+export class Taxon implements iCSVConvert {
 	toCSV(index: number | false) {
 		let str = '';
 		if (typeof index === 'number') {
@@ -36,5 +35,3 @@ class Taxon implements CSVConvertInterface {
 		return this._count;
 	}
 }
-
-export default Taxon;

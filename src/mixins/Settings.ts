@@ -1,17 +1,17 @@
 
-export default class Settings {
+export class Settings {
 	static SettingsName = 'inat-projects-stats';
 
 	static loadFromStorage = () => {
 		try {
 			const val = localStorage.getItem(Settings.SettingsName);
 			if (val !== null) return JSON.parse(val);
-		} catch (e) {}
+		} catch (e) { }
 		return {};
 	};
 	static get = (name: string, def: any) => {
 		const settings = Settings.loadFromStorage();
-		return (settings.hasOwnProperty(name) && settings[name].length > 0 ) ? settings[name] : def;
+		return (settings.hasOwnProperty(name) && settings[name].length > 0) ? settings[name] : def;
 	};
 	static set = (name: string, value: any) => {
 		const settings = Settings.loadFromStorage();

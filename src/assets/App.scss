@@ -1,0 +1,242 @@
+@import "./config.scss";
+
+.App {
+	background: $main-background;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+
+	header.App-header {
+		background: $secondary-background;
+		color: #fff;
+		padding: 0.5rem;
+		position: relative;
+		.inat-logo {
+			width: 1em;
+			height: 1em;
+		}
+		h1 {
+			margin: 0;
+			padding: 1rem 0.5rem;
+			font-size: 1.2rem;
+		}
+		.btn-menu {
+			position: absolute;
+			top: 20px;
+			right: 5px;
+			background: $main-block-bg-color;
+			border: none;
+			color: $main-block-color;
+			font-size: 1em;
+			line-height: 1;
+			/* font-weight: bold; */
+			padding: 5px 15px;
+			&.open {
+				background: darken($main-block-bg-color, 20%);
+				box-shadow: 0 0 3px $main-block-color;
+			}
+		}
+		.menu-languages .btn-menu {
+			top: 5px;
+		}
+		.menu-pages .btn-menu {
+			top: 30px;
+		}
+		ul {
+			display: inline-flex;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			border-radius: 5px;
+			background: $main-block-bg-color;
+			// box-shadow: 0 0 2px #444;
+			overflow: hidden;
+			li {
+				text-shadow: 1px 1px #000;
+				& + li {
+					border-left: 1px solid #444;
+				}
+				&.active {
+					background: darken($main-block-bg-color, 20%)
+						linear-gradient(180deg, darken($main-block-bg-color, 15%), darken($main-block-bg-color, 30%));
+					text-shadow: 1px 1px #000;
+				}
+				a {
+					text-decoration: none;
+				}
+			}
+		}
+		a,
+		span {
+			color: $main-block-color;
+			display: block;
+			padding: 4px 10px;
+			height: 100%;
+			box-sizing: border-box;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+		}
+		@media screen and (min-width: 600px) {
+			.btn-menu {
+				display: none;
+			}
+			.header-menu.menu-languages {
+				position: absolute;
+				top: 1em;
+				right: 1em;
+			}
+		}
+		@media screen and (max-width: 600px) {
+			ul {
+				display: none;
+			}
+			.btn-menu.open + ul {
+				display: flex;
+				flex-direction: column;
+				// background: #444 linear-gradient(180deg, #505050 0, #303030 60px);
+				li {
+					& + li {
+						border-left: none;
+						border-top: 1px solid #fff;
+					}
+				}
+			}
+		}
+	}
+	.loader {
+		font-weight: bold;
+		svg {
+			vertical-align: text-bottom;
+			display: inline-block;
+			width: 1.2em;
+			height: 1.2em;
+		}
+	}
+	.AppLoader {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		grid-row: 1/4;
+		grid-column: 1/4;
+		.loader {
+			text-align: center;
+			svg {
+				display: block;
+				margin: auto;
+				width: 2.5em;
+				height: 2.5em;
+			}
+		}
+	}
+	footer.app-footer {
+		padding: 0.5rem;
+		text-align: center;
+		a {
+			color: #22a;
+			text-decoration: none;
+		}
+		i:before {
+			content: "";
+			width: 3px;
+			height: 3px;
+			border-radius: 50%;
+			background-color: #000;
+			margin: 2px 3px 3px;
+			display: inline-block;
+		}
+	}
+
+	@media screen and( min-width: 800px) {
+		$sidebar-width: 250px;
+		display: grid;
+		box-sizing: border-box;
+		grid-template-columns: $sidebar-width auto;
+		grid-template-rows: auto max-content;
+		gap: 0 1em;
+		padding-right: 1em;
+		// justify-items: center;
+
+		header.App-header {
+			box-sizing: border-box;
+			overflow: hidden;
+			width: $sidebar-width;
+			grid-column: 1/1;
+			grid-row: 1/1;
+			align-self: start;
+			margin: 1vh 5px;
+			border-radius: 5px;
+			box-shadow: 0 0 2px #000;
+			display: flex;
+			flex-direction: column;
+
+			h1 {
+				// color: #000;
+				// text-shadow: 1px 1px 2px #000;
+				font-size: 2em;
+				text-align: center;
+				-webkit-text-stroke: 0.7px #000;
+			}
+
+			// background: transparent;
+
+			.header-menu.menu-languages {
+				position: static;
+				margin-top: 1em;
+				order: 1;
+			}
+			ul {
+				display: flex;
+				flex-direction: column;
+				li + li {
+					border-top: 1px solid #000;
+					border-left: none;
+				}
+			}
+		}
+		.page {
+			flex: 1 1 auto;
+			box-sizing: border-box;
+			// width: calc(100vw - $sidebar-width);
+			margin: 1vh 0;
+			grid-column: 2/2;
+			grid-row: 1/1;
+		}
+		footer.app-footer {
+			box-sizing: border-box;
+			grid-column: 2/3;
+			grid-row: 2/2;
+		}
+	}
+	@media screen and (min-width: 600px) and (max-width: 799px) {
+		header.App-header {
+			ul {
+				padding: 5px;
+				flex-wrap: wrap;
+				gap: 5px;
+				justify-content: center;
+				li {
+					border: 1px solid #444;
+					border-radius: 5px;
+					background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+
+					&.active {
+						background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 1));
+					}
+				}
+			}
+		}
+
+		.header-menu {
+			font-size: 0.8em;
+			a,
+			span {
+				text-align: center;
+			}
+		}
+	}
+}
+
+.hidden {
+	display: none !important;
+}

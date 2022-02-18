@@ -1,14 +1,14 @@
 import React, { FunctionComponent, memo, ReactChildren } from 'react'
 import { Link } from 'react-router-dom';
 
-import '../assets/pages/Page.scss';
+import 'assets/pages/Page.scss';
 import { Note } from './Note';
 
 
 interface iHeader {
 	title?: string
 	backlink?: string | false
-	infoText?: ReactChildren
+	infoText?: ReactChildren | string
 	defCollapsed?: boolean | true
 }
 interface iPage {
@@ -17,7 +17,7 @@ interface iPage {
 	pageTitle?: string
 	backlink?: string | false
 	className?: string
-	infoText?: ReactChildren
+	infoText?: ReactChildren | string
 	defCollapsed?: boolean | true
 }
 
@@ -27,7 +27,7 @@ const Header = memo(({title, backlink, infoText, defCollapsed}: iHeader) => {
 		<header className={'page-title' + (!title?' no-title':'')}>
 			{!!backlink && <Link to={backlink} className='title-backlink'>&#10094;&#10094;</Link> }
 			{!!title && <span>{title}</span>}
-			{!!infoText && <Note defCollapsed={defCollapsed}>{infoText}</Note>}
+			{!!infoText && <Note defCollapsed>{infoText}</Note>}
 		</header>
 	);
 });

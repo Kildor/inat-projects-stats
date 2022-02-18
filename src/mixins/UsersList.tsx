@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import CSV from './CSV';
-import User, { getCSVHeader } from '../DataObjects/User';
+import { getCSVHeader, User } from '../DataObjects/User';
 import I18n from '../classes/I18n';
 import { getTitleForUserRole } from './API';
 import '../assets/Users.scss';

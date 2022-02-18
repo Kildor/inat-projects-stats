@@ -1,14 +1,13 @@
-import ObservationComment from "./ObservationComment";
-import ObservationIdentification from "./ObservationIdentification";
-import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import JSONObservationObject from "../interfaces/JSON/JSONObservationObject";
-import Taxon from "./Taxon";
-import User from "./User";
-import { DateTimeFormat } from "../mixins/API";
+import { ObservationComment } from "./ObservationComment";
+import { ObservationIdentification } from "./ObservationIdentification";
+import { Taxon } from "./Taxon";
+import { User } from "./User";
+import { DateTimeFormat } from "mixins/API";
+import { iCSVConvert, JSONObservationObject } from "interfaces";
 
 export const getCSVHeader = () => (`ID\tName\tCommon name\tQuality grade\tData\tCoordinates\tLocation\tUser\n`);
 
-class Observation implements CSVConvertInterface {
+export class Observation implements iCSVConvert {
 	created: Date;
 	observed: Date;
 	id: number;
@@ -52,5 +51,3 @@ class Observation implements CSVConvertInterface {
 		this.activity.sort((a, b) => +a.created - +b.created)
 	}
 }
-
-export default Observation;

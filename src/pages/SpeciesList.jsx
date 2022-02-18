@@ -4,9 +4,9 @@ import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
 import API, { fillDateParams, saveDatalist } from '../mixins/API';
-import Loader from '../mixins/Loader';
+import { Loader } from 'mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
-import Error from '../mixins/Error';
+import { Error } from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';

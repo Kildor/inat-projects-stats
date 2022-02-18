@@ -1,3 +1,5 @@
+@import './config.scss';
+
 .note {
 	float: right;
 	position: relative;
@@ -6,7 +8,7 @@
 		border-radius: 50%;
 		display: inline-block;
 		color: #fff;
-		background: #115b68;
+		background: darken($secondary-color, 10%);
 		width: 1.4em;
 		text-align: center;
 		box-shadow: inset 1px 1px 1px rgba(#fff, 50%), 0 0 5px 1px rgba(#fff, 75%);

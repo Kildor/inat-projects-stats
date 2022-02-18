@@ -1,16 +1,14 @@
-import CSVConvertInterface from "../interfaces/CSVConvertInterface";
-import User from "./User";
-import JSONCommentObject from "../interfaces/JSON/JSONCommentObject";
-import CommentInterface from "../interfaces/CommentInterface";
+import { User } from "./User";
+import { iComment, iCSVConvert, JSONCommentObject } from "interfaces";
 
-class ObservationComment implements CSVConvertInterface, CommentInterface {
+export class ObservationComment implements iCSVConvert, iComment {
 	toCSV() {
 		return `\t"${this.user.fullName}, ${this.created.toLocaleDateString()}: ${this.comment}"`;
 	}
 	id: number;
 	user: User;
 	created: Date;
-	comment: string|null;
+	comment: string | null;
 
 	constructor(jsonComment: JSONCommentObject) {
 		this.id = jsonComment.id;
@@ -20,5 +18,3 @@ class ObservationComment implements CSVConvertInterface, CommentInterface {
 
 	}
 }
-
-export default ObservationComment;

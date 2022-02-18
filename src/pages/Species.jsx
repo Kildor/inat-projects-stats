@@ -4,27 +4,27 @@ import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
 import API, { saveDatalist } from '../mixins/API';
-import Loader from '../mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
-import Error from '../mixins/Error';
+import { Error } from '../mixins/Error';
 import Form from '../mixins/Form/Form';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/Form/FormControl';
 import { DataControlsBlock } from '../mixins/Form/FormControlSets';
+import { Loader } from 'mixins/Loader';
 
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
 		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
-		"users", "projects"], this.state, {
+			"users", "projects"], this.state, {
 			"date_created": true
 		});
 	}
 
-	async counter () {
-		const {project_id, user_id, d1, d2, date_created, show_first, species_only} = this.state;
+	async counter() {
+		const { project_id, user_id, d1, d2, date_created, show_first, species_only } = this.state;
 		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
 		const customParams = {};
 		if (species_only) {
@@ -50,7 +50,7 @@ export default class extends Module {
 		// console.dir(newTaxa);
 
 
-		this.setState({loadingTitle: I18n.t("Обработка загруженных данных"), loading: true});
+		this.setState({ loadingTitle: I18n.t("Обработка загруженных данных"), loading: true });
 
 		// let newTaxaFiltered = newTaxa.ids.filter((id) => {
 		// 	return !allTaxa.taxons[id];
@@ -65,8 +65,8 @@ export default class extends Module {
 		let filename = "";
 		filename += this.state.project_id + "-";
 		if (!!this.state.user_id) filename += this.state.user_id + "-";
-		if (!!this.state.d1) filename += "from_"+this.state.d1+"-";
-		if (!!this.state.d2) filename += "to_"+this.state.d2+"-";
+		if (!!this.state.d1) filename += "from_" + this.state.d1 + "-";
+		if (!!this.state.d2) filename += "to_" + this.state.d2 + "-";
 		if (!!this.state.show_first) filename += "first-";
 		filename += "new_species.csv";
 		this.setState({ filename: filename });
@@ -86,24 +86,24 @@ export default class extends Module {
 				<Form onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
-					<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
-						value={this.state.project_id} list={this.state.projects} />
-					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
-						value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
-					</FormControl>
-					<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
-						checked={this.state.species_only} />
+						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
+							value={this.state.project_id} list={this.state.projects} />
+						<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
+							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
+						</FormControl>
+						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
+							checked={this.state.species_only} />
 					</fieldset>
 					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} >
 						<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
 							checked={this.state.show_first} />
-							</DataControlsBlock>
+					</DataControlsBlock>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>
-					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
+						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
 				</Form>
-				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
+				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>

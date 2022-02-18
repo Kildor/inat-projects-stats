@@ -1,3 +1,5 @@
+@import './config.scss';
+
 form {
 	position: relative;
 	label {
@@ -83,7 +85,7 @@ form {
 		text-shadow: 1px 1px 1px #000;
 		border: 1px solid rgb(8, 88, 8);
 		border-radius: 4px;
-		background: linear-gradient(to bottom, rgb(10, 110, 10), rgb(8, 88, 8));
+		background: linear-gradient(to bottom, $secondary-color, $ui-color );
 		padding: 3px 1em;
 
 		&:disabled {
