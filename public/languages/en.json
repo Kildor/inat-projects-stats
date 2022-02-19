@@ -4,6 +4,7 @@
 	"strings": {
 		"pages.species-missed.note.text": "The script displays all the species missed by the user, compared to another user or project.{1}In the case of comparison with a project, it shows the species included in the project and not encountered by the given user.{1}There may be discrepancies if the user did not encounter any of the subspecies of the species he encountered.",
 		"pages.species.note.text": "The script picks all species from the project uploaded to the site before the selected date (Creation Date), picks all species uploaded after the selected date, then compares the lists and leaves only the new ones. Unfortunately, the iNaturalist API does not allow you to select species added to the project relative to the date, so if \"Research status\" is set in the project requirements, there is a chance that an observation added before the specified date has been added to the project after that date, but it will not be in the list. Similarly with those observations that were redefined after the specified date.",
+		"pages.contribution.note.text": "The script displays changes contributions of the project users.",
 		"{1} видов:": "{1} species:",
 		"{1} пользователей:": "{1} users",
 		"* Список неполон, должно быть {1} пользователей!": "* The list is incomplete, there must be {1} users!",

@@ -1,4 +1,4 @@
-@import './config.scss';
+@import "./config.scss";
 
 form {
 	position: relative;
@@ -59,10 +59,19 @@ form {
 				padding: 5px 15px 0;
 				margin-bottom: 0;
 			}
-			fieldset.noborder {
-				border: none;
-				padding: 0;
-				margin: 0;
+			fieldset {
+				border: solid #ddd 1px;
+				margin-left: .5em;
+				> legend {
+					font-size: .9em;
+					box-shadow: 1px 1px 1px 1px #ccc;
+				}
+
+				&.noborder {
+					border: none;
+					padding: 0;
+					margin: 0;
+				}
 			}
 		}
 	}
@@ -85,7 +94,7 @@ form {
 		text-shadow: 1px 1px 1px #000;
 		border: 1px solid rgb(8, 88, 8);
 		border-radius: 4px;
-		background: linear-gradient(to bottom, $secondary-color, $ui-color );
+		background: linear-gradient(to bottom, $secondary-color, $ui-color);
 		padding: 3px 1em;
 
 		&:disabled {
@@ -110,10 +119,9 @@ form {
 		// position: relative;
 		z-index: 3;
 		cursor: pointer;
-			// @media screen and (max-width: 640px) {
-			// 	position: absolute;
-			// 	margin: -.8em 0 0 0;
-			// }
-
+		// @media screen and (max-width: 640px) {
+		// 	position: absolute;
+		// 	margin: -.8em 0 0 0;
+		// }
 	}
 }

@@ -1,0 +1,44 @@
+@import "./config.scss";
+
+ul.observers-list {
+	li.observer {
+		.position, .difference {
+			font-weight: bold;
+		}
+
+		&::marker {
+			color: #666;
+			width: 1.5em;
+			text-align: center;
+		}
+		&.position-new {
+			&::marker {
+				content: "★";
+				color: gold;
+			}
+		}
+		&.position-same {
+			&::marker {
+				content: " ";
+			}
+		}
+		&.position-increased {
+			&::marker {
+				content: "▲";
+				color: #0a0
+			}
+			.difference {
+				color: #0a0
+			}
+		}
+		&.position-decreased {
+			&::marker {
+				content: "▼";
+				color: #a00
+			}
+			.difference {
+				color: #a00
+			}
+		}
+	}
+}

@@ -19,6 +19,26 @@
 		"default": "",
 		"save": true
 	},
+	"d1_new": {"setting": "d1_new",
+		"type": "string",
+		"default": "2021-01-01",
+		"save": true
+	},
+	"d2_new": {"setting": "d2_new",
+		"type": "string",
+		"default": "2021-12-31",
+		"save": true
+	},
+	"d1_prev": {"setting": "d1_prev",
+		"type": "string",
+		"default": "2020-01-01",
+		"save": true
+	},
+	"d2_prev": {"setting": "d2_prev",
+		"type": "string",
+		"default": "2020-12-31",
+		"save": true
+	},
 	"date_created": {"setting": "date_created",
 		"type": "boolean",
 		"default": true,

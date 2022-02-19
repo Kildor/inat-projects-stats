@@ -7,6 +7,7 @@ const defaults = {
 	projects: defaultProjects
 }
 export default class extends React.Component {
+	values = {};
 	constructor(props) {
 		super(props);
 		this.changeHandler = this.changeHandler.bind(this);
@@ -26,13 +27,12 @@ export default class extends React.Component {
 		this.initSettings(["filename", "csv"], state);
 		return state;
 	}
-	initSettings(settingsList, thisState, defaultValues = {}) {
+	initSettings(settingsList, thisState, defaultValues = {}, overrideSettings = {}) {
 		settingsList.forEach(state => {
-			const setting = settings[state] || { setting: state, save: false};
+			const setting = overrideSettings[state] || settings[state] || { setting: state, save: false };
 			const defValue = defaults[state] || defaultValues[state] || setting.default || "";
 			thisState[state] = setting.save ? Settings.get(state, defValue) : defValue;
 			if (!!setting.values) {
-				if (!this.values) this.values={};
 				this.values[state] = new Map(Object.entries(setting.values));
 			}
 		});

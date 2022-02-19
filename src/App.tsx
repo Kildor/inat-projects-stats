@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './assets/App.scss';
-import { Footer } from './mixins/Footer';
-import { components } from './assets/components';
-import { Header } from './mixins/Header';
-import I18n, { getLanguage, saveLanguage } from './classes/I18n';
-import { LanguageContext } from './mixins/LanguageContext';
+import 'assets/App.scss';
+import { Footer } from 'mixins/Footer';
+import { components } from 'assets/components';
+import { Header } from 'mixins/Header';
+import I18n, { getLanguage, saveLanguage } from 'classes/I18n';
+import { LanguageContext } from 'mixins/LanguageContext';
 import { Loader } from 'mixins/Loader';
 
 const language = getLanguage();
