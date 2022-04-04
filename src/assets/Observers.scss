@@ -1,0 +1,61 @@
+@charset "utf-8";
+@import "./config.scss";
+
+ul.observers-list {
+	display: table;
+	// border-collapse: separate;
+	// border-spacing: 5px 1px;
+	li.observer {
+		display: table-row;
+		&:nth-child(even) {
+			background-color: #f0f0f0;
+		}
+
+		> * {
+			display: table-cell;
+			padding: 4px 5px;
+		}
+		> a {
+			
+		}
+		.position, .difference {
+			font-weight: bold;
+		}
+
+		&::before {
+			color: #666;
+			width: 1.5em;
+			text-align: center;
+			display: table-cell;
+		}
+		&.position-new {
+			&::before {
+				content: "★";
+				color: gold;
+			}
+		}
+		&.position-same {
+			&::before {
+				content: " ";
+			}
+		}
+		&.position-increased {
+			&::before {
+				content: "▲";
+				color: #0a0
+			}
+			.difference {
+				color: #0a0
+			}
+		}
+		&.position-decreased {
+			&::before {
+				content: "▼";
+				color: #a00
+			}
+			.difference {
+				color: #a00
+			}
+		}
+	}
+}

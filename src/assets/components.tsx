@@ -8,6 +8,7 @@ import SpeciesList from '../pages/SpeciesList';
 import SpeciesMissed from '../pages/SpeciesMissed';
 import Downloader from '../pages/Downloader';
 import UserSettings from '../pages/UserSettings';
+import Contribution from '../pages/Contribution';
 
 interface iComponentListItem {
   path: string
@@ -18,7 +19,7 @@ interface iComponentListItem {
 
 export const components: iComponentListItem[] = [
   { path: '/', component: <List />, exact: true },
-  { path: '/contribution', component: <SpeciesList /> },
+  { path: '/contribution', component: <Contribution /> },
   { path: '/members', component: <Members /> },
   { path: '/new-species', component: <Species /> },
   { path: '/species', component: <SpeciesList /> },

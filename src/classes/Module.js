@@ -1,12 +1,9 @@
 import React from 'react'
 import { Settings } from "../mixins/Settings";
 import settings from '../assets/settings.json';
-import defaultProjects from '../assets/projects.json';
-
-const defaults = {
-	projects: defaultProjects
-}
+import { DEFAULTS } from '../constants';
 export default class extends React.Component {
+	values = {};
 	constructor(props) {
 		super(props);
 		this.changeHandler = this.changeHandler.bind(this);
@@ -26,16 +23,18 @@ export default class extends React.Component {
 		this.initSettings(["filename", "csv"], state);
 		return state;
 	}
-	initSettings(settingsList, thisState, defaultValues = {}) {
+	usedSettings = {};
+	initSettings(settingsList, thisState, defaultValues = {}, overrideSettings = {}) {
 		settingsList.forEach(state => {
-			const setting = settings[state] || { setting: state, save: false};
-			const defValue = defaults[state] || defaultValues[state] || setting.default || "";
+			const setting = overrideSettings[state] || settings[state] || { setting: state, save: false };
+			const defValue = DEFAULTS[state] || defaultValues[state] || setting.default || "";
 			thisState[state] = setting.save ? Settings.get(state, defValue) : defValue;
 			if (!!setting.values) {
-				if (!this.values) this.values={};
 				this.values[state] = new Map(Object.entries(setting.values));
 			}
+			this.usedSettings[state] = setting;
 		});
+		console.log(thisState);
 	}
 	getValues(settingName) {
 		return this.values[settingName] || {}
@@ -44,14 +43,15 @@ export default class extends React.Component {
 	changeHandler(e) {
 		let newState = { error: null };
 		newState[e.target.name] = e.target.value.toLowerCase();
-		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
+		console.log(e.target.name, this.usedSettings[e.target.name], this.usedSettings)
+		if (!!this.usedSettings[e.target.name] && this.usedSettings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 
 	checkHandler(e) {
 		let newState = {};
 		newState[e.target.name] = e.target.checked;
-		if (!!settings[e.target.name] && settings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
+		if (!!this.usedSettings[e.target.name] && this.usedSettings[e.target.name].save) Settings.set(e.target.name, newState[e.target.name]);
 		this.setState(newState);
 	}
 	clearDatalistHandler(e) {

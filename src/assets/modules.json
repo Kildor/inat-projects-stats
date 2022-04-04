@@ -41,6 +41,15 @@
 
   },
   {
+    "url": "/contribution",
+    "component": "Contribution",
+    "title": {
+      "menu": "Вклад",
+      "list": "Вклад участников"
+    },
+    "description": "Вклад участников проекта."
+  },
+  {
     "url": "/download-observations",
     "component": "Downloader",
     "title": "Скачивание наблюдений",

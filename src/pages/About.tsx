@@ -37,6 +37,10 @@ const Content = memo(() => {
 					<h2>Changelog</h2>
 					<Changelog changelog={[
 						{
+							date: "04/04/2022",
+							changes: <>Added script to <Link to='/contribition'>calculate observers contributions</Link> to selected project.</>
+						},
+						{
 							date: "12/12/2021",
 							changes: "Allow to exclude species observed by certain users for the list of project species."
 						},
@@ -73,6 +77,10 @@ const Content = memo(() => {
 				</p>
 				<h2>Изменения</h2>
 				<Changelog changelog={[
+					{
+						date: "04.04.2022",
+						changes: <>Добавлен скрип <Link to='/contribition'>подсчёта вклада наблюдателей</Link> в тот или иной проект.</>
+					},
 					{
 						date: "12.12.2021",
 						changes: "Добавлена возможность исключать виды встреченные определёнными пользователями из списка видов проекта."
