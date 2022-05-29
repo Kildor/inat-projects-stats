@@ -19,14 +19,15 @@ export default class extends Module {
 		super();
 		this.state = this.initDefaultSettings();
 		this.initSettings(["project_id", "csv", "limit", "d1_new", "d2_new", "d1_prev", "d2_prev", "quality_grade", "date_created", "species_only", "projects",
-			"order_by", "strategy", "difference"], this.state, { date_created: false }, {
+			"order_by", "strategy", "difference", "prev_state"], this.state, { date_created: false }, {
 			order_by: {
 				setting: 'order_by', save: true, type: 'select', default: "species_count", values: {
 					species_count: "Видам",
 					observation_count: "Наблюдениям"
 				}
 			},
-			difference: { setting: 'difference', save: true, type: 'number', default: 0 }
+			difference: { setting: 'difference', save: true, type: 'number', default: 0 },
+			prev_state: { setting: 'difference', save: true, type: 'boolean', default: true }
 		});
 	}
 
@@ -86,7 +87,8 @@ export default class extends Module {
 
 		[...newObservers.ids].forEach((id, index) => {
 			data.push({
-				observer: newObservers.objects.get(id),
+				currentState: newObservers.objects.get(id),
+				prevState: prevObservers.objects.get(id),
 				currentPosition: index + 1,
 				prevPosition: prevIdsArray.indexOf(id) + 1
 			})
@@ -153,6 +155,8 @@ export default class extends Module {
 						{/* <FormControlSelect label={I18n.t("Стратегия построения списка")} name="strategy" onChange={this.changeHandler} value={this.state.strategy}
 							values={this.strategy}
 						/> */}
+						<FormControlCheckbox label={I18n.t("Показывать данные за предыдущий период")} name='prev_state' onChange={this.checkHandler}
+							checked={this.state.prev_state} />
 						<FormControl name='difference' label={I18n.t("Не показывать наблюдателей изменивших положение меньше чем на")} type='number' min={0} onChange={this.changeHandler} value={this.state.difference} />
 						{/* <FormControlCSV handler={this.checkHandler} value={this.state.csv} /> */}
 					</fieldset>
@@ -161,8 +165,11 @@ export default class extends Module {
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
 					<div className='result'>
-						<ObserverChangesList observers={this.state.data}
-							strategy={this.state.strategy} difference={this.state.difference}
+						<ObserverChangesList 
+							observers={this.state.data}
+							strategy={this.state.strategy}
+							difference={this.state.difference}
+							showPrevState={this.state.prev_state}
 						/>
 					</div>
 				}

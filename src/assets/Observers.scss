@@ -5,6 +5,14 @@ ul.observers-list {
 	display: table;
 	// border-collapse: separate;
 	// border-spacing: 5px 1px;
+	li.header {
+		display: table-row;
+		font-weight: bold;
+		> * {
+			display: table-cell;
+			padding: 4px 5px;
+		}
+	}
 	li.observer {
 		display: table-row;
 		&:nth-child(even) {
