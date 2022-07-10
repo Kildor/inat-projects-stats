@@ -3,34 +3,37 @@ import React from 'react'
 import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
-import API, { saveDatalist } from '../mixins/API';
-import TaxonsList from '../mixins/TaxonsList';
-import { Error } from '../mixins/Error';
-import Form from '../mixins/Form/Form';
-import Module from '../classes/Module';
-import I18n from '../classes/I18n';
-import { FormControl, FormControlCheckbox, FormControlCSV } from '../mixins/Form/FormControl';
-import { DataControlsBlock } from '../mixins/Form/FormControlSets';
+import API, { saveDatalist } from 'mixins/API';
+import TaxonsList from 'mixins/TaxonsList';
+import { Error } from 'mixins/Error';
+import Form from 'mixins/Form/Form';
+import Module from 'classes/Module';
+import I18n from 'classes/I18n';
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlTaxon } from '../mixins/Form/FormControl';
+import { DataControlsBlock } from 'mixins/Form/FormControlSets';
 import { Loader } from 'mixins/Loader';
+import { Settings } from 'mixins/Settings';
 
 export default class extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
-		this.initSettings(["project_id", "user_id", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
-			"users", "projects"], this.state, {
+		this.initSettings(["project_id", "user_id", "taxon", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
+			"users", "projects", "taxons"], this.state, {
 			"date_created": true
 		});
+		this.updateState = this.setState.bind(this);
 	}
 
 	async counter() {
-		const { project_id, user_id, d1, d2, date_created, show_first, species_only } = this.state;
+		const { project_id, user_id, d1, d2, date_created, show_first, species_only, taxon } = this.state;
 		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
 		const customParams = {};
 		if (species_only) {
 			customParams['lrank'] = 'species';
 			customParams['hrank'] = 'species';
 		}
+		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
 
 		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, date_created, this.setStatusMessage, customParams);
 		if (newTaxa.total === 0) return [];
@@ -73,12 +76,12 @@ export default class extends Module {
 	}
 
 	storageHandler() {
-		const state = {};
-		state.users = saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users');
-		state.projects = saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
-		return state;
+		Settings.set('taxons', this.state.taxons);
+		return {
+			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+		};
 	}
-
 	render() {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
@@ -91,6 +94,10 @@ export default class extends Module {
 						<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='user_id' onChange={this.changeHandler}
 							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users">
 						</FormControl>
+						<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
+							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
+							updateState={this.updateState}
+						/>
 						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 							checked={this.state.species_only} />
 					</fieldset>

@@ -1,8 +1,8 @@
 import React from 'react'
-import Page from '../mixins/Page';
+import Page from 'mixins/Page';
 import { Link } from 'react-router-dom';
-import I18n from '../classes/I18n';
-import '../assets/pages/page-404.scss'
+import I18n from 'classes/I18n';
+import 'assets/pages/page-404.scss'
 
 export default () => {
 	return (
