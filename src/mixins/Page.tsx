@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo, ReactChildren } from 'react'
+import React, { FunctionComponent, memo, ReactChildren, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 
 import 'assets/pages/Page.scss';
@@ -33,8 +33,12 @@ const Header = memo(({title, backlink, infoText, defCollapsed}: iHeader) => {
 });
 
 export const Page: FunctionComponent<iPage> = memo(({title, children, backlink='/', className, pageTitle=title, infoText, defCollapsed})=>{
-	if (!!pageTitle) document.title = pageTitle;
-	else if(!!title) document.title = title;
+	useEffect(() => {
+		if (!!pageTitle) document.title = pageTitle;
+		else if(!!title) document.title = title;
+	},
+		[pageTitle, title]
+	);
 
 	return (
 		<div className={"page"+(!!className ? " "+className : "")}>
