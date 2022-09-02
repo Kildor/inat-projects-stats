@@ -42,6 +42,13 @@ ul.observers-list {
 				color: gold;
 			}
 		}
+		&.position-retired {
+			&::before {
+				content: "−";
+				font-weight: bold;
+				color: black;
+			}
+		}
 		&.position-same {
 			&::before {
 				content: " ";

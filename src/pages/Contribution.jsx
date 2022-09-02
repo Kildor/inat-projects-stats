@@ -27,7 +27,8 @@ export default class extends Module {
 				}
 			},
 			difference: { setting: 'difference', save: true, type: 'number', default: 0 },
-			prev_state: { setting: 'difference', save: true, type: 'boolean', default: true }
+			prev_state: { setting: 'prev_state', save: true, type: 'boolean', default: true },
+			show_retired: { setting: 'show_retired', save: true, type: 'boolean', default: true },
 		});
 	}
 
@@ -93,6 +94,16 @@ export default class extends Module {
 				prevPosition: prevIdsArray.indexOf(id) + 1
 			})
 		});
+		[...prevObservers.ids].forEach(id => {
+			if (!newObservers.ids.has(id)) {
+				data.push({
+					currentState: null,
+					prevState: prevObservers.objects.get(id),
+					currentPosition: 0,
+					prevPosition: prevIdsArray.indexOf(id) + 1
+				})
+			}
+		})
 		return data;
 
 
@@ -170,6 +181,7 @@ export default class extends Module {
 							strategy={this.state.strategy}
 							difference={this.state.difference}
 							showPrevState={this.state.prev_state}
+							showRetired={this.state.show_retired}
 						/>
 					</div>
 				}
