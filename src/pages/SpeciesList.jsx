@@ -42,7 +42,13 @@ export default class extends Module {
 		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 		if (!!place_id) customParams['place_id'] = place_id;
 
-		console.dir(contribution)
+		if (contribution === '3' && user_id !== '') {
+			customParams['unobserved_by_user_id'] = user_id;
+			let allTaxa = await API.fetchSpecies(project_id, null, null, null, false, this.setStatusMessage, customParams);
+
+			return [...allTaxa.ids].map(id => allTaxa.objects.get(id));
+		}
+
 		let allTaxa = await API.fetchSpecies(project_id, contribution !== '0' ? '' : user_id, null, null, false, this.setStatusMessage, customParams);
 
 		if (contribution !== '0' && user_id !== '') {
@@ -132,7 +138,7 @@ export default class extends Module {
 							date_any={this.state.date_any}
 							place_id={this.state.place_id}
 							project_id={this.state.project_id}
-							user_id={this.state.contribution !== '2' && this.state.user_id}
+							user_id={!['2', '3'].includes(this.state.contribution) && this.state.user_id}
 							csv={this.state.csv}
 							filename={this.state.filename} />
 					</div>
