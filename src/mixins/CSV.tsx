@@ -15,7 +15,7 @@ const download = (csv: string, filename?: string) => {
 	FileSaver.saveAs(blob, filename || "stats.csv");
 }
 export const CSV = ({ header, children, useRank = true, filename = "stats.csv" }: CSVProps): ReactElement => {
-	let value = header(useRank) +
+	let value = header(useRank) + '\n' +
 		children.map((element: iCSVConvert, index: number) => element.toCSV(useRank ? index : false)).join("\n");
 	return (
 		<div className="csv-wrapper" style={{ maxWidth: "90vw" }}>

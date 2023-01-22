@@ -2,10 +2,10 @@ import { ObservationComment } from "./ObservationComment";
 import { ObservationIdentification } from "./ObservationIdentification";
 import { Taxon } from "./Taxon";
 import { User } from "./User";
-import { DateTimeFormat } from "mixins/API";
+import { DateTimeFormat, makeCsvString } from "mixins/API";
 import { iCSVConvert, JSONObservationObject } from "interfaces";
 
-export const getCSVHeader = () => (`ID\tName\tCommon name\tQuality grade\tData\tCoordinates\tLocation\tUser\n`);
+export const getCSVHeader = () => makeCsvString('ID', 'Name', 'Common name', 'Quality grade', 'Observed', 'Uploaded', 'Coordinates', 'Location', 'User');
 
 export class Observation implements iCSVConvert {
 	created: Date;
@@ -23,9 +23,20 @@ export class Observation implements iCSVConvert {
 
 	toCSV(onlyObservations = false) {
 		let str = '';
-		str += `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.quality_grade}\t${DateTimeFormat.format(this.created)}\t`
-			+ `${!!this.coordinates ? this.coordinates.toString() : 'coordinates missed'}${this.geoprivacy === null ? '' : ' (' + this.geoprivacy + ')'}\t"${this.location}"\t${this.user.fullName}`;
-		if (onlyObservations !== false) str += this.activity.reduce((prev, activity) => prev += activity.toCSV(), '');
+		str += makeCsvString(
+			this.id,
+			this.name,
+			this.commonName ?? '',
+			this.quality_grade,
+			DateTimeFormat.format(this.observed),
+			DateTimeFormat.format(this.created),
+			`${!!this.coordinates ? this.coordinates.toString() : 'Coordinates missed'}${this.geoprivacy === null ? '' : ' (' + this.geoprivacy + ')'}`,
+			this.location ?? '',
+			this.user.fullName,
+		);
+
+		if (onlyObservations !== false) str += '\t' + makeCsvString(...this.activity.map((activity) => activity.toCSVString()));
+
 		return str;
 	}
 	constructor(jsonObservation: JSONObservationObject) {

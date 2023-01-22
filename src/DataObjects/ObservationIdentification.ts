@@ -4,9 +4,6 @@ import { Taxon } from "./Taxon";
 import { User } from "./User";
 
 export class ObservationIdentification implements iCSVConvert, iIdentification {
-	toCSV() {
-		return `\t"${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}"`;
-	}
 	taxon: Taxon;
 	id: number;
 	user: User;
@@ -23,6 +20,9 @@ export class ObservationIdentification implements iCSVConvert, iIdentification {
 		this.created = new Date(jsonComment.created_at);
 		this.current = jsonComment.current;
 		this.disagreement = jsonComment.disagreement;
-
 	}
+
+	toCSV = () => '\t' + this.toCSVString();
+
+	toCSVString = () => `${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}`;
 }

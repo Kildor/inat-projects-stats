@@ -1,15 +1,24 @@
 import { iCSVConvert, JSONTaxonObject } from "interfaces";
+import { makeCsvString } from "mixins/API";
 
-export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tName\tCommon name\tRank\tCount\n`);
+export const getCSVHeader = (useRank: boolean) => makeCsvString(
+	useRank ? 'Rank' : undefined,
+	'ID',
+	'Name',
+	'Common name',
+	'Rank',
+	'Count');
 
 export class Taxon implements iCSVConvert {
-	toCSV(index: number | false) {
-		let str = '';
-		if (typeof index === 'number') {
-			str += `${index + 1}\t`;
-		}
-		return str + `${this.id}\t"${this.name}"\t${!!this.commonName ? '"' + this.commonName + '"' : ''}\t${this.rank}\t${this.count}`;
-	}
+	toCSV = (index: number | false) => makeCsvString(
+		typeof index === 'number' ? index + 1 : null,
+		this.id,
+		this.name,
+		this.commonName,
+		this.rank,
+		this.count
+	);
+
 	id: number;
 	name: string;
 	rank: string;

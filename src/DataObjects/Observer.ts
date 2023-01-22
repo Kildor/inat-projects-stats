@@ -1,4 +1,5 @@
 import { iCSVConvert, JSONUserObject } from "interfaces";
+import { makeCsvString } from "mixins/API";
 import { User } from "./User";
 
 export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tLogin\tName\tObservations\tSpecies\n`);
@@ -18,13 +19,12 @@ export class Observer extends User implements iCSVConvert {
 		this.species = species_count;
 	}
 
-	toCSV(index: number | false) {
-		let str = '';
-		if (typeof index === 'number') {
-			str += `${index + 1}\t`;
-		}
-		return str + `${this.id}\t${this.login}\t${!!this.name ? '"' + this.name + '"' : ''}\t${this.observations}\t${this.species}`;
-	}
-
-
+	toCSV = (index: number | false) => makeCsvString(
+		typeof index === 'number' ? index + 1 : null,
+		this.id,
+		this.login,
+		this.name ?? '',
+		this.observations,
+		this.species
+	);
 }

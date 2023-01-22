@@ -1,10 +1,8 @@
 import { User } from "./User";
 import { iComment, iCSVConvert, JSONCommentObject } from "interfaces";
+import { DateTimeFormat } from "mixins/API";
 
 export class ObservationComment implements iCSVConvert, iComment {
-	toCSV() {
-		return `\t"${this.user.fullName}, ${this.created.toLocaleDateString()}: ${this.comment}"`;
-	}
 	id: number;
 	user: User;
 	created: Date;
@@ -17,4 +15,8 @@ export class ObservationComment implements iCSVConvert, iComment {
 		this.created = new Date(jsonComment.created_at);
 
 	}
+
+	toCSV = () => '\t' + this.toCSVString();
+	
+	toCSVString = () => `${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.comment ?? ''}`;
 }

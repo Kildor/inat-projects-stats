@@ -1,6 +1,12 @@
 import { iCSVConvert, JSONUserObject } from "interfaces";
+import { getTitleForUserRole, makeCsvString } from "mixins/API";
 
-export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tLogin\tName\tRole\n`);
+export const getCSVHeader = (useRank: boolean) => makeCsvString(
+	useRank ? 'Rank' : undefined,
+	'ID',
+	'Login',
+	'Name',
+	'Role');
 
 export class User implements iCSVConvert {
 	id: number;
@@ -25,12 +31,11 @@ export class User implements iCSVConvert {
 		return fullName;
 	}
 
-	toCSV(index: number | false) {
-		let str = '';
-		if (typeof index === 'number') {
-			str += `${index + 1}\t`;
-		}
-		return str + `${this.id}\t${this.login}\t${!!this.name ? '"' + this.name + '"' : ''}\t${this.role}`;
-	}
-
+	toCSV = (index: number | false) => makeCsvString(
+		typeof index === 'number' ? index + 1 : null,
+		this.id,
+		this.login,
+		this.name ?? '',
+		getTitleForUserRole(this.role)
+	);
 }

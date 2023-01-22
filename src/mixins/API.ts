@@ -124,6 +124,7 @@ API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string,
 	taxons.total = totalCount;
 	return taxons;
 }
+
 API.fetchMembers = async (project_id: string, callback: Function) => {
 	let users: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
@@ -347,3 +348,6 @@ export const getTitleForUserRole = (role: string | null): string => {
 
 	return '';
 }
+
+export const makeCsvString = (...args: Array<string | number | null | undefined>) =>
+	args.filter(arg => !!arg).map(arg => typeof arg === 'string' ? `"${arg.replace(/(?<!\\)"/g, '\\"')}"` : arg).join('\t');
