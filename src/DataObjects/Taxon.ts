@@ -14,7 +14,7 @@ export class Taxon implements iCSVConvert {
 		typeof index === 'number' ? index + 1 : null,
 		this.id,
 		this.name,
-		this.commonName,
+		this.commonName || '',
 		this.rank,
 		this.count
 	);

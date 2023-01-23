@@ -350,4 +350,4 @@ export const getTitleForUserRole = (role: string | null): string => {
 }
 
 export const makeCsvString = (...args: Array<string | number | null | undefined>) =>
-	args.filter(arg => !!arg).map(arg => typeof arg === 'string' ? `"${arg.replace(/(?<!\\)"/g, '\\"')}"` : arg).join('\t');
+	args.filter(arg => arg !== null && arg !== undefined).map(arg => typeof arg === 'string' ? `"${arg.replace(/(?<!\\)"/g, '\\"')}"` : arg).join('\t');
