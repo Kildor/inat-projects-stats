@@ -48,8 +48,11 @@ const ActivityItem: React.FC<{ activity: ObservationComment | ObservationIdentif
 const ActivityIdentification: React.FC<{ activity: ObservationIdentification }> = ({ activity })=>{
 	const isCurrent = 'current' in activity && activity.current;
 	let className = 'identification ' + (isCurrent ? 'identification-current' : 'identification-outdated');
+	if (!!activity.vision) className+= ' has-vision';
 	if (!!activity.taxon.commonName) className+= ' has-common-name';
 	return <ActivityItem className={className} activity={activity}>
+		{!isCurrent && <span role='img' title={I18n.t('Отозванная идентификация')} aria-label={I18n.t('Отозванная идентификация')}>❌</span>}
+		{activity.vision && <span role='img' title={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')} aria-label={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')}>✨</span>}
 		<a className='taxon-link' href={'https://www.inaturalist.org/taxa/'+activity.taxon.id}>{activity.taxon.commonName} <em>{activity.taxon.name}</em></a>
 	</ActivityItem>
 }

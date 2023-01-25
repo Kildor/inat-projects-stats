@@ -64,10 +64,15 @@ li.quality {
 					position: absolute;
 					margin: 0.4em 0 0 -2em;
 				}
-				// &::marker {
-				// content: "👁‍🗨❌            ";
-				// letter-spacing: -1.4em;
-				// }
+			}
+			&.has-vision::after {
+				content: "✨";
+				font-size: 11px;
+				width: 0;
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				margin: 0.4em 0 0 -1.2em;
 			}
 		}
 		.comment {

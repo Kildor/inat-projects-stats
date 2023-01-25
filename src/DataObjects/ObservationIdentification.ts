@@ -11,6 +11,7 @@ export class ObservationIdentification implements iCSVConvert, iIdentification {
 	comment: string | null;
 	current: boolean;
 	disagreement: boolean;
+	vision: boolean;
 
 	constructor(jsonComment: JSONIdentificationObject) {
 		this.id = jsonComment.id;
@@ -20,9 +21,10 @@ export class ObservationIdentification implements iCSVConvert, iIdentification {
 		this.created = new Date(jsonComment.created_at);
 		this.current = jsonComment.current;
 		this.disagreement = jsonComment.disagreement;
+		this.vision = jsonComment.vision;
 	}
 
 	toCSV = () => '\t' + this.toCSVString();
 
-	toCSVString = () => `${!this.current ? "[Dismissed] " : ""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}`;
+	toCSVString = () => `${!this.current ? "[Dismissed] " : ""}${this.vision ? "[V] ":""}${this.user.fullName}, ${DateTimeFormat.format(this.created)}: ${this.taxon.fullName} ${!!this.comment ? '\n' + this.comment + '' : ''}`;
 }
