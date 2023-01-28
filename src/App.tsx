@@ -1,48 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import 'assets/App.scss';
 import { Footer } from 'mixins/Footer';
 import { components } from 'assets/components';
 import { Header } from 'mixins/Header';
-import I18n, { getLanguage, saveLanguage } from 'classes/I18n';
+import I18n, { getLanguage } from 'classes/I18n';
 import { LanguageContext } from 'mixins/LanguageContext';
 import { Loader } from 'mixins/Loader';
+import { useLanguageContext } from 'hooks';
 
 const language = getLanguage();
 
 I18n.initDefault(language.code);
-
-const App = () => {
-  const [currentLanguage, setCurrentLanguage] = useState(language.code);
-  const [languageLoaded, setLanguageLoaded] = useState(false);
-  useEffect(() => {
-    setLanguageLoaded(false);
-    fetch(`languages/${currentLanguage}.json`).then((response) => response.json()).then(json => {
-      I18n.init(json.strings);
-    }).finally(() => {
-      setLanguageLoaded(true);
-    })
-  }, [currentLanguage]);
-
-  const context = {
-    changeLanguage: (languageCode: string) => {
-      I18n.initDefault(languageCode);
-      setCurrentLanguage(languageCode);
-      saveLanguage(languageCode);
-    },
-    code: currentLanguage
-  };
-
-  const Screen = languageLoaded ? InnerApp : AppLoader;
-
-  return (
-    <LanguageContext.Provider value={context}>
-      <div className="App">
-        <Screen />
-      </div>
-    </LanguageContext.Provider>
-  );
-};
 
 const AppLoader = () => (
   <div className="AppLoader">
@@ -61,5 +30,20 @@ const InnerApp: React.FC = () => (
     <Footer />
   </Router>
 );
+
+const App = () => {
+
+  const { languageLoaded, context } = useLanguageContext(language);
+
+  const Screen = languageLoaded ? InnerApp : AppLoader;
+
+  return (
+    <LanguageContext.Provider value={context}>
+      <div className="App">
+        <Screen />
+      </div>
+    </LanguageContext.Provider>
+  );
+};
 
 export default App;
