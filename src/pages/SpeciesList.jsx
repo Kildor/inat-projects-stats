@@ -8,7 +8,7 @@ import { Loader } from 'mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
 import { Error } from '../mixins/Error';
 import Form from '../mixins/Form/Form';
-import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect } from '../mixins/Form/FormControl';
+import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { DataControlsBlock } from '../mixins/Form/FormControlSets';
@@ -17,16 +17,23 @@ export default class extends Module {
 		super(props);
 		this.state = this.initDefaultSettings();
 		this.state.additional = '';
-		this.initSettings(["project_id", "user_id", "place_id", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "d1", "d2", "date_created", "date_any"], this.state, {
+		this.initSettings(["project_id", "user_id", "place_id", "taxon", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "taxons", "d1", "d2", "date_created", "date_any"], this.state, {
 			date_any: true
 		});
+		this.updateState = this.setState.bind(this);
 	}
 
 	async counter() {
-		const { project_id, user_id, place_id, limit, contribution, species_only, additional } = this.state;
+		const { project_id, user_id, place_id, limit, species_only, additional, taxon } = this.state;
+		let {contribution} = this.state;
+		if (!!user_id && !project_id) {
+			contribution = '0';
+		}
+		
 		this.setState({ loadingTitle: I18n.t("Загрузка видов") });
 		let customParams = { ...fillDateParams(this.state) };
-
+		
+		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
 		if (!!additional) {
 			additional.split('&').forEach(param => {
 				param = param.split('=');
@@ -107,11 +114,15 @@ export default class extends Module {
 							comment={I18n.t("Можно вводить несколько идентификаторов через запятую.")}
 							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" />
 						<FormControlSelect label={I18n.t("Вклад пользователя")} name='contribution' onChange={this.changeHandler}
-							className={!!this.state.user_id ? '' : 'hidden'}
+							className={(!!this.state.user_id && !!this.state.project_id ) ? '' : 'hidden'}
 							value={this.state.contribution} values={this.getValues("contribution")}
 						/>
 						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' />
 						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
+						<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
+							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
+							updateState={this.updateState}
+						/>
 						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 							checked={this.state.species_only} />
 						<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler}
