@@ -9,6 +9,11 @@
 		"default": "",
 		"save": false
 	},
+	"place_id": {"setting": "place_id",
+		"type": "string",
+		"default": "",
+		"save": false
+	},
 	"d1": {"setting": "d1",
 		"type": "string",
 		"default": "2020-06-01",
@@ -108,6 +113,11 @@
 		"save": true
 	},
 	"taxons": {"setting": "taxons",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"places": {"setting": "places",
 		"type": "array",
 		"default": [],
 		"save": true

@@ -19,7 +19,7 @@ export default class UserSettings extends Module {
 			error: null,
 		};
 		this.initSettings(["default_place", "default_language", 
-			"projects", "users", "taxons"], this.state, {
+			"projects", "users", "taxons", "places"], this.state, {
 			"projects": defaultProjects
 		});
 		this.updateState = (state) => this.setState(state);
@@ -91,12 +91,12 @@ export default class UserSettings extends Module {
 						handler={this.changeMultilineHandler}
 							comment={<>{I18n.t("Записи разделяются переводом строки.")}<br />{I18n.t("Вначале идентификатор, затем, через двоеточие и пробел, отображаемое название.")}</>}
 					/>
-{/* 					<FormControlMultiline
+ 					<FormControlMultiline
 						name='places'
 						label={I18n.t("Сохранённые места")}
 						value={this.state.places}
 						handler={this.changeMultilineHandler}
-					/> */}
+					/>
 					</fieldset>
 					</Form>
 					<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />

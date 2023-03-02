@@ -97,7 +97,8 @@ export default class extends Module {
 	storageHandler() {
 		return {
 			users: saveDatalist(this.state.user_id, this.state.user_id, this.state.users, 'users'),
-			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects')
+			projects: saveDatalist(this.state.project_id, this.state.project_id, this.state.projects, 'projects'),
+			places: saveDatalist(this.state.place_id, this.state.place_id, this.state.places, 'places')
 		};
 	}
 
@@ -117,12 +118,15 @@ export default class extends Module {
 							className={(!!this.state.user_id && !!this.state.project_id ) ? '' : 'hidden'}
 							value={this.state.contribution} values={this.getValues("contribution")}
 						/>
-						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' />
-						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
+						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' comment={I18n.t("В поле места требуется вводить только цифровой идентификатор.")} />
 						<FormControlTaxon label={I18n.t("Ограничиться таксоном")} name="taxon" onChange={this.changeHandler}
 							value={this.state.taxon} list={this.state.taxons} listName="taxons" clearDatalistHandler={this.clearDatalistHandler}
 							updateState={this.updateState}
 						/>
+					</fieldset>
+					<fieldset>
+						<legend>{I18n.t("Прочее")}</legend>
+						<FormControlLimit handler={this.changeHandler} value={this.state.limit} />
 						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 							checked={this.state.species_only} />
 						<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler}
