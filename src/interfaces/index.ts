@@ -19,6 +19,14 @@ export interface iLanguage {
 	code: string
 }
 
+export interface iLanguageInfo {
+	strings: Record<string, string | string[]>
+	code: string,
+	name: string,
+	nplurals: number,
+	plural: string,
+}
+
 export interface iLookupPlace {
 	id: number
 	name: string
