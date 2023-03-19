@@ -34,7 +34,13 @@ interface FilterFunction {
 }
 
 
-const ActivityItem: React.FC<{ activity: ObservationComment | ObservationIdentification; className: string}> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{
+interface ActivityItemPros {
+	activity: ObservationComment | ObservationIdentification;
+	className: string;
+	children?: React.ReactNode;
+}
+
+const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{
 	return (
 		<li key={id} className={className}>
 			{DateTimeFormat.format(created)}, <strong>{login}:</strong> {children}<br />

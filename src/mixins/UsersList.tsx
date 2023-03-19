@@ -13,7 +13,7 @@ export interface UsersListProps {
 	filename?: string | "users.csv"
 }
 
-export default ({ users, total, csv = false, filename }: UsersListProps) => {
+export const UsersList: React.FC<UsersListProps> = ({ users, total, csv = false, filename }) => {
 	if (!users || users.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -35,4 +35,7 @@ export default ({ users, total, csv = false, filename }: UsersListProps) => {
 			{list}
 		</>
 	)
-} 
+};
+UsersList.displayName = 'UsersList';
+
+export default UsersList;

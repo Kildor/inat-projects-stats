@@ -1,4 +1,4 @@
-import React, { FunctionComponent, memo, ReactChildren, useEffect } from 'react'
+import React, { FunctionComponent, memo, ReactNode, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 
 import 'assets/pages/Page.scss';
@@ -8,16 +8,16 @@ import { Note } from './Note';
 interface iHeader {
 	title?: string
 	backlink?: string | false
-	infoText?: ReactChildren | string
+	infoText?: ReactNode
 	defCollapsed?: boolean | true
 }
 interface iPage {
 	title?: string
-	children: ReactChildren | JSX.Element
+	children: ReactNode
 	pageTitle?: string
 	backlink?: string | false
 	className?: string
-	infoText?: ReactChildren | string
+	infoText?: ReactNode
 	defCollapsed?: boolean | true
 }
 
