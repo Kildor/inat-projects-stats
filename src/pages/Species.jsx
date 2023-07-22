@@ -14,7 +14,7 @@ import { DataControlsBlock } from 'mixins/Form/FormControlSets';
 import { Loader } from 'mixins/Loader';
 import { Settings } from 'mixins/Settings';
 
-export default class extends Module {
+export default class Species extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();

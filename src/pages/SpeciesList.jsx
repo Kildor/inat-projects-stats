@@ -12,12 +12,12 @@ import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, For
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { DataControlsBlock } from '../mixins/Form/FormControlSets';
-export default class extends Module {
+export default class SpeciesList extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
 		this.state.additional = '';
-		this.initSettings(["project_id", "user_id", "place_id", "taxon", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "taxons", "d1", "d2", "date_created", "date_any"], this.state, {
+		this.initSettings(["project_id", "user_id", "place_id", "taxon", "limit", "species_only", "quality_grade", "contribution", "users", "projects", "taxons", "places", "d1", "d2", "date_created", "date_any"], this.state, {
 			date_any: true
 		});
 		this.updateState = this.setState.bind(this);

@@ -8,7 +8,7 @@ import SpeciesList from '../pages/SpeciesList';
 import SpeciesMissed from '../pages/SpeciesMissed';
 import Downloader from '../pages/Downloader';
 import UserSettings from '../pages/UserSettings';
-import Contribution from '../pages/Contribution';
+import { Contribution } from '../pages/Contribution';
 
 interface iComponentListItem {
   path: string

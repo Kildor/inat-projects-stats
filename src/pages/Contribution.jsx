@@ -14,7 +14,7 @@ import { ObserverChangesList, Strategy } from 'mixins/ObserverChangesList';
 
 
 
-export default class extends Module {
+export class Contribution extends Module {
 	constructor() {
 		super();
 		this.state = this.initDefaultSettings();
@@ -188,4 +188,4 @@ export default class extends Module {
 			</Page>
 		);
 	}
-}
+};

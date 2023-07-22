@@ -2,7 +2,7 @@ import React from 'react'
 import { Settings } from "../mixins/Settings";
 import settings from '../assets/settings.json';
 import { DEFAULTS } from '../constants';
-export default class extends React.Component {
+export default class Module extends React.Component {
 	values = {};
 	constructor(props) {
 		super(props);

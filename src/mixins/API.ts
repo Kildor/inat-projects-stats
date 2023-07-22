@@ -93,7 +93,7 @@ API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string,
 	url += addCustomParams(fillDateParams({ d1: dateFrom, d2: dateTo, date_created: dateCreated }));
 	url += addCustomParams(customParams);
 
-	let limit = customParams.limit || 0;
+	let limit = customParams.limit as number || 0;
 	let totalCount = 0;
 	let page = 0;
 	let perPage = 0;
@@ -329,7 +329,7 @@ export const fillDateParams = ({ d1, d2, date_created, date_any = false }: { d1?
 	return dateParams;
 }
 
-export const saveDatalist = (name: string, title = name, datalist: iDataListItem[], settingName: string): iDataListItem[] => {
+export const saveDatalist = (name: string, title = name, datalist: iDataListItem[] = [], settingName: string): iDataListItem[] => {
 	if (name.trim().length > 2 && !datalist.some(item => item.name === name)) {
 		datalist.push({ name: name, title: title });
 		datalist = API.filterDatalist(datalist);
