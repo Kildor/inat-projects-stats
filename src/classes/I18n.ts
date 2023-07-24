@@ -44,7 +44,7 @@ const I18n = {
 				throw new Error('Wrong plural function')
 			}
 			// eslint-disable-next-line no-eval
-			this.plural = eval(`n => {const plural = ${languageInfo.plural}; return plural ? 1 : ( plural ? plural : 0); }`);
+			this.plural = eval(`n => {const plural = ${languageInfo.plural}; return plural ? plural : 0; }`);
 		} catch (e) {
 			console.error(e);
 
