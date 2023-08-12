@@ -26,7 +26,7 @@ export default class SpeciesList extends Module {
 	async counter() {
 		const { project_id, user_id, place_id, limit, species_only, additional, taxon } = this.state;
 		let {contribution} = this.state;
-		if (!!user_id && !project_id) {
+		if (!!user_id && !project_id && !place_id) {
 			contribution = '0';
 		}
 		
@@ -115,7 +115,7 @@ export default class SpeciesList extends Module {
 							comment={I18n.t("Можно вводить несколько идентификаторов через запятую.")}
 							value={this.state.user_id} list={this.state.users} clearDatalistHandler={this.clearDatalistHandler} listName="users" />
 						<FormControlSelect label={I18n.t("Вклад пользователя")} name='contribution' onChange={this.changeHandler}
-							className={(!!this.state.user_id && !!this.state.project_id ) ? '' : 'hidden'}
+							className={(!!this.state.user_id && (!!this.state.project_id || !!this.state.place_id) ) ? '' : 'hidden'}
 							value={this.state.contribution} values={this.getValues("contribution")}
 						/>
 						<FormControl label={I18n.t("Место")} type='text' name='place_id' onChange={this.changeHandler} value={this.state.place_id} list={this.state.places} clearDatalistHandler={this.clearDatalistHandler} listName='places' comment={I18n.t("В поле места требуется вводить только цифровой идентификатор.")} />
