@@ -9,7 +9,7 @@ import { Error } from 'mixins/Error';
 import Form from 'mixins/Form/Form';
 import Module from 'classes/Module';
 import I18n from 'classes/I18n';
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlTaxon } from '../mixins/Form/FormControl';
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import { DataControlsBlock } from 'mixins/Form/FormControlSets';
 import { Loader } from 'mixins/Loader';
 import { Settings } from 'mixins/Settings';
@@ -18,7 +18,7 @@ export default class Species extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
-		this.initSettings(["project_id", "user_id", "taxon", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
+		this.initSettings(["project_id", "user_id", "taxon", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only", "quality_grade",
 			"users", "projects", "taxons"], this.state, {
 			"date_created": true
 		});
@@ -34,6 +34,7 @@ export default class Species extends Module {
 			customParams['hrank'] = 'species';
 		}
 		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
+		if (!!this.state.quality_grade) customParams['quality_grade'] = this.state.quality_grade;
 
 		const newTaxa = await API.fetchSpecies(project_id, user_id, d1, d2, date_created, this.setStatusMessage, customParams);
 		if (newTaxa.total === 0) return [];
@@ -100,6 +101,11 @@ export default class Species extends Module {
 						/>
 						<FormControlCheckbox label={I18n.t("Выводить только виды")} name='species_only' onChange={this.checkHandler}
 							checked={this.state.species_only} />
+						<FormControlSelect label={I18n.t("Статус наблюдения")} name="quality_grade" onChange={this.changeHandler}
+							value={this.state.quality_grade} values={this.getValues("quality_grade")}
+						/>
+						<FormControl label={I18n.t("Дополнительные параметры")} type='text' name='additional' onChange={this.changeHandler}
+							value={this.state.additional} ></FormControl>
 					</fieldset>
 					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} >
 						<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
