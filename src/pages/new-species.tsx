@@ -138,7 +138,7 @@ export const NewSpecies: React.FC = () => {
 	return (
 		<Page title={I18n.t('Новые виды')} className='page-newSpecies' infoText={I18n.t("pages.new-species.note.text")}>
 			<Form
-				initialValues={initialValues}
+				initialValues={values}
 				onSubmit={submitHandler}
 				render={(props) => (<NewSpeciesForm {...props} usedSettings={usedSettings} optionValues={optionValues} onChangeHandler={onChangeHandler} />
 				)}

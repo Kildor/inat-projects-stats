@@ -42,21 +42,23 @@ export const ProjectMembers: React.FC = () => {
 	const { getStatus, setStatus, setMessage, show: loading, setShow: setLoading } = useStatusMessageContext();
 
 	const { values: initialValues, onChangeHandler } = useInitialValues(['project_id', 'csv']);
+	const [values, setValues] = useState<ProjectMembersFields>(initialValues);
 
 	const filename = useRef<string>('state.csv');
 
 	const [data, setData] = useState<{ members: Array<User> | null, total: number }>({ members: [], total: 0 });
-	const [presentationSettings, setPresentation] = useState<PresentationSettingsList & { second: boolean }>({ csv: initialValues!.csv, second: true });
+	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
 	const [error, setError] = useState<string>('');
 
 	const { statusMessage, statusTitle } = getStatus();
 
-	const submitHandler = useCallback((values: ProjectMembersFields): void => {
-		filename.current = values.project_id + '-members.csv';
+	const submitHandler = useCallback((newValues: ProjectMembersFields): void => {
+		setValues(newValues);
+		filename.current = newValues.project_id + '-members.csv';
 		setStatus({ title: I18n.t("Загрузка участников") });
 		setLoading(true);
 
-		API.fetchMembers(values.project_id, setMessage)
+		API.fetchMembers(newValues.project_id, setMessage)
 			.then(members => ({ total: members.total, members: [...members.ids].filter(id => members.objects.has(id)).map(id => members.objects.get(id)!) })).then(data => {
 				if (data.members) {
 					setData(data);
@@ -75,16 +77,16 @@ export const ProjectMembers: React.FC = () => {
 	return (
 		(<Page title={I18n.t("Участники проекта")} className='page-members'>
 			<Form
-				initialValues={initialValues}
+				initialValues={values}
 				onSubmit={submitHandler}
 				render={(props) => <ProjectMembersForm {...props} onChangeHandler={onChangeHandler} />}
 			/>
-			<PresentationSettingsComponent setPresentation={setPresentation} values={{ ...presentationSettings }} onChangeHandler={onChangeHandler} />
+			<PresentationSettingsComponent setPresentation={setPresentation} values={{ csv }} onChangeHandler={onChangeHandler} />
 			<Loader title={statusTitle} message={statusMessage} show={loading} />
 			<Error error={error} />
 			{!loading && data && (
 				<div className='result'>
-					<UsersList users={data.members} total={data.total} csv={presentationSettings.csv} filename={filename.current} />
+					<UsersList users={data.members} total={data.total} csv={csv} filename={filename.current} />
 				</div>
 			)}
 		</Page>)

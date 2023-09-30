@@ -145,7 +145,7 @@ export const MissedSpecies: React.FC = () => {
 	return (
 		<Page title={I18n.t("Пропущенные виды")} className='page-listSpecies' infoText={InfoText}>
 			<Form
-				initialValues={initialValues}
+				initialValues={values}
 				onSubmit={submitHandler}
 				render={(props) => (<MissedSpeciesForm {...props} onChangeHandler={onChangeHandler} optionValues={optionValues} />
 				)}
