@@ -53,9 +53,9 @@ export interface iModule {
 	note?: string;
 }
 
-export interface iObjectsList {
+export interface iObjectsList<T> {
 	ids: Set<number>
-	objects: Map<number, object | undefined | null>
+	objects: Map<number, T>
 	total: number
 }
 
@@ -67,7 +67,7 @@ export interface iDataListItem {
 export interface iDataList {
 	list?: Array<iDataListItem>;
 	id: string;
-	clearDatalistHandler?: (e: React.MouseEvent) => void;
+	clearDatalistHandler?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 	listName?: string;
 }
 
@@ -76,4 +76,6 @@ export interface iCSVConvert {
 }
 
 export * from './FormControlTypes';
-export * from './JSON'
+export * from './JSON';
+export * from './form';
+export * from './settingsTypes';

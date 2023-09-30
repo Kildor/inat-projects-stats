@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useMemo } from 'react'
 import FileSaver from 'file-saver'
 import { iCSVConvert } from 'interfaces'
 import I18n from 'classes/I18n'
@@ -15,8 +15,10 @@ const download = (csv: string, filename?: string) => {
 	FileSaver.saveAs(blob, filename || "stats.csv");
 }
 export const CSV = ({ header, children, useRank = true, filename = "stats.csv" }: CSVProps): ReactElement => {
-	let value = header(useRank) + '\n' +
-		children.map((element: iCSVConvert, index: number) => element.toCSV(useRank ? index : false)).join("\n");
+	let value = useMemo(() =>
+		header(useRank) + '\n' + children.map((element, index) => element.toCSV(useRank ? index : false)).join("\n"),
+		[children, header, useRank]);
+
 	return (
 		<div className="csv-wrapper" style={{ maxWidth: "90vw" }}>
 			<textarea value={value} readOnly style={{ width: "100%", height: "500px", }} onFocus={(e) => { e.target.select() }} />

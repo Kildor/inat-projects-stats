@@ -1,0 +1,179 @@
+export interface Setting<T> {
+	setting: string;
+	type: string;
+	default: T;
+	save: boolean;
+}
+
+
+export const settings = {
+	"project_id": {
+		"setting": "project_id",
+		"type": "string",
+		"default": "",
+		"save": false
+	},
+	"user_id": {
+		"setting": "user_id",
+		"type": "string",
+		"default": "",
+		"save": false
+	},
+	"d1": {
+		"setting": "d1",
+		"type": "string",
+		"default": "2020-06-01",
+		"save": true
+	},
+	"d2": {
+		"setting": "d2",
+		"type": "string",
+		"default": "",
+		"save": true
+	},
+	"d1_new": {
+		"setting": "d1_new",
+		"type": "string",
+		"default": "2021-01-01",
+		"save": true
+	},
+	"d2_new": {
+		"setting": "d2_new",
+		"type": "string",
+		"default": "2021-12-31",
+		"save": true
+	},
+	"d1_prev": {
+		"setting": "d1_prev",
+		"type": "string",
+		"default": "2020-01-01",
+		"save": true
+	},
+	"d2_prev": {
+		"setting": "d2_prev",
+		"type": "string",
+		"default": "2020-12-31",
+		"save": true
+	},
+	"date_created": {
+		"setting": "date_created",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
+	"date_any": {
+		"setting": "date_any",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
+	"csv": {
+		"setting": "csv",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"filename": {
+		"setting": "filename",
+		"type": "string",
+		"default": "stats.csv",
+		"save": false
+	},
+	"species_only": {
+		"setting": "species_only",
+		"type": "boolean",
+		"default": true,
+		"save": true
+	},
+	"quality_grade": {
+		"setting": "quality_grade",
+		"type": "multi",
+		"default": "needs_id,research",
+		"save": true,
+		"values": {
+			"": "Все",
+			"research": "Только исследовательского уровня",
+			"needs_id": "Требуется идентификация",
+			"needs_id,research": "Проверяемые наблюдения",
+			"casual": "Обыкновенные"
+		}
+	},
+	"contribution": {
+		"setting": "contribution",
+		"type": "multi",
+		"default": "0",
+		"save": true,
+		"values": {
+			"0": "Виды, встреченные пользователем",
+			"1": "Виды, встреченные только этим пользователем",
+			"2": "Виды, не встреченные этим пользователем в проекте",
+			"3": "Виды, никогда не встреченные этим пользователем"
+		}
+	},
+	"-contribution": {
+		"setting": "contribution",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"show_first": {
+		"setting": "show_first",
+		"type": "boolean",
+		"default": false,
+		"save": true
+	},
+	"users": {
+		"setting": "users",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"projects": {
+		"setting": "projects",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"taxons": {
+		"setting": "taxons",
+		"type": "array",
+		"default": [],
+		"save": true
+	},
+	"taxon": {
+		"setting": "taxon",
+		"type": "LookupTaxon",
+		"default": { "id": 0, "name": "", "commonName": "", "lookupSuccess": false },
+		"save": true
+	},
+	"limit": {
+		"setting": "limit",
+		"type": "number",
+		"default": 0,
+		"save": true
+	},
+	"_place": {
+		"setting": "place",
+		"type": "LookupPlace",
+		"default": { "id": 0, "name": "", "displayName": "", "lookupSuccess": false },
+		"save": true
+	},
+	"place": {
+		"setting": "place",
+		"type": "string",
+		"default": "",
+		"save": true
+	},
+	"default_place": {
+		"setting": "default_place",
+		"type": "string",
+		"default": "",
+		"save": true
+	},
+	"default_language": {
+		"setting": "default_language",
+		"type": "string",
+		"default": "ru-RU",
+		"save": true
+	}
+}

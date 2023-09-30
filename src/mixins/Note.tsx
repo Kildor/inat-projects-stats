@@ -3,7 +3,7 @@ import I18n from 'classes/I18n';
 import 'assets/Note.scss'
 import { useToggler } from 'hooks';
 
-export const Note = memo(({defCollapsed=true, children}: {defCollapsed?: boolean, children: ReactNode })=>{
+export const Note = memo(({ defCollapsed = true, children }: { defCollapsed?: boolean, children: ReactNode }) => {
 	const [collapsed, setCollapsed] = useToggler(defCollapsed);
 	return (
 		<div className={'note ' + (collapsed ? 'collapsed' : '')}>

@@ -1,12 +1,8 @@
-// import debug_observation_json from '../assets/debug-observations.json';
-
-import I18n from "classes/I18n";
+import { I18n, Settings } from "classes";
 import { Observation, Taxon, User } from "DataObjects";
 import { iObserverProps, Observer } from "DataObjects/Observer";
 import { iDataListItem, iLookupPlace, iLookupTaxon, iObjectsList } from "interfaces";
 import { JSONLookupTaxonObject, JSONPlaceObject, JSONTaxonObject, JSONUserObject } from "interfaces/JSON";
-import { Settings } from "./Settings";
-
 
 const API = () => { };
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
@@ -84,16 +80,16 @@ API.getBaseUrl = (endpoint: string, tail: string = '') => {
 	return url;
 
 }
-API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, dateCreated: boolean, callback: Function, customParams: Record<string, string | number> = {}) => {
-	let taxons: iObjectsList = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
+API.fetchSpecies = async (project_id: string | null, user_id: string | null, d1: string | null, d2: string | null, dateCreated: boolean, callback: Function, customParams: Record<string, string | number> = {}) => {
+	let taxons: iObjectsList<Taxon> = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	let url = API.getBaseUrl('observations/species_counts');
 	if (!!project_id) url += '&project_id=' + project_id;
 	if (!!user_id) url += '&user_id=' + user_id;
-	url += addCustomParams(fillDateParams({ d1: dateFrom, d2: dateTo, date_created: dateCreated }));
+	url += addCustomParams(fillDateParams({ d1: d1 ?? undefined, d2: d2 ?? undefined, date_created: dateCreated }));
 	url += addCustomParams(customParams);
 
-	let limit = customParams.limit as number || 0;
+	let limit = (typeof customParams.limit === 'number' ? customParams.limit : parseInt(customParams.limit)) || 0;
 	let totalCount = 0;
 	let page = 0;
 	let perPage = 0;
@@ -125,8 +121,48 @@ API.fetchSpecies = async (project_id: string, user_id: string, dateFrom: string,
 	return taxons;
 }
 
+API.fetchSpeciesByDay = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, dateCreated: boolean, callback: Function, customParams: Record<string, string | number> = {}) => {
+	let taxons: iObjectsList<Taxon> = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
+	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
+	let url = API.getBaseUrl('observations/species_counts');
+	if (!!project_id) url += '&project_id=' + project_id;
+	if (!!user_id) url += '&user_id=' + user_id;
+	url += addCustomParams(fillDateParams({ d1: dateFrom, d2: dateTo, date_created: dateCreated }));
+	url += addCustomParams(customParams);
+
+	let limit = (typeof customParams.limit === 'number' ? customParams.limit : parseInt(customParams.limit)) || 0;
+	let totalCount = 0;
+	let page = 0;
+	let perPage = 0;
+
+	if (limit > 0) url += `&per_page=${limit}`;
+
+
+	do {
+		page++;
+
+		if (!!callback) {
+			callback(createCallbackMessage(page, perPage, totalCount), true);
+		}
+		// const json = await API.debounceFetch(url + '&page=' + page);
+		const json = await fetch(url + '&page=' + page).then(res => res.json()).catch(e => { throw e });
+		// console.dir(json);
+		totalCount = json.total_results;
+		page = json.page;
+		perPage = json.per_page;
+		json.results.forEach((result: { taxon: JSONTaxonObject, count: number }) => {
+			let t = new Taxon(result.taxon);
+			t.count = result.count;
+			taxons.objects.set(t.id, t);
+			taxons.ids.add(t.id);
+		});
+		if (limit > 0 && page * perPage >= limit) break;
+	} while (totalCount > page * perPage);
+	taxons.total = totalCount;
+	return taxons;
+}
 API.fetchMembers = async (project_id: string, callback: Function) => {
-	let users: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
+	let users: iObjectsList<User> = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
 	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=login&order=asc`;
@@ -144,7 +180,7 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 			callback(createCallbackMessage(page, perPageFromJSON, totalCount), true);
 		}
 		// const json = await API.debounceFetch(url + '&page=' + page);
-		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw e });
+		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw new Error(`${e.message}, ${url}`) });
 		totalCount = json.total_results;
 		page = json.page;
 		perPageFromJSON = json.per_page;
@@ -168,13 +204,13 @@ API.fetchObservers = async (customParams: Record<string, string | number> = {}, 
 	let url = API.getBaseUrl('observations/observers');
 	url += addCustomParams(customParams);
 
-	let observers: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
+	let observers: iObjectsList<Observer> = { ids: new Set(), objects: new Map(), total: 0 };
 
 	let totalCount = 0;
 	let page = 0;
 	let perPageFromJSON = 0;
 
-	let perPage = limit > 0 && limit < 501 ? limit : 100;
+	let perPage = limit > 0 && limit < 501 ? limit : 500;
 	do {
 		page++;
 
@@ -191,7 +227,6 @@ API.fetchObservers = async (customParams: Record<string, string | number> = {}, 
 			observers.objects.set(u.id, u);
 			observers.ids.add(u.id);
 		});
-		console.log(limit, observers.ids.size, limit > 0 && limit <= observers.ids.size)
 
 		if (limit > 0 && limit <= observers.ids.size) break;
 	} while (totalCount > page * perPageFromJSON);
@@ -209,19 +244,8 @@ API.fetchObservations = async (
 	if (taxon_id > 0) url += `&taxon_id=${taxon_id}`;
 
 	url += addCustomParams(customParams);
-	console.dir(url);
 
-	let observations: iObjectsList = { ids: new Set(), objects: new Map(), total: 0 };
-	// if (!!API.DEBUG) {
-	// 	const json = debug_observation_json;
-	// 	json.results.forEach((observation: JSONObservationObject) => {
-	// 		let o = new Observation(observation);
-	// 		observations.objects.set(o.id, o);
-	// 		observations.ids.add(o.id);
-	// 	});
-	// 	observations.total = observations.ids.size;
-	// 	return observations;
-	// }
+	let observations: iObjectsList<Observation> = { ids: new Set(), objects: new Map(), total: 0 };
 
 	let totalCount = 0;
 	let page = 0;
@@ -251,8 +275,8 @@ API.fetchObservations = async (
 	return observations;
 }
 
-API.concatObjects = function (...objects: Array<iObjectsList>) {
-	let out: iObjectsList = { ids: new Set(), total: 0, objects: new Map() };
+API.concatObjects = function (...objects: Array<iObjectsList<unknown>>) {
+	let out: iObjectsList<unknown> = { ids: new Set(), total: 0, objects: new Map() };
 	for (let obj in objects) {
 		const objIn = objects[obj];
 		if (!objIn.objects) continue;
@@ -306,10 +330,34 @@ export const setTaxon = async function (taxon: iLookupTaxon, setState: Function)
 	}
 }
 
-export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], {
-	year: 'numeric', month: 'numeric', day: 'numeric',
-	hour: 'numeric', minute: 'numeric', second: 'numeric'
-});
+export const lookupTaxon = async function (taxonName: string | iLookupTaxon, setStatus: Function, setShow: Function) {
+	if (typeof taxonName !== 'string') return taxonName;
+
+	if (taxonName.trim().length < 3) return;
+	setStatus(I18n.t("Поиск ID вида"));
+	setShow(true);
+
+	let taxon: iLookupTaxon;
+
+	const regexpNumber = /[0-9]+/;
+	const regexpCommon = /.+\(([ a-zA-Z]+)\)/;
+	if (!taxonName.match(regexpNumber)) {
+		const taxonCommon = taxonName.match(regexpCommon);
+		if (taxonCommon && taxonCommon[1]) {
+			taxonName = taxonCommon[1];
+		}
+		taxon = await API.lookupTaxon(taxonName);
+	} else {
+		taxon = { id: parseInt(taxonName), name: taxonName, commonName: taxonName, lookupSuccess: false };
+	}
+
+	if (taxon.id === 0) {
+		setStatus(I18n.t("Поиск не удался, проверьте корректность введёного имени"));
+	} else {
+		setShow(false);
+	}
+	return taxon;
+}
 
 function createCallbackMessage(page: number, perPageFromJSON: number, totalCount: number): string {
 	return perPageFromJSON > 0 ?
@@ -320,7 +368,6 @@ function createCallbackMessage(page: number, perPageFromJSON: number, totalCount
 export const fillDateParams = ({ d1, d2, date_created, date_any = false }: { d1?: string, d2?: string, date_created?: boolean, date_any?: boolean }): Record<string, string> => {
 	const dateParams: Record<string, string> = {}
 	if (date_any) return dateParams;
-	console.log({ d1, d2, date_created, date_any });
 
 	const datePrefix = date_created ? 'created_' : '';
 
@@ -347,7 +394,4 @@ export const getTitleForUserRole = (role: string | null): string => {
 	}
 
 	return '';
-}
-
-export const makeCsvString = (...args: Array<string | number | null | undefined>) =>
-	args.filter(arg => arg !== null && arg !== undefined).map(arg => typeof arg === 'string' ? `"${arg.replace(/(?<!\\)"/g, '\\"')}"` : arg).join('\t');
+};

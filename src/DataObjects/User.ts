@@ -1,5 +1,6 @@
 import { iCSVConvert, JSONUserObject } from "interfaces";
-import { getTitleForUserRole, makeCsvString } from "mixins/API";
+import { getTitleForUserRole } from "mixins/API";
+import { makeCsvString } from "mixins/utils";
 
 export const getCSVHeader = (useRank: boolean) => makeCsvString(
 	useRank ? 'Rank' : undefined,

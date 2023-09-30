@@ -1,6 +1,6 @@
 import { User } from "./User";
 import { iComment, iCSVConvert, JSONCommentObject } from "interfaces";
-import { DateTimeFormat } from "mixins/API";
+import { DateTimeFormat } from "mixins/utils";
 
 export class ObservationComment implements iCSVConvert, iComment {
 	id: number;

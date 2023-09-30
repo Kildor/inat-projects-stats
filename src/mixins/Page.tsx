@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import 'assets/pages/Page.scss';
 import { Note } from './Note';
 
-
 interface iHeader {
 	title?: string
 	backlink?: string | false
@@ -21,33 +20,34 @@ interface iPage {
 	defCollapsed?: boolean | true
 }
 
-const Header = memo(({title, backlink, infoText, defCollapsed}: iHeader) => {
+const Header = memo(({ title, backlink, infoText, defCollapsed }: iHeader) => {
 	if (!title && !backlink) return null;
 	return (
-		<header className={'page-title' + (!title?' no-title':'')}>
-			{!!backlink && <Link to={backlink} className='title-backlink'>&#10094;&#10094;</Link> }
+		<header className={'page-title' + (!title ? ' no-title' : '')}>
+			{!!backlink && <Link to={backlink} className='title-backlink'>&#10094;&#10094;</Link>}
 			{!!title && <span>{title}</span>}
 			{!!infoText && <Note defCollapsed>{infoText}</Note>}
 		</header>
 	);
 });
 
-export const Page: FunctionComponent<iPage> = memo(({title, children, backlink='/', className, pageTitle=title, infoText, defCollapsed})=>{
+export const Page: FunctionComponent<iPage> = memo(({ title, children, backlink = '/', className, pageTitle = title, infoText, defCollapsed }) => {
 	useEffect(() => {
 		if (!!pageTitle) document.title = pageTitle;
-		else if(!!title) document.title = title;
+		else if (!!title) document.title = title;
 	},
 		[pageTitle, title]
 	);
 
 	return (
-		<div className={"page"+(!!className ? " "+className : "")}>
+		<div className={"page" + (!!className ? " " + className : "")}>
 			<Header title={title} backlink={backlink} infoText={infoText} defCollapsed={defCollapsed} />
-			<div className='page-content'>
-				{children}
-			</div>
+				<div className='page-content'>
+					{children}
+				</div>
 		</div>
 	)
 });
+Page.displayName = 'Page';
 
 export default Page;

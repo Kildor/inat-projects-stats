@@ -21,7 +21,7 @@ ul.observers-list {
 
 		> * {
 			display: table-cell;
-			padding: 4px 5px;
+			padding: 4px 8px;
 		}
 		> a {
 			
@@ -72,5 +72,11 @@ ul.observers-list {
 				color: #a00
 			}
 		}
+	}
+	&.order-species_count .species {
+		background-color: rgba(#000, .05);
+	}
+	&.order-observation_count .observations {
+		background-color: rgba(#000, .05);
 	}
 }

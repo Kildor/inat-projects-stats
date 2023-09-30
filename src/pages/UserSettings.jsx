@@ -1,10 +1,10 @@
 import React from 'react'
 import Page from '../mixins/Page';
-import { Settings } from "../mixins/Settings";
+import { Settings } from "../classes/settings";
 import {FormControl, FormControlMultiline} from '../mixins/Form/FormControl';
 import defaultPlaces from '../assets/places.json';
 import defaultProjects from '../assets/projects.json'
-import Form from '../mixins/Form/Form';
+import { FormWrapper } from '../mixins/Form/form-wrapper';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { Loader } from 'mixins/Loader';
@@ -54,7 +54,7 @@ export default class UserSettings extends Module {
 	render() {
 		return (
 			<Page title={I18n.t("Настройки пользователя")} className='page-settings'>
-				<Form onSubmit={this.submitHandler} disabled={false} submitTitle={I18n.t("Сохранить")}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={false} submitTitle={I18n.t("Сохранить")}>
 					<fieldset className="noborder">
 					<FormControl 
 						type="number"
@@ -98,7 +98,7 @@ export default class UserSettings extends Module {
 						handler={this.changeMultilineHandler}
 					/>
 					</fieldset>
-					</Form>
+					</FormWrapper>
 					<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{this.state.loadingTitle &&

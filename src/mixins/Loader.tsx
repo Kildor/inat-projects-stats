@@ -9,6 +9,7 @@ interface iLoader {
 }
 export const Loader = ({ title, message, show }: iLoader) => {
 	if (!show) return null;
+
 	return (
 		<div className='loader'>
 

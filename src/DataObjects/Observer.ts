@@ -1,6 +1,6 @@
 import { iCSVConvert, JSONUserObject } from "interfaces";
-import { makeCsvString } from "mixins/API";
 import { User } from "./User";
+import { makeCsvString } from "mixins/utils";
 
 export const getCSVHeader = (useRank: boolean) => (`${useRank ? 'Rank\t' : ''}ID\tLogin\tName\tObservations\tSpecies\n`);
 

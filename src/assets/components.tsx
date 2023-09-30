@@ -1,14 +1,13 @@
 import React, { ReactElement } from 'react';
-import List from '../pages/List';
-import About from '../pages/About';
-import Species from '../pages/Species';
-import NotFound from '../pages/NotFound';
-import Members from '../pages/Members';
-import SpeciesList from '../pages/SpeciesList';
-import SpeciesMissed from '../pages/SpeciesMissed';
+import { ListPage, AboutPage, NotFound, Settings, MissedSpecies, ProjectMembers, NewSpecies, ListSpecies, DownloadObservations, ContributionPage } from 'pages';
 import Downloader from '../pages/Downloader';
-import UserSettings from '../pages/UserSettings';
-import { Contribution } from '../pages/Contribution';
+import { Contribution as ContributionLegacy } from '../pages/Contribution';
+
+import SpeciesListLegacy from '../pages/SpeciesList';
+import NewSpeciesLegacy from '../pages/Species';
+import SpeciesMissedLegacy from '../pages/SpeciesMissed';
+import MembersLegacy from '../pages/Members';
+import UserSettingsLegacy from '../pages/UserSettings';
 
 interface iComponentListItem {
   path: string
@@ -18,14 +17,23 @@ interface iComponentListItem {
 };
 
 export const components: iComponentListItem[] = [
-  { path: '/', component: <List />, exact: true },
-  { path: '/contribution', component: <Contribution /> },
-  { path: '/members', component: <Members /> },
-  { path: '/new-species', component: <Species /> },
-  { path: '/species', component: <SpeciesList /> },
-  { path: '/download-observations', component: <Downloader /> },
-  { path: '/missed-species', component: <SpeciesMissed /> },
-  { path: '/about', component: <About /> },
-  { path: '/user-settings', component: <UserSettings /> },
+  { path: '/', component: <ListPage />, exact: true },
+  { path: '/contribution', component: <ContributionPage /> },
+  { path: '/members', component: <ProjectMembers /> },
+  { path: '/new-species', component: <NewSpecies /> },
+  { path: '/species', component: <ListSpecies /> },
+  { path: '/download-observations', component: <DownloadObservations /> },
+  { path: '/missed-species', component: <MissedSpecies /> },
+  { path: '/about', component: <AboutPage /> },
+  { path: '/user-settings', component: <Settings /> },
+  // старые версии.
+  { path: '/contribution-legacy', component: <ContributionLegacy /> },
+  { path: '/species-legacy', component: <SpeciesListLegacy /> },
+  { path: '/members-legacy', component: <MembersLegacy /> },
+  { path: '/new-species-legacy', component: <NewSpeciesLegacy /> },
+  { path: '/user-settings-legacy', component: <UserSettingsLegacy /> },
+  { path: '/missed-species-legacy', component: <SpeciesMissedLegacy /> },
+  { path: '/download-observations-legacy', component: <Downloader /> },
+
   { path: '*', component: <NotFound /> },
 ];

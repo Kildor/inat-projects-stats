@@ -1,0 +1,77 @@
+.presentationSettings {
+	display: block;
+	border: 1px solid #666;
+	border-radius: 5px;
+	margin: 0;
+	padding: 0 15px;
+
+	legend {
+		font-weight: 500;
+		font-size: 1.01em;
+		padding: 0 5px;
+		background: #fff;
+		box-shadow:
+			1px 1px 1.5px 1px #ccc,
+			5px 0 #fff,
+			-5px 0 #fff;
+		border-radius: 3px;
+	}
+
+	div {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4em 1em;
+		padding: 0.5em 1em;
+	}
+
+	label {
+		padding: 0 4px;
+		text-shadow: 1px 1px rgba(#fff, 0.5);
+		font-size: 0.9em;
+
+		&:not(.no-flex) {
+			background: #f0f0f0;
+			border: #666 1px solid;
+			border-radius: 5px;
+
+			.fc-checkbox {
+				position: relative;
+				overflow: hidden;
+				display: inline-block;
+				border-radius: 50%;
+				border: solid 1px;
+				width: 8px;
+				height: 8px;
+				box-shadow: inset 0 0 4px #fff;
+
+				input {
+					position: absolute;
+					top: -100px;
+				}
+			}
+
+			&.disabled {
+				opacity: 0.7;
+				cursor: not-allowed;
+				color: #444;
+			}
+			&.checked {
+				background-color: #666;
+				border-color: #eee;
+				color: #fff;
+				text-shadow: 1px 1px rgba(#000, 0.5);
+				.fc-checkbox {
+					box-shadow:
+						inset 0 0 4px #fff,
+						inset 0 0 10px #3a4;
+				}
+			}
+		}
+		&.no-flex {
+			flex: 1 0 100%;
+			> span {
+				width: 50%;
+			}
+		}
+	}
+}

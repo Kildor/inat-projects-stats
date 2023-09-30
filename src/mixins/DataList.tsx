@@ -4,11 +4,12 @@ import ButtonClear from './ButtonClear';
 import API from './API';
 import { iDataList } from 'interfaces';
 
-export default ({ list = [], id, clearDatalistHandler, listName }: iDataList) => {
-	const clearButton = !!clearDatalistHandler && !!listName && list.length > 0 ? <ButtonClear onClickHandler={clearDatalistHandler} listName={listName} /> : null;
+export const DataList: React.FC<iDataList> = ({ list = [], id, clearDatalistHandler, listName }) => {
+	// const clearButton = !!clearDatalistHandler && !!listName && list.length > 0 ? <ButtonClear onClickHandler={clearDatalistHandler} listName={listName} /> : null;
 	return (
 		<>
-			{clearButton}
+			{/* {clearButton} */}
+			{!!clearDatalistHandler && !!listName && list.length > 0 && <ButtonClear onClickHandler={clearDatalistHandler} listName={listName} />}
 			<datalist id={id}>
 				{API.filterDatalist(list).map(item => {
 					const title = !!item.title ? item.title : item.name;
@@ -17,4 +18,7 @@ export default ({ list = [], id, clearDatalistHandler, listName }: iDataList) =>
 			</datalist>
 		</>
 	);
-}
+};
+DataList.displayName = 'DataList';
+
+export default DataList;

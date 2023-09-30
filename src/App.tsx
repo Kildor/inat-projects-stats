@@ -8,6 +8,7 @@ import I18n, { getLanguage } from 'classes/I18n';
 import { LanguageContext } from 'mixins/LanguageContext';
 import { Loader } from 'mixins/Loader';
 import { useLanguageContext } from 'hooks';
+import { StatusMessageContextProvider } from 'contexts/status-message-context';
 
 const language = getLanguage();
 
@@ -21,24 +22,28 @@ const AppLoader = () => (
   </div>
 );
 
-const InnerApp: React.FC = () => (
-  <Router basename='inat'>
-    <Header />
-    <Switch>
-      {components.map(({ path, component, exact = false }) => <Route exact={exact} key={path} path={path}>{component}</Route>)}
-    </Switch>
-    <Footer />
-  </Router>
+const RoutesSwitch = () => (
+  <Switch>
+    {components.map(({ path, component, exact = false }) => <Route exact={exact} key={path} path={path}>{component}</Route>)}
+  </Switch>
 );
+
+const InnerApp: React.FC = () => (<Router basename='inat'>
+  <Header />
+  <StatusMessageContextProvider>
+    <RoutesSwitch />
+  </StatusMessageContextProvider>
+  <Footer />
+</Router>);
 
 const App = () => {
 
-  const { languageLoaded, context } = useLanguageContext(language);
+  const { languageLoaded, context: languageContext } = useLanguageContext(language);
 
   const Screen = languageLoaded ? InnerApp : AppLoader;
 
   return (
-    <LanguageContext.Provider value={context}>
+    <LanguageContext.Provider value={languageContext}>
       <div className="App">
         <Screen />
       </div>

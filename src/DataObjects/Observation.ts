@@ -2,7 +2,7 @@ import { ObservationComment } from "./ObservationComment";
 import { ObservationIdentification } from "./ObservationIdentification";
 import { Taxon } from "./Taxon";
 import { User } from "./User";
-import { DateTimeFormat, makeCsvString } from "mixins/API";
+import { DateTimeFormat, makeCsvString } from "mixins/utils";
 import { iCSVConvert, JSONObservationObject } from "interfaces";
 
 export const getCSVHeader = () => makeCsvString('ID', 'Name', 'Common name', 'Quality grade', 'Observed', 'Uploaded', 'Coordinates', 'Location', 'User');

@@ -1,7 +1,8 @@
 import React from 'react'
-import { Settings } from "../mixins/Settings";
+import { Settings } from "./settings";
 import settings from '../assets/settings.json';
 import { DEFAULTS } from '../constants';
+
 export default class Module extends React.Component {
 	values = {};
 	constructor(props) {

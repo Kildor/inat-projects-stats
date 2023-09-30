@@ -6,26 +6,54 @@ import '../assets/Species.scss';
 import API, { saveDatalist } from 'mixins/API';
 import TaxonsList from 'mixins/TaxonsList';
 import { Error } from 'mixins/Error';
-import Form from 'mixins/Form/Form';
+import { FormWrapper } from 'mixins/Form/form-wrapper';
 import Module from 'classes/Module';
 import I18n from 'classes/I18n';
 import { FormControl, FormControlCheckbox, FormControlCSV, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import { DataControlsBlock } from 'mixins/Form/FormControlSets';
 import { Loader } from 'mixins/Loader';
-import { Settings } from 'mixins/Settings';
+import { Settings } from 'classes/settings';
 
 export default class Species extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
 		this.initSettings(["project_id", "user_id", "taxon", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only", "quality_grade",
+			"strategy",
 			"users", "projects", "taxons"], this.state, {
 			"date_created": true
 		});
 		this.updateState = this.setState.bind(this);
 	}
 
-	async counter() {
+	strategy = [
+		['list', "Списком"],
+		['daily', "Ежедневно"],
+	];
+
+	counter() {
+		const { strategy } = this.state;
+		switch (strategy) {
+			case 'daily':
+			case 'list':
+			default:
+				return this.counterList();
+		}
+	}
+
+	async counterDaily() {
+		const { project_id, user_id, d1, d2, date_created, species_only, taxon } = this.state;
+		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
+		const customParams = {};
+		if (species_only) {
+			customParams['lrank'] = 'species';
+			customParams['hrank'] = 'species';
+		}
+		if (!!taxon && taxon.id > 0) customParams['taxon_id'] = taxon.id;
+
+
+	}
+	async counterList() {
 		const { project_id, user_id, d1, d2, date_created, show_first, species_only, taxon } = this.state;
 		this.setState({ loadingTitle: I18n.t("Загрузка новых видов") });
 		const customParams = {};
@@ -87,7 +115,7 @@ export default class Species extends Module {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
 			<Page title={I18n.t('Новые виды проекта')} className='page-newSpecies' infoText={I18n.t("pages.species.note.text")}>
-				<Form onSubmit={this.submitHandler} disabled={disabled}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
@@ -108,14 +136,20 @@ export default class Species extends Module {
 							value={this.state.additional} ></FormControl>
 					</fieldset>
 					<DataControlsBlock checkHandler={this.checkHandler} changeHandler={this.changeHandler} state={this.state} >
-						<FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
-							checked={this.state.show_first} />
+					{this.state.d2 && <FormControlCheckbox label={I18n.t("Показывать виды, впервые зарегистрированные в этот период")} name='show_first' onChange={this.checkHandler}
+							checked={this.state.show_first} />}
 					</DataControlsBlock>
+					<fieldset>
+						<legend>{I18n.t("Прочее")}</legend>
+						<FormControlSelect label={I18n.t("Стратегия построения списка")} name="strategy" onChange={this.changeHandler} value={this.state.strategy}
+							values={this.strategy}
+						/>
+					</fieldset>
 					<fieldset>
 						<legend>{I18n.t("Отображение")}</legend>
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
-				</Form>
+				</FormWrapper>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

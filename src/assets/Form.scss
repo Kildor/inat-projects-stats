@@ -16,15 +16,19 @@ form {
 		}
 		> .form-control {
 			flex: 1 1 50%;
+			min-width: 250px;
 			@media screen and (max-width: 640px) {
 				&.fc-checkbox {
 					flex: 1 1 0;
 				}
 			}
+			&.fc-multiline {
+				flex: 0 1 85%;
+				margin-left: auto;
+			}
 			textarea,
 			select,
 			input:not([type="checkbox"]) {
-				min-width: 250px;
 				width: calc(100% - 3em);
 				max-width: 80vw;
 				box-sizing: content-box;

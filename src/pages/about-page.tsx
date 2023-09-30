@@ -102,7 +102,7 @@ const ChangelogRussian = memo(() => (
 	</>
 ));
 
-const getContentByLanguage = (code: string) => {
+const getContentByLanguage = (code: string): React.FC => {
 	switch (code) {
 		case 'en':
 			return ChangelogEnglish;
@@ -112,7 +112,7 @@ const getContentByLanguage = (code: string) => {
 	}
 };
 
-export default () => {
+export const AboutPage: React.FC = () => {
 	const { code } = useContext(LanguageContext);
 	const Changelog = getContentByLanguage(code);
 

@@ -2,13 +2,13 @@ import I18n from "../classes/I18n";
 import Module from "../classes/Module";
 import Page from "../mixins/Page";
 import React from 'react'
-import Form from "../mixins/Form/Form";
+import { FormWrapper } from "../mixins/Form/form-wrapper";
 import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/Form/FormControl";
 import { Loader } from 'mixins/Loader';
 import { Error } from "../mixins/Error";
 import API, { fillDateParams, saveDatalist } from "../mixins/API";
 import ObservationsList from "../mixins/ObservationsList";
-import { Settings } from "../mixins/Settings";
+import { Settings } from "../classes/settings";
 import { DataControlsBlock } from "../mixins/Form/FormControlSets";
 
 export default class Downloader extends Module {
@@ -88,7 +88,7 @@ export default class Downloader extends Module {
 	render() {
 		return (
 			<Page title={I18n.t("Скачивание наблюдений")} infoText={this.infoText}>
-				<Form onSubmit={this.submitHandler} disabled={this.isDisabled()}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={this.isDisabled()}>
 					<fieldset className='noborder'>
 						<FormControlTaxon className='heading' value={this.state.taxon} list={this.state.taxons} listName="taxons"
 							clearDatalistHandler={this.clearDatalistHandler} updateState={this.updateState}
@@ -127,7 +127,7 @@ export default class Downloader extends Module {
 						}
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
-				</Form>
+				</FormWrapper>
 				{/* <Result {...this.state}>
 					<ObservationsList observations={this.state.data} csv={this.state.csv} hide_activity={this.state.hide_activity} current_ids={this.state.current_ids} filename={this.state.filename} />
 				</Result> */}

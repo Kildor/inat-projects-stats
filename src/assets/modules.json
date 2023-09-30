@@ -7,6 +7,7 @@
   {
     "url": "/new-species",
     "component": "Species",
+    "hasLegacy": true,
     "title": {
       "list": "Новые виды в проекте",
       "menu": "Новые виды"
@@ -17,12 +18,14 @@
   {
     "url": "/missed-species",
     "component": "SpeciesMissed",
+    "hasLegacy": true,
     "title": "Пропущенные виды",
     "description" : "Просмотр списка видов, не встреченных пользователем в сравнении с другим пользователем или проектом"
   },
   {
     "url": "/species",
     "component": "SpeciesList",
+    "hasLegacy": true,
     "title": {
       "menu": "Список видов",
       "list": "Список видов в проекте"
@@ -32,6 +35,7 @@
   {
     "url": "/members",
     "component": "Members",
+    "hasLegacy": true,
     "title": {
       "menu": "Участники",
       "list": "Участники проекта"
@@ -43,6 +47,7 @@
   {
     "url": "/contribution",
     "component": "Contribution",
+    "hasLegacy": true,
     "title": {
       "menu": "Вклад",
       "list": "Вклад участников"
@@ -52,6 +57,7 @@
   {
     "url": "/download-observations",
     "component": "Downloader",
+    "hasLegacy": true,
     "title": "Скачивание наблюдений",
     "description": "Скачивание наблюдений в формате CSV."
 
@@ -59,6 +65,7 @@
   {
     "url": "/user-settings",
     "component": "Settings",
+    "hasLegacy": true,
     "title": {
       "menu": "⚙️ Настройки",
       "list": "Настройки пользователя"

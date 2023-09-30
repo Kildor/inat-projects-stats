@@ -6,7 +6,7 @@ import defaultProjects from '../assets/projects.json';
 import { Loader } from 'mixins/Loader';
 import { Error } from '../mixins/Error';
 import UsersList from '../mixins/UsersList';
-import Form from '../mixins/Form/Form';
+import { FormWrapper } from '../mixins/Form/form-wrapper';
 // import Note from '../mixins/Note';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
@@ -39,14 +39,14 @@ export default class extends Module {
 		const disabled = this.state.loading || this.state.project_id === '';
 		return (
 			<Page title={I18n.t("Участники проекта")} className='page-members'>
-				<Form onSubmit={this.submitHandler} disabled={disabled}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset className='noborder'>
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 							value={this.state.project_id} list={defaultProjects} >
 						</FormControl>
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
-				</Form>
+				</FormWrapper>
 				{/* <Note defCollapsed={false}>* API iNaturalist из-за каких-то ошибок в некоторых случаях возвращает неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных
 				</Note> */}
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />

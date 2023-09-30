@@ -5,8 +5,8 @@ import CSV from './CSV';
 import { getCSVHeader, Observation } from '../DataObjects/Observation';
 import { ObservationIdentification } from '../DataObjects/ObservationIdentification';
 import { ObservationComment } from '../DataObjects/ObservationComment';
-import { DateTimeFormat } from '../mixins/API';
 import I18n from '../classes/I18n';
+import { DateTimeFormat } from './utils';
 
 interface iCommon {
 	current_ids: boolean | false
@@ -37,7 +37,7 @@ interface FilterFunction {
 interface ActivityItemPros {
 	activity: ObservationComment | ObservationIdentification;
 	className: string;
-	children?: React.ReactNode;
+	children?: React.ReactNode
 }
 
 const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{

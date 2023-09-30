@@ -4,11 +4,11 @@ import Page from '../mixins/Page'
 import '../assets/Species.scss';
 
 import API, { saveDatalist } from '../mixins/API';
-import { Settings } from "../mixins/Settings";
+import { Settings } from "../classes/settings";
 import { Loader } from 'mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
 import { Error } from '../mixins/Error';
-import Form from '../mixins/Form/Form';
+import { FormWrapper } from '../mixins/Form/form-wrapper';
 import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
@@ -98,7 +98,7 @@ export default class SpeciesMissed extends Module {
 		const disabled = this.state.loading || (this.state.unobserved_by_user_id === '' || (this.state.project_id === '' && this.state.user_id === '' && this.state.place_id === ''));
 		return (
 			<Page title={I18n.t("Пропущенные виды")} className='page-listSpecies' infoText={this.infoText}>
-				<Form onSubmit={this.submitHandler} disabled={disabled}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={disabled}>
 				<fieldset>
 					<legend>{I18n.t("Фильтрация")}</legend>
 					<FormControl label={I18n.t("Id или имя пользователя")} type='text' name='unobserved_by_user_id' onChange={this.changeHandler}
@@ -131,7 +131,7 @@ export default class SpeciesMissed extends Module {
 						<legend>{I18n.t("Отображение")}</legend>
 					<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
-		</Form>
+		</FormWrapper>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading}/>
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&

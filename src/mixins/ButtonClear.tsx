@@ -2,7 +2,7 @@ import React from 'react'
 import I18n from '../classes/I18n';
 
 interface iButtonClearProps {
-	onClickHandler: (e: React.MouseEvent) => void
+	onClickHandler: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 	listName: string
 }
 const ButtonClear = ({onClickHandler, listName}: iButtonClearProps) => {

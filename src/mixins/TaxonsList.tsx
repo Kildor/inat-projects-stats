@@ -17,7 +17,7 @@ export interface TaxonListProps {
 	csv: boolean | false
 	filename?: string | "taxons.csv"
 }
-export const TaxonList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_created = true, date_any = false, project_id, user_id, place_id, csv, filename }) => {
+export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_created = true, date_any = false, project_id, user_id, place_id, csv, filename }) => {
 	if (taxons.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -49,6 +49,6 @@ export const TaxonList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_creat
 		</>
 	)
 };
-TaxonList.displayName = 'TaxonList';
+TaxonsList.displayName = 'TaxonsList';
 
-export default TaxonList;
+export default TaxonsList;

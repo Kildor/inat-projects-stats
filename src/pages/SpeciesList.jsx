@@ -7,12 +7,13 @@ import API, { fillDateParams, saveDatalist } from '../mixins/API';
 import { Loader } from 'mixins/Loader';
 import TaxonsList from '../mixins/TaxonsList';
 import { Error } from '../mixins/Error';
-import Form from '../mixins/Form/Form';
+import { FormWrapper } from '../mixins/Form/form-wrapper';
 import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
 import Module from '../classes/Module';
 import I18n from '../classes/I18n';
 import { DataControlsBlock } from '../mixins/Form/FormControlSets';
-export default class SpeciesList extends Module {
+
+class SpeciesList extends Module {
 	constructor(props) {
 		super(props);
 		this.state = this.initDefaultSettings();
@@ -106,7 +107,7 @@ export default class SpeciesList extends Module {
 		const disabled = this.state.loading || (this.state.d1 === '' || (this.state.project_id === '' && this.state.user_id === ''));
 		return (
 			<Page title={I18n.t("Виды проекта")} className='page-listSpecies' infoText={I18n.t("Скрипт отображает все виды, отмеченные в проекте. Так же можно отобразить виды, которые наблюдал только указанный пользователь.")}>
-				<Form onSubmit={this.submitHandler} disabled={disabled}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={disabled}>
 					<fieldset>
 						<legend>{I18n.t("Фильтрация")}</legend>
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
@@ -140,7 +141,7 @@ export default class SpeciesList extends Module {
 						<legend>{I18n.t("Отображение")}</legend>
 						<FormControlCSV handler={this.checkHandler} value={this.state.csv} />
 					</fieldset>
-				</Form>
+				</FormWrapper>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
@@ -161,4 +162,6 @@ export default class SpeciesList extends Module {
 			</Page>
 		)
 	}
-}
+};
+
+export default SpeciesList;

@@ -1,5 +1,5 @@
 import { iCSVConvert, iIdentification, JSONIdentificationObject } from "interfaces";
-import { DateTimeFormat } from "mixins/API";
+import { DateTimeFormat } from "mixins/utils";
 import { Taxon } from "./Taxon";
 import { User } from "./User";
 

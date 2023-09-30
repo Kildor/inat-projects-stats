@@ -1,5 +1,5 @@
 import { iLanguage, iLanguageInfo } from 'interfaces';
-import { Settings } from "mixins/Settings";
+import { Settings } from "./settings";
 
 const appLanguages: Record<string, iLanguage> = {
 	"en": { "language": "English", "code": "en" },
@@ -16,7 +16,8 @@ const pf_re = new RegExp('^s*(?:\\s|[-\\?\\|&=!<>+*/%:;n0-9_()])+');
 
 
 let DICTIONARY = !!window.I18n && !!window.I18n.DICTIONARY ? window.I18n.DICTIONARY : {};
-const I18n = {
+
+export const I18n = {
 	SETTING_NAME: 'LANGUAGE',
 	DICTIONARY,
 	plural: (i: number | string) => 0,

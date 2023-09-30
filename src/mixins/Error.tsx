@@ -14,7 +14,7 @@ const onClickHandler = (e: React.MouseEvent<HTMLElement>) => {
 	}
 };
 
-export const Error: React.FC = ({ error, ...state }: Record<string, any>) => {
+export const Error = ({ error, ...state }: Record<string, any>) => {
 	if (!error) return null;
 	const { projects, users, taxons, places, csv, loading, loadingTitle, loadingMessage, lookupSuccess, data, current_ids, hide_activity, show_discussion, filename, ...rest } = state;
 

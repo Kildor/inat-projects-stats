@@ -5,7 +5,7 @@ import 'assets/Species.scss';
 
 import API, { fillDateParams } from 'mixins/API';
 import { Error } from 'mixins/Error';
-import Form from 'mixins/Form/Form';
+import { FormWrapper } from 'mixins/Form/form-wrapper';
 import Module from 'classes/Module';
 import I18n from 'classes/I18n';
 import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect } from 'mixins/Form/FormControl';
@@ -114,7 +114,7 @@ export class Contribution extends Module {
 	render() {
 		return (
 			<Page title={I18n.t('Вклад участников проекта')} className='page-newSpecies' infoText={I18n.t("pages.contribution.note.text")}>
-				<Form onSubmit={this.submitHandler} disabled={this.isDisabled()}>
+				<FormWrapper onSubmit={this.submitHandler} disabled={this.isDisabled()}>
 					<fieldset className='noborder'>
 						<FormControl label={I18n.t("Id или имя проекта")} type='text' name='project_id' onChange={this.changeHandler}
 							value={this.state.project_id} list={this.state.projects} />
@@ -171,7 +171,7 @@ export class Contribution extends Module {
 						<FormControl name='difference' label={I18n.t("Не показывать наблюдателей изменивших положение меньше чем на")} type='number' min={0} onChange={this.changeHandler} value={this.state.difference} />
 						{/* <FormControlCSV handler={this.checkHandler} value={this.state.csv} /> */}
 					</fieldset>
-				</Form>
+				</FormWrapper>
 				<Loader title={this.state.loadingTitle} message={this.state.loadingMessage} show={this.state.loading} />
 				<Error {...this.state} />
 				{!this.state.loading && !this.state.error &&
