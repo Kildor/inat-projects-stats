@@ -18,7 +18,7 @@ API.lookupTaxon = async (queryString: string) => {
 	let json;
 	const taxon: iLookupTaxon = {
 		score: 0.0, id: 0, name: queryString, commonName: '', lookupSuccess: false
-	}
+	};
 	queryString = queryString.toLowerCase();
 
 	// if (cache.has(taxonName)) json = cache.get(taxonName);

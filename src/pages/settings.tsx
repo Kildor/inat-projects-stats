@@ -63,7 +63,7 @@ export const Settings = () => {
 					initialValues={initialValues}
 
 					render={({ handleSubmit }) => (
-						<FormWrapper disabled={false} submitTitle={I18n.t("Сохранить")} onSubmit={handleSubmit}>
+						<FormWrapper disabled={false} submitTitle={I18n.t("Сохранить")} onSubmit={handleSubmit} showSaveButton={false}>
 							<fieldset className="noborder">
 								<FormControlField
 									type="number"

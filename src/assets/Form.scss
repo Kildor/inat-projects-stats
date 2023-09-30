@@ -78,6 +78,14 @@ form {
 				}
 			}
 		}
+		&.buttons {
+			margin-top: 1em;
+			display: flex;
+			gap: 1em;
+			align-items: center;
+			justify-content: center;
+			padding: .5em;
+		}
 	}
 	.info {
 		font-size: 0.95em;
@@ -92,7 +100,6 @@ form {
 		margin-left: 0.5em;
 	}
 	.btn-submit {
-		margin: 1rem auto;
 		display: block;
 		color: #fff;
 		text-shadow: 1px 1px 1px #000;
@@ -105,6 +112,14 @@ form {
 			background: linear-gradient(to bottom, rgb(196, 196, 196), rgb(100, 100, 100));
 			border: 1px solid rgb(88, 88, 88);
 		}
+	}
+
+	.btn-save {
+		display: block;
+		color: #202020;
+		border-radius: 4px;
+		border: 1px solid rgb(88, 88, 88);
+		padding: 3px 1em;
 	}
 
 	.icon-swap {

@@ -2,6 +2,7 @@ import { DEFAULTS } from "../constants";
 import defaultSettingsList from 'assets/settings.json';
 import { Settings } from "classes/settings";
 import { Setting } from "interfaces";
+import { useHistory } from "react-router-dom";
 
 /**
  * Получить изначальные данные скрипта.
@@ -15,10 +16,16 @@ export function useInitialValues<T>(settingsList: Array<keyof T>, defaultValues:
 	const values: Record<keyof T, any> = {} as Record<keyof T, any>;
 	const optionValues: Partial<Record<keyof T, any>> = {}
 
+	const { location } = useHistory();
+	const urlSearchParams = new URLSearchParams(location.search);
+
+
 	settingsList.forEach((name: keyof T) => {
 		const setting = overrideSettings[name] || (defaultSettingsList as Record<keyof T, Setting<unknown>>)[name] || { setting: name, save: false };
-		const defValue = (DEFAULTS as Record<keyof T, any>)[name] || defaultValues[name] || setting.default || "";
-		values[name] = setting.save ? Settings.get(name as string, defValue) : defValue;
+
+		const defValue = urlSearchParams.get(name.toString()) ?? (DEFAULTS as Record<keyof T, any>)[name] ?? defaultValues[name] ?? setting.default ?? "";
+
+		values[name] = !urlSearchParams.has(name.toString()) && setting.save ? Settings.get(name as string, defValue) : Boolean(defValue) && defValue[0] === '{' ? JSON.parse(defValue) : defValue;
 
 
 		if (!!setting.values) {

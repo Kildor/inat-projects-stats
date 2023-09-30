@@ -23,8 +23,13 @@ export interface NewSpeciesFields extends Omit<StandartFormFields, 'date_any'> {
 
 const NewSpeciesForm: React.FC<StandartFormProps<NewSpeciesFields>> = ({ handleSubmit, onChangeHandler, optionValues = {} }) => {
 	const { clearDatalistHandler, datalists } = useDatalist(["users", "projects", "taxons", "places"]);
-	const disabled = false;
 	const { input: { value: d2 } } = useField<string>('d2');
+	const { input: { value: taxon } } = useField<string>('taxon');
+	const { input: { value: user_id } } = useField<string>('user_id');
+	const { input: { value: place_id } } = useField<string>('place_id');
+	const { input: { value: project_id } } = useField<string>('project_id');
+
+	const disabled = !Boolean(taxon || user_id || place_id || project_id);
 
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
@@ -78,7 +83,7 @@ export const NewSpecies: React.FC = () => {
 	const { statusMessage, statusTitle } = getStatus();
 	const { usedSettings, values: initialValues, optionValues, onChangeHandler } = useInitialValues<NewSpeciesFields>([
 		"project_id", "user_id", "place_id", "taxon", "csv", "limit", "show_first", "d1", "d2", "date_created", "species_only",
-		"quality_grade",
+		"quality_grade", "additional"
 	], { "date_created": true });
 
 	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
