@@ -18,7 +18,6 @@ export const UsersList: React.FC<UsersListProps> = ({ users, total, csv = false,
 		<div>{I18n.t("Нет данных")}</div>
 	);
 
-
 	let list: ReactElement;
 	if (csv) {
 		list = <CSV header={getCSVHeader} useRank={false} filename={filename}>{users}</CSV>
