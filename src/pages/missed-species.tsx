@@ -99,13 +99,13 @@ export const MissedSpecies: React.FC = () => {
 
 	const { statusMessage, statusTitle } = getStatus();
 	const { values: initialValues, optionValues, onChangeHandler } = useInitialValues<MissedSpeciesFields>([
-		"project_id", "user_id", "csv", "limit", "species_only", "quality_grade", "taxon", "place_id", "additional"
+		"project_id", "unobserved_by_user_id", "user_id", "csv", "limit", "species_only", "quality_grade", "taxon", "place_id", "additional"
 	]);
 
 	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
 	const [data, setData] = useState<Taxon[]>([]);
 	const [error, setError] = useState<string>('');
-	const [values, setValues] = useState<MissedSpeciesFields>();
+	const [values, setValues] = useState<MissedSpeciesFields>(initialValues);
 
 	const submitHandler = useCallback(async (values: MissedSpeciesFields) => {
 		setLoading(true);

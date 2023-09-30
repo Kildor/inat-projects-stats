@@ -4,7 +4,6 @@ import { useContext, useEffect } from 'react';
 export const useStatusMessageContext = () => {
 	const context = useContext(StatusMessageContext)
 	useEffect(() => {
-		console.log('status cleared')
 		context.clearStatus();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	},[])

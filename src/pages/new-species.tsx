@@ -89,7 +89,7 @@ export const NewSpecies: React.FC = () => {
 	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
 	const [data, setData] = useState<Taxon[]>([]);
 	const [error, setError] = useState<string>('');
-	const [values, setValues] = useState<NewSpeciesFields>();
+	const [values, setValues] = useState<NewSpeciesFields>(initialValues);
 
 	const submitHandler = useCallback(async (newValues: NewSpeciesFields) => {
 		setLoading(true);

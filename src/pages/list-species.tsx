@@ -88,7 +88,7 @@ export const ListSpecies: React.FC = () => {
 
 	const { statusMessage, statusTitle } = getStatus();
 	const { values: initialValues, optionValues, onChangeHandler } = useInitialValues<ListSpeciesFields>([
-		"project_id", "user_id", "place_id", "taxon", "limit", "species_only", "quality_grade", "contribution", "d1", "d2", "date_created", "date_any", "csv"
+		"project_id", "user_id", "place_id", "taxon", "limit", "species_only", "quality_grade", "contribution", "d1", "d2", "date_created", "date_any", "csv", "additional"
 	]);
 
 	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
