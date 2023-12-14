@@ -36,6 +36,8 @@ export interface iObserverChangesListProps {
 	showPrevState: boolean;
 	/** Показывать выбывших наблюдателей. */
 	showRetired: boolean;
+	/** Показывать позицию прошлого периода (а не изменение положения). */
+	showPrevPosition: boolean;
 	/** Колонка для сортировки. */
 	orderBy: 'species_count' | 'observation_count';
 }
@@ -50,7 +52,7 @@ const getClassName = (diff: number, isNewFace: boolean, isRetiredFace: boolean) 
 }
 
 
-export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ observers, strategy = Strategy.new_faces, difference = 0, showPrevState = false, showRetired = true, orderBy }) => {
+export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ observers, strategy = Strategy.new_faces, difference = 0, showPrevState = false, showRetired = true, showPrevPosition = false, orderBy }) => {
 	if (!observers || observers.length === 0) return null;
 
 	return (
@@ -73,9 +75,14 @@ export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ obser
 
 				return <li key={key} className={`observer ${cnPosition}`}>
 					<span className="position">{currentPosition}</span>
-					<span className='difference'>
-						{!isNewFace ? (diff > 0 && !isRetiredFace ? '+' : diff === 0 ? ` ` : '') + diff : ''}
-					</span> <UserLink user={currentState ?? prevState!} /> <span className='observations'>{currentState?.observations ?? 0} {showPrevState && `/ ${prevState?.observations ?? 0}`}</span> <span className='species'>{currentState?.species ?? 0} {showPrevState && <>/ {prevState?.species ?? 0}</>}</span>
+					{showPrevPosition ? (
+						<span className='prev-position'>{prevPosition || ''}</span>
+					) : (
+						<span className='difference'>
+							{!isNewFace ? (diff > 0 && !isRetiredFace ? '+' : diff === 0 ? ` ` : '') + diff : ''}
+						</span>
+					)}
+					<UserLink user={currentState ?? prevState!} /> <span className='observations'>{currentState?.observations ?? 0} {showPrevState && `/ ${prevState?.observations ?? 0}`}</span> <span className='species'>{currentState?.species ?? 0} {showPrevState && <>/ {prevState?.species ?? 0}</>}</span>
 				</li>
 			})}
 

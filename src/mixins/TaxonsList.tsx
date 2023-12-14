@@ -24,7 +24,7 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 
 	let list: ReactElement;
 	if (csv) {
-		list = <CSV header={getCSVHeader} useRank={true} filename={filename}>{taxons}</CSV>
+		list = <CSV header={getCSVHeader(taxons[0].countTotal > 0)} useRank={true} filename={filename}>{taxons}</CSV>
 	} else {
 		let url = `https://www.inaturalist.org/observations?subview=table`;
 		if (!!project_id) url += `&project_id=${project_id}`;
@@ -32,12 +32,22 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 		url += `&place_id=${!!place_id ? place_id : "any"}`;
 		url += addCustomParams(fillDateParams({ d1, d2, date_created, date_any }))
 
-		list = <ol className='taxons'>{taxons.map(taxon => <li key={taxon.id} className={!!taxon.commonName ? 'has-common-name' : ''}>
-			<a href={url + '&taxon_id=' + taxon.id} target='_blank' rel='noopener noreferrer'>
-				{taxon.commonName} <em>{taxon.name}</em>
-			</a>
-			{`, ${I18n.t("{1} наблюдений", [taxon.count])}`}
-		</li>)}</ol>;
+		list = <ol className='taxons'>
+			{taxons.map(taxon => (
+				<li key={taxon.id} className={!!taxon.commonName ? 'has-common-name' : ''}>
+					<a href={url + '&taxon_id=' + taxon.id} target='_blank' rel='noopener noreferrer'>
+						{taxon.commonName} <em>{taxon.name}</em>
+					</a>
+					<span className="observation_count">
+						{`, ${I18n.t("{1} наблюдений", [taxon.count])}`}
+					</span>
+					{taxon.countTotal > 0 &&
+						<span className="observation_count_total">
+							{`, ${I18n.t("{1} всего", [taxon.countTotal])}`}
+						</span>
+					}
+				</li>
+			))}</ol>;
 
 	}
 

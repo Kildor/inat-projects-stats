@@ -20,6 +20,7 @@ export interface ContributionFields extends FormOtherFields, FormPresentationFie
 	difference: number;
 	prev_state: boolean;
 	show_retired: boolean;
+	show_prev_position: boolean;
 	d1_new: string;
 	d2_new: string;
 	d1_prev: string;
@@ -28,7 +29,7 @@ export interface ContributionFields extends FormOtherFields, FormPresentationFie
 
 interface ContributionPresentationSettingsList extends
 	Pick<ContributionFields,
-		'difference' | 'show_retired' | 'prev_state'> { }
+		'difference' | 'show_retired' | 'prev_state' | 'show_prev_position'> { }
 
 
 const customFields = {
@@ -41,6 +42,7 @@ const customFields = {
 	difference: { setting: 'difference', save: true, type: 'number', default: 0 },
 	prev_state: { setting: 'prev_state', save: true, type: 'boolean', default: true },
 	show_retired: { setting: 'show_retired', save: true, type: 'boolean', default: true },
+	show_prev_position: { setting: 'show_prev_position', save: true, type: 'boolean', default: false },
 };
 
 const ContributionForm: React.FC<StandartFormProps<ContributionFields>> = ({ handleSubmit, form, optionValues = {}, onChangeHandler, loading = false }) => {
@@ -105,13 +107,14 @@ export const ContributionPage: React.FC = () => {
 	const { values: initialValues, optionValues, onChangeHandler } = useInitialValues<ContributionFields>([
 		"project_id", "limit", "species_only", "quality_grade",
 		"d1_new", "d2_new", "d1_prev", "d2_prev", "date_created",
-		"csv", "order_by", "strategy", "difference", "prev_state", "show_retired"
+		"csv", "order_by", "strategy", "difference", "prev_state", "show_retired", "show_prev_position"
 	], {}, customFields);
 
 	const [presentationSettingsList, setPresentation] = useState<ContributionPresentationSettingsList>({
 		difference: initialValues!.difference,
 		show_retired: initialValues!.show_retired,
 		prev_state: initialValues!.prev_state,
+		show_prev_position: initialValues!.show_prev_position,
 	});
 
 	const [data, setData] = useState<iObserverChange[]>([]);
@@ -201,6 +204,7 @@ export const ContributionPage: React.FC = () => {
 				settings={[
 					{ label: I18n.t("Показывать данные за предыдущий период"), name: 'prev_state' },
 					{ label: I18n.t("Показывать выбывших наблюдателей"), name: 'show_retired' },
+					{ label: I18n.t("Показывать позицию за предыдущий период"), name: 'show_prev_position' },
 				]} >
 				<FormControl
 					className='no-flex'
@@ -226,6 +230,7 @@ export const ContributionPage: React.FC = () => {
 						difference={presentationSettingsList.difference}
 						showPrevState={presentationSettingsList.prev_state}
 						showRetired={presentationSettingsList.show_retired}
+						showPrevPosition={presentationSettingsList.show_prev_position}
 						orderBy={values.order_by}
 					/>
 				</div>
