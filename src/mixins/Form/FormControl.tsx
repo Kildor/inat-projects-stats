@@ -4,7 +4,7 @@ import { StatusMessageContext } from 'contexts/status-message-context';
 import { BooleanControlProps, FormControlCheckboxFieldProps, FormControlCheckboxProps, FormControlFieldProps, FormControlProps, FormControlRadioProps, FormControlSelectFieldProps, FormControlSelectProps, FormControlTaxonFieldProps, FormControlTaxonProps, iDataListItem, iLookupTaxon, MultilineControlFieldProps, MultilineControlProps, NumberControlProps } from 'interfaces';
 import { lookupTaxon, setTaxon } from 'mixins/API';
 import cn from 'classnames';
-import DataList from 'mixins/DataList';
+import { DataList } from 'mixins/DataList';
 import React, { ChangeEvent, FunctionComponent, memo, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
@@ -158,7 +158,7 @@ export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props
 	);
 }
 
-export const FormControlTaxonField: FunctionComponent<FormControlTaxonFieldProps> = ({ name, changeHandler, list, ...attr }) => {
+export const FormControlTaxonField: FunctionComponent<FormControlTaxonFieldProps> = ({ name, changeHandler, list, label = I18n.t("Таксон"), ...attr }) => {
 	const { input: { value: taxonValue, onChange, onBlur } } = useField<iLookupTaxon | string>(name, { subscription: { value: true } });
 
 	const { setStatus, setShow } = useContext(StatusMessageContext);
@@ -211,7 +211,7 @@ export const FormControlTaxonField: FunctionComponent<FormControlTaxonFieldProps
 			{...attr}
 			list={list}
 			datalistId={datalistId}
-			label={I18n.t("Таксон")}
+			label={label}
 			name="taxon"
 			changeHandler={changeHandler}
 			onBlur={onBlurHandler}
@@ -259,7 +259,7 @@ export const FormControlMultiline: FunctionComponent<MultilineControlProps> = (p
 	const [value, setValue] = useState('');
 
 	useEffect(() => {
-		setValue(typeof defValue === 'string' ? defValue : defValue?.reduce((value, item) => value += item.name + (!!item.title && item.title !== item.name ? ': ' + item.title : '') + '\n', '').trim())
+		setValue(typeof defValue === 'string' ? defValue : defValue?.reduce((value, item) => value + item.name + (!!item.title && item.title !== item.name ? ': ' + item.title : '') + '\n', '').trim())
 	}, [defValue])
 
 	return (
@@ -298,7 +298,7 @@ export const FormControlMultilineField: FunctionComponent<MultilineControlFieldP
 						({ input, onBlur }) => {
 							const value = typeof input.value === 'string' ?
 								input.value :
-								input.value?.reduce((v: string, item: iDataListItem) => v += item.name + (!!item.title && item.title !== item.name ? ': ' + item.title : '') + '\n', '').trim();
+								input.value?.reduce((v: string, item: iDataListItem) => v + item.name + (!!item.title && item.title !== item.name ? ': ' + item.title : '') + '\n', '').trim();
 
 							return (
 								<textarea name={input.name} value={value} onChange={input.onChange} onBlur={onBlur} />

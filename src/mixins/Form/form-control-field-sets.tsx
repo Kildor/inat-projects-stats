@@ -26,7 +26,7 @@ export const DataControlsBlock: React.FC<DataControlsBlockProps> = ({
 	return <fieldset>
 		<legend>{I18n.t("Настройки даты")}</legend>
 		{showDateAny && <FormControlCheckboxField label={I18n.t("За всё время")} name='date_any' handler={handler} />}
-		<fieldset className={"noborder" + (!!date_any ? " hidden" : "")}>
+		<fieldset className={"noborder" + (date_any ? " hidden" : "")}>
 			<FormControlField label={I18n.t("Наблюдения после")} type='date' name='d1' changeHandler={handler} />
 			<FormControlField label={I18n.t("Наблюдения до")} type='date' name='d2' changeHandler={handler} />
 			<FormControlCheckboxField label={I18n.t("Дата загрузки")} name='date_created' handler={handler}

@@ -25,7 +25,7 @@ interface ObserverCurrentChange extends CommonObserverChange {
 export type iObserverChange = ObserverCurrentChange | ObserverPrevChange;
 
 /** Свойства списка. */
-export interface iObserverChangesListProps {
+export interface ObserverChangesListProps {
 	/** Наблюдатели. */
 	observers: iObserverChange[];
 	/** Стратегия списка. */
@@ -51,8 +51,26 @@ const getClassName = (diff: number, isNewFace: boolean, isRetiredFace: boolean) 
 	return 'same';
 }
 
+const getDifference = (isNewFace: boolean, diff: number): string => {
+	if (isNewFace) {
+		return '';
+	}
+	return `${Math.abs(diff)}`;
+};
 
-export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ observers, strategy = Strategy.new_faces, difference = 0, showPrevState = false, showRetired = true, showPrevPosition = false, orderBy }) => {
+const getSign = (isRetiredFace: boolean, isNewFace: boolean, diff: number): string => {
+	if (isRetiredFace || isNewFace || diff === 0) {
+		return '';
+	}
+
+	if (diff < 0) {
+		return '-';
+	}
+
+	return '+';
+};
+
+export const ObserverChangesList: React.FC<ObserverChangesListProps> = ({ observers, strategy = Strategy.new_faces, difference = 0, showPrevState = false, showRetired = true, showPrevPosition = false, orderBy }) => {
 	if (!observers || observers.length === 0) return null;
 
 	return (
@@ -60,12 +78,12 @@ export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ obser
 			<li className='header'>
 				<span className="icon" />
 				<span className="position" />
+				{!showPrevPosition && <span className='sign' />}
 				<span className='difference' />
 				<span className='user'>{I18n.t("Пользователь")}</span>
 				<span className='observations'>{I18n.t("Наблюдения")} {orderBy === 'observation_count' && ' ▼'}</span>
 				<span className='species'>{I18n.t("Виды")} {orderBy === 'species_count' && ' ▼'}</span>
-			</li>
-			{observers.filter(({ currentPosition }) => ((showRetired && showPrevState) || currentPosition > 0)).map(({ currentState, prevState, prevPosition, currentPosition }) => {
+			</li>			{observers.filter(({ currentPosition }) => ((showRetired && showPrevState) || currentPosition > 0)).map(({ currentState, prevState, prevPosition, currentPosition }) => {
 				const diff = prevPosition - currentPosition;
 				const isNewFace = prevPosition === 0;
 				const isRetiredFace = currentPosition === 0;
@@ -73,20 +91,24 @@ export const ObserverChangesList: React.FC<iObserverChangesListProps> = ({ obser
 				const cnPosition = `position-${getClassName(diff, isNewFace, isRetiredFace)}`;
 				const key = currentState?.id ?? prevState!.id;
 
-				return <li key={key} className={`observer ${cnPosition}`}>
-					<span className="position">{currentPosition}</span>
-					{showPrevPosition ? (
-						<span className='prev-position'>{prevPosition || ''}</span>
-					) : (
-						<span className='difference'>
-							{!isNewFace ? (diff > 0 && !isRetiredFace ? '+' : diff === 0 ? ` ` : '') + diff : ''}
-						</span>
-					)}
-					<UserLink user={currentState ?? prevState!} /> <span className='observations'>{currentState?.observations ?? 0} {showPrevState && `/ ${prevState?.observations ?? 0}`}</span> <span className='species'>{currentState?.species ?? 0} {showPrevState && <>/ {prevState?.species ?? 0}</>}</span>
-				</li>
+				return (
+					<li key={key} className={`observer ${cnPosition}`}>
+						<span className="position">{!isRetiredFace ? currentPosition : ''}</span>
+						{showPrevPosition ? (
+							<span className='prev-position'>{prevPosition ?? ''}</span>
+						) : (
+							<>
+								<span className='sign'>{getSign(isRetiredFace, isNewFace, diff)}</span>
+								<span className='difference'>{getDifference(isNewFace, diff)}</span>
+							</>
+						)}
+						<UserLink user={currentState ?? prevState!} />
+						<span className='observations'>{currentState?.observations ?? 0} {showPrevState && `/ ${prevState?.observations ?? 0}`}</span>
+						<span className='species'>{currentState?.species ?? 0} {showPrevState && <>/ {prevState?.species ?? 0}</>}</span>
+					</li>
+				);
 			})}
 
 		</ul>
 	)
-
-}
+};

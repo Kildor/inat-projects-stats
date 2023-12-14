@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { ListPage, AboutPage, NotFound, Settings, MissedSpecies, ProjectMembers, NewSpecies, ListSpecies, DownloadObservations, ContributionPage } from 'pages';
-import Downloader from '../pages/Downloader';
-import { Contribution as ContributionLegacy } from '../pages/Contribution';
 
+import DownloaderLegacy from '../pages/Downloader';
+import { Contribution as ContributionLegacy } from '../pages/Contribution';
 import SpeciesListLegacy from '../pages/SpeciesList';
 import NewSpeciesLegacy from '../pages/Species';
 import SpeciesMissedLegacy from '../pages/SpeciesMissed';
@@ -33,7 +33,7 @@ export const components: iComponentListItem[] = [
   { path: '/new-species-legacy', component: <NewSpeciesLegacy /> },
   { path: '/user-settings-legacy', component: <UserSettingsLegacy /> },
   { path: '/missed-species-legacy', component: <SpeciesMissedLegacy /> },
-  { path: '/download-observations-legacy', component: <Downloader /> },
+  { path: '/download-observations-legacy', component: <DownloaderLegacy /> },
 
   { path: '*', component: <NotFound /> },
 ];

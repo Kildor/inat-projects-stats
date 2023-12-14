@@ -8,36 +8,34 @@ import { ObservationComment } from '../DataObjects/ObservationComment';
 import I18n from '../classes/I18n';
 import { DateTimeFormat } from './utils';
 
-interface iCommon {
-	current_ids: boolean | false
-	hide_activity: boolean | false
-	show_discussion: boolean | false
+interface CommonListProps {
+	current_ids: boolean;
+	hide_activity: boolean;
+	show_discussion: boolean;
 }
 
-interface ObservationsListProps extends iCommon {
-	observations: Array<Observation>
-	csv: boolean | false
-	filename?: string | "observations.csv"
+interface ObservationsListProps extends CommonListProps {
+	observations: Array<Observation>;
+	csv: boolean;
+	filename?: string;
 }
 
-interface ActivitiesListProps extends Omit<iCommon, 'hide_activity'> {
-	activityFilter: FilterFunction
-	activities: Array<ObservationComment | ObservationIdentification >
+interface ActivitiesListProps extends Omit<CommonListProps, 'hide_activity'> {
+	activityFilter: FilterFunction;
+	activities: Array<ObservationComment | ObservationIdentification >;
 }
 
-interface ObservationItemProps extends iCommon {
-	observation: Observation
+interface ObservationItemProps extends CommonListProps {
+	observation: Observation;
 }
 
-interface FilterFunction {
-	(act: ObservationComment | ObservationIdentification) : boolean
-}
+type FilterFunction = (act: ObservationComment | ObservationIdentification)  => boolean;
 
 
 interface ActivityItemPros {
 	activity: ObservationComment | ObservationIdentification;
 	className: string;
-	children?: React.ReactNode
+	children?: React.ReactNode;
 }
 
 const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{
@@ -48,14 +46,15 @@ const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, use
 				{comment}
 			</div>
 		</li>
-
 	)
-}
+};
+ActivityItem.displayName = 'ActivityItem';
+
 const ActivityIdentification: React.FC<{ activity: ObservationIdentification }> = ({ activity })=>{
-	const isCurrent = 'current' in activity && activity.current;
+	const isCurrent = Boolean(activity?.current);
 	let className = 'identification ' + (isCurrent ? 'identification-current' : 'identification-outdated');
-	if (!!activity.vision) className+= ' has-vision';
-	if (!!activity.taxon.commonName) className+= ' has-common-name';
+	if (activity.vision) className+= ' has-vision';
+	if (activity.taxon?.commonName) className+= ' has-common-name';
 	return <ActivityItem className={className} activity={activity}>
 		{!isCurrent && <span role='img' title={I18n.t('Отозванная идентификация')} aria-label={I18n.t('Отозванная идентификация')}>❌</span>}
 		{activity.vision && <span role='img' title={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')} aria-label={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')}>✨</span>}

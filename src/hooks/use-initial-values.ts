@@ -25,17 +25,25 @@ export function useInitialValues<T>(settingsList: Array<keyof T>, defaultValues:
 
 		const defValue = urlSearchParams.get(name.toString()) ?? (DEFAULTS as Record<keyof T, any>)[name] ?? defaultValues[name] ?? setting.default ?? "";
 
-		values[name] = !urlSearchParams.has(name.toString()) && setting.save ? Settings.get(name as string, defValue) : Boolean(defValue) && defValue[0] === '{' ? JSON.parse(defValue) : defValue;
+		if (!urlSearchParams.has(name.toString()) && setting.save) {
+			values[name] = Settings.get(name as string, defValue);
+		}
+		else {
+			values[name] = Boolean(defValue) && defValue[0] === '{' ? JSON.parse(defValue) : defValue;
+		}
 
 
-		if (!!setting.values) {
+		if (setting.values) {
 			optionValues[name] = new Map(Object.entries(setting.values));
 		}
 		usedSettings[name] = setting;
 	});
 
+	console.log(usedSettings);
+
 	const onChangeHandler = (fieldName: string, value: string | boolean) => {
-		if (usedSettings && !!usedSettings[fieldName as keyof T] && usedSettings[fieldName as keyof T].save) {
+		console.log({ fieldName, value, us: usedSettings?.[fieldName as keyof T] });
+		if (usedSettings?.[fieldName as keyof T]?.save) {
 			Settings.set(fieldName, value);
 		}
 	};

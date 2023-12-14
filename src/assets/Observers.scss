@@ -23,7 +23,13 @@ ul.observers-list {
 			display: table-cell;
 			padding: 4px 8px;
 		}
-		.position, .difference, .prev-position {
+		> .sign {
+			padding-right: 0;
+		}
+		> .difference {
+			padding-left: 0;
+		}
+		.position, .difference, .prev-position, .sign {
 			font-weight: bold;
 		}
 

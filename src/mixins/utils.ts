@@ -32,9 +32,9 @@ export const createQueryRequest = (values: CreateQueryRequestParams): Record<str
 		customParams['lrank'] = 'species';
 		customParams['hrank'] = 'species';
 	}
-	if (!!quality_grade) customParams['quality_grade'] = quality_grade;
+	if (quality_grade) customParams['quality_grade'] = quality_grade;
 
-	if (!!additional) {
+	if (additional) {
 		additional.split('&').forEach((p: string) => {
 			const param = p.split('=');
 			if (param.length === 2) customParams[param[0]] = param[1];
