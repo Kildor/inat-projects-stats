@@ -1,9 +1,10 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { getCSVHeader, Taxon } from '../DataObjects/Taxon';
 import 'assets/Taxons.scss';
 import CSV from './CSV';
 import I18n from '../classes/I18n';
 import { addCustomParams, fillDateParams } from './API';
+import { SearchWidget } from './search-widget';
 
 export interface TaxonListProps {
 	taxons: Array<Taxon>
@@ -16,8 +17,11 @@ export interface TaxonListProps {
 	place_id?: number
 	csv: boolean | false
 	filename?: string | "taxons.csv"
+	markObserved?: boolean
 }
-export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_created = true, date_any = false, project_id, user_id, place_id, csv, filename }) => {
+export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_created = true, date_any = false, project_id, user_id, place_id, csv, filename, markObserved = false }) => {
+	const [search, setSearch] = useState('');
+
 	if (taxons.length === 0) return (
 		<div>{I18n.t("Нет данных")}</div>
 	);
@@ -33,8 +37,8 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 		url += addCustomParams(fillDateParams({ d1, d2, date_created, date_any }))
 
 		list = <ol className='taxons'>
-			{taxons.map(taxon => (
-				<li key={taxon.id} className={!!taxon.commonName ? 'has-common-name' : ''}>
+			{taxons.filter(({ name = '', commonName = '' }) => search === '' || name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || commonName?.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ).map(taxon => (
+				<li key={taxon.id} className={(!!taxon.commonName ? 'has-common-name' : '') + ' ' + (markObserved ? taxon.isObserved ? 'observed' : 'unobserved' : '')}>
 					<a href={url + '&taxon_id=' + taxon.id} target='_blank' rel='noopener noreferrer'>
 						{taxon.commonName} <em>{taxon.name}</em>
 					</a>
@@ -55,6 +59,7 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 	return (
 		<>
 			<p>{I18n.t("{1} видов:", [taxons.length])}</p>
+			<SearchWidget value={search} setValue={setSearch} />
 			{list}
 		</>
 	)

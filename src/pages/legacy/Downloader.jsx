@@ -1,15 +1,15 @@
-import I18n from "../classes/I18n";
-import Module from "../classes/Module";
-import Page from "../mixins/Page";
+import I18n from "../../classes/I18n";
+import Module from "../../classes/Module";
+import Page from "../../mixins/Page";
 import React from 'react'
-import { FormWrapper } from "../mixins/Form/form-wrapper";
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../mixins/Form/FormControl";
+import { FormWrapper } from "../../mixins/Form/form-wrapper";
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from "../../mixins/Form/FormControl";
 import { Loader } from 'mixins/Loader';
-import { Error } from "../mixins/Error";
-import API, { fillDateParams, saveDatalist } from "../mixins/API";
-import ObservationsList from "../mixins/ObservationsList";
-import { Settings } from "../classes/settings";
-import { DataControlsBlock } from "../mixins/Form/FormControlSets";
+import { Error } from "../../mixins/Error";
+import API, { fillDateParams, saveDatalist } from "../../mixins/API";
+import ObservationsList from "../../mixins/ObservationsList";
+import { Settings } from "../../classes/settings";
+import { DataControlsBlock } from "../../mixins/Form/FormControlSets";
 
 export default class Downloader extends Module {
 	constructor(props) {

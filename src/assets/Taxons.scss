@@ -1,15 +1,36 @@
-li {
-	&.has-common-name {
-		em {
-			&::before, &::after {
-				display: inline;
+ol.taxons {
+	line-height: 1.6;
+
+	li {
+		&.has-common-name {
+			em {
+				&::before,
+				&::after {
+					display: inline;
 				}
-			&::before {
-				content: '(';
+				&::before {
+					content: "(";
 				}
-			&::after {
-				content: ')';
+				&::after {
+					content: ")";
 				}
 			}
 		}
+		&.observed {
+			&:before {
+				content: "☑ ";
+				display: inline;
+				font-weight: bold;
+			}
+		}
+		&.unobserved {
+			font-weight: 500;
+
+			&:before {
+				content: "☐ ";
+				display: inline;
+				font-weight: bold;
+			}
+		}
 	}
+}

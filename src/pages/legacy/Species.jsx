@@ -1,15 +1,13 @@
 import React from 'react'
 
-import Page from '../mixins/Page'
-import '../assets/Species.scss';
-
+import Page from '../../mixins/Page'
 import API, { saveDatalist } from 'mixins/API';
 import TaxonsList from 'mixins/TaxonsList';
 import { Error } from 'mixins/Error';
 import { FormWrapper } from 'mixins/Form/form-wrapper';
 import Module from 'classes/Module';
 import I18n from 'classes/I18n';
-import { FormControl, FormControlCheckbox, FormControlCSV, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
+import { FormControl, FormControlCheckbox, FormControlCSV, FormControlSelect, FormControlTaxon } from '../../mixins/Form/FormControl';
 import { DataControlsBlock } from 'mixins/Form/FormControlSets';
 import { Loader } from 'mixins/Loader';
 import { Settings } from 'classes/settings';

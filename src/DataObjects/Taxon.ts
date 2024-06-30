@@ -22,12 +22,13 @@ export class Taxon implements iCSVConvert {
 		this.countTotal > 0 ? this.countTotal : null,
 	);
 
-	id: number;
-	name: string;
-	rank: string;
-	commonName: string | null;
+	id: JSONTaxonObject['id'];
+	name: JSONTaxonObject['name'];
+	rank: JSONTaxonObject['rank'];
+	commonName: JSONTaxonObject['preferred_common_name'];
 	count: number = 0;
 	countTotal: number = 0;
+	isObserved: boolean = false;
 
 	constructor(jsonTaxon: JSONTaxonObject) {
 		this.id = jsonTaxon.id;

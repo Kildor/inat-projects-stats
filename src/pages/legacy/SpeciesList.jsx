@@ -1,17 +1,15 @@
 import React from 'react'
 
-import Page from '../mixins/Page'
-import '../assets/Species.scss';
-
-import API, { fillDateParams, saveDatalist } from '../mixins/API';
+import Page from '../../mixins/Page'
+import API, { fillDateParams, saveDatalist } from '../../mixins/API';
 import { Loader } from 'mixins/Loader';
-import TaxonsList from '../mixins/TaxonsList';
-import { Error } from '../mixins/Error';
-import { FormWrapper } from '../mixins/Form/form-wrapper';
-import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
-import Module from '../classes/Module';
-import I18n from '../classes/I18n';
-import { DataControlsBlock } from '../mixins/Form/FormControlSets';
+import TaxonsList from '../../mixins/TaxonsList';
+import { Error } from '../../mixins/Error';
+import { FormWrapper } from '../../mixins/Form/form-wrapper';
+import { FormControl, FormControlCSV, FormControlCheckbox, FormControlLimit, FormControlSelect, FormControlTaxon } from '../../mixins/Form/FormControl';
+import Module from '../../classes/Module';
+import I18n from '../../classes/I18n';
+import { DataControlsBlock } from '../../mixins/Form/FormControlSets';
 
 class SpeciesList extends Module {
 	constructor(props) {

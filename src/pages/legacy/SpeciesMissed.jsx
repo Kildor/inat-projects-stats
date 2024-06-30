@@ -1,18 +1,17 @@
 import React from 'react'
 
-import Page from '../mixins/Page'
-import '../assets/Species.scss';
+import Page from 'mixins/Page'
 
-import API, { saveDatalist } from '../mixins/API';
-import { Settings } from "../classes/settings";
+import API, { saveDatalist } from 'mixins/API';
+import { Settings } from "classes/settings";
 import { Loader } from 'mixins/Loader';
-import TaxonsList from '../mixins/TaxonsList';
-import { Error } from '../mixins/Error';
-import { FormWrapper } from '../mixins/Form/form-wrapper';
-import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from '../mixins/Form/FormControl';
-import Module from '../classes/Module';
-import I18n from '../classes/I18n';
-import { TranslateJSX } from '../mixins/Translation';
+import TaxonsList from 'mixins/TaxonsList';
+import { Error } from 'mixins/Error';
+import { FormWrapper } from 'mixins/Form/form-wrapper';
+import {FormControl, FormControlCheckbox, FormControlCSV, FormControlLimit, FormControlSelect, FormControlTaxon } from 'mixins/Form/FormControl';
+import Module from 'classes/Module';
+import I18n from 'classes/I18n';
+import { TranslateJSX } from 'mixins/Translation';
 export default class SpeciesMissed extends Module {
 	constructor(props) {
 		super(props);

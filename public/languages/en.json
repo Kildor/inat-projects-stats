@@ -35,6 +35,7 @@
 		"Виды, встреченные только этим пользователем": "Species observed by this user only",
 		"Виды, не встреченные этим пользователем в проекте": "Species not observed by this user in the project",
 		"Виды, никогда не встреченные этим пользователем": "Species never observed by this user",
+		"Отметить виды, встреченные пользователем": "Mark species observed by this user",
 		"Все": "All",
 		"Выводить в CSV": "CSV output",
 		"Выводить только виды": "Display only species",
@@ -162,6 +163,7 @@
 		"Редкости": "Rarity",
 		"Расширенное сравнение": "Extended compare",
 		"Сравнение": "Comparing",
+		"Быстрый поиск по списку": "Incremental list search",
 		"": ""
 	}
 }

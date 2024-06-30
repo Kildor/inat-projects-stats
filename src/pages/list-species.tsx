@@ -1,3 +1,5 @@
+import React, { useCallback, useState } from 'react';
+import { Form, useField } from 'react-final-form';
 import { Taxon } from 'DataObjects';
 import { I18n } from 'classes';
 import { useDatalist, useInitialValues } from 'hooks';
@@ -13,12 +15,11 @@ import Page from 'mixins/Page';
 import TaxonsList from 'mixins/TaxonsList';
 import { PresentationSettings } from 'mixins/presentation-settings';
 import { createQueryRequest } from 'mixins/utils';
-import React, { useCallback, useState } from 'react';
-import { Form, useField } from 'react-final-form';
+import { USER_CONTRIBUTIONS } from '../constants';
 
 interface ListSpeciesFields extends StandartFormFields {
 	/** Вклад пользователя. */
-	contribution: string;
+	contribution: USER_CONTRIBUTIONS;
 	/** Сортировка видов. */
 	order_by: 'count' | 'rarity' | 'rarity_abs';
 }
@@ -26,15 +27,16 @@ interface ListSpeciesFields extends StandartFormFields {
 const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handleSubmit, form, optionValues = {}, onChangeHandler, loading }) => {
 	const { datalists, clearDatalistHandler } = useDatalist(["users", "projects", "taxons", "places"]);
 
-	const { input: { value: project_id } } = useField<string>('project_id');
-	const { input: { value: user_id } } = useField<string>('user_id');
-	const { input: { value: place_id } } = useField<string>('place_id');
-	const { input: { value: d1 } } = useField<string>('d1');
-	const { input: { value: contribution } } = useField<string>('contribution');
+	const { input: { value: project_id } } = useField<ListSpeciesFields['project_id']>('project_id');
+	const { input: { value: user_id } } = useField<ListSpeciesFields['user_id']>('user_id');
+	const { input: { value: place_id } } = useField<ListSpeciesFields['place_id']>('place_id');
+	const { input: { value: taxon_id } } = useField<ListSpeciesFields['taxon']>('taxon');
+	const { input: { value: d1 } } = useField<ListSpeciesFields['d1']>('d1');
+	const { input: { value: contribution } } = useField<ListSpeciesFields['contribution']>('contribution');
 
 
 
-	const disabled = loading || (d1 === '' || (project_id === '' && user_id === '' && place_id === ''));
+	const disabled = loading || (d1 === '' || (project_id === '' && user_id === '' && place_id === 0));
 
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
@@ -55,7 +57,7 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 					list={datalists.users}
 					clearDatalistHandler={clearDatalistHandler}
 					listName="users" />
-				{(!!user_id && (!!project_id || !!place_id)) &&
+				{(!!user_id && (!!project_id || !!place_id || !!taxon_id)) &&
 					<FormControlSelectField label={I18n.t("Вклад пользователя")} name='contribution' values={optionValues['contribution']} />
 				}
 				<FormControlField
@@ -79,7 +81,7 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 			</fieldset>
 			<DataControlsBlock handler={onChangeHandler} showDateAny />
 			<OtherControlsBlock handler={onChangeHandler} optionValues={optionValues} >
-				{!!user_id && '0' === contribution && (
+				{!!user_id && USER_CONTRIBUTIONS.OBSERVED === contribution && (
 					<FormControlSelectField label={I18n.t("Сортировка по")} name="order_by" values={optionValues['order_by']} />
 				)}
 			</OtherControlsBlock>
@@ -124,12 +126,14 @@ export const ListSpecies: React.FC = () => {
 
 			setLoading(true);
 
-			const { project_id, user_id, contribution, order_by } = newValues;
+			const { project_id, user_id, place_id, contribution: contributionValue, order_by, taxon } = newValues;
 			const customParamsWithoutData = createQueryRequest(newValues);
 			const customParams = { ...customParamsWithoutData, ...fillDateParams(newValues) };
 
+			const contribution: USER_CONTRIBUTIONS = project_id || place_id || taxon ? contributionValue : USER_CONTRIBUTIONS.OBSERVED;
+
 			try {
-				if (contribution === '3' && user_id !== '') {
+				if (contribution === USER_CONTRIBUTIONS.NEVER_OBSERVED && user_id !== '') {
 					setStatus(I18n.t("Загрузка всех видов"));
 					customParams['unobserved_by_user_id'] = user_id;
 					let allTaxa = await API.fetchSpecies(project_id, null, null, null, false, setMessage, customParams);
@@ -138,11 +142,11 @@ export const ListSpecies: React.FC = () => {
 					return;
 				}
 
-				setStatus(contribution === '0' && user_id !== '' ? I18n.t("Загрузка видов пользователя") : I18n.t("Загрузка всех видов"));
+				setStatus(contribution === USER_CONTRIBUTIONS.OBSERVED && user_id !== '' ? I18n.t("Загрузка видов пользователя") : I18n.t("Загрузка всех видов"));
 
-				const allTaxa = await API.fetchSpecies(project_id, contribution === '0' ? user_id : '', null, null, false, setMessage, customParams);
+				const allTaxa = await API.fetchSpecies(project_id, contribution === USER_CONTRIBUTIONS.OBSERVED ? user_id : '', null, null, false, setMessage, customParams);
 
-				if (contribution === '0' && user_id !== '' && ['rarity', 'rarity_abs'].includes(order_by)) {
+				if (contribution === USER_CONTRIBUTIONS.OBSERVED && user_id !== '' && ['rarity', 'rarity_abs'].includes(order_by)) {
 					setStatus(I18n.t("Загрузка всех видов"));
 					const userTaxonIds = [...allTaxa.ids];
 					let allFilteredTaxa = { ids: new Set(), total: 0, objects: new Map() };
@@ -179,25 +183,29 @@ export const ListSpecies: React.FC = () => {
 					return;
 				}
 
-				if (contribution !== '0' && user_id !== '') {
+				if (contribution !== USER_CONTRIBUTIONS.OBSERVED && user_id !== '') {
 					setStatus(I18n.t("Загрузка видов пользователя"));
 					const userTaxa = await API.fetchSpecies(project_id, user_id, null, null, false, setMessage, customParams);
 					setStatus(I18n.t("Обработка загруженных данных"));
 
-					if (contribution === '1') {
-						if (userTaxa.total === 0) setData([]);
-						setData([...userTaxa.ids].filter(id => {
-							return !allTaxa.ids.has(id) || allTaxa.objects.get(id)?.count === userTaxa.objects.get(id)?.count;
-						}).map(id => userTaxa.objects.get(id)) as Taxon[]);
-
-						return;
-					} else if (contribution === '2') {
+					if (contribution === USER_CONTRIBUTIONS.OBSERVED_ONLY) {
+						if (userTaxa.total === 0) {
+							setData([]);
+						}
+						else {
+							setData([...userTaxa.ids].filter(id => {
+								return !allTaxa.ids.has(id) || allTaxa.objects.get(id)?.count === userTaxa.objects.get(id)?.count;
+							}).map(id => userTaxa.objects.get(id)) as Taxon[]);
+						}
+					} else if (contribution === USER_CONTRIBUTIONS.NOT_OBSERVED) {
 						setData([...allTaxa.ids].filter(id => {
 							return !userTaxa.ids.has(id)
 						}).map(id => allTaxa.objects.get(id)) as Taxon[]);
-
-						return;
+					} else if (contribution === USER_CONTRIBUTIONS.MARK_OBSERVED) {
+						setData([...allTaxa.ids].map(id => ({ ...allTaxa.objects.get(id), isObserved: userTaxa.ids.has(id)})) as Taxon[]);
 					}
+
+					return;
 				}
 
 				setStatus(I18n.t("Обработка загруженных данных"));
@@ -238,8 +246,9 @@ export const ListSpecies: React.FC = () => {
 						date_any={values.date_any}
 						place_id={values.place_id}
 						project_id={values.project_id}
-						user_id={!['2', '3'].includes(values.contribution) ? values.user_id : undefined}
+						user_id={![USER_CONTRIBUTIONS.NOT_OBSERVED, USER_CONTRIBUTIONS.NEVER_OBSERVED].includes(values.contribution) ? values.user_id : undefined}
 						csv={csv}
+						markObserved={values.contribution === USER_CONTRIBUTIONS.MARK_OBSERVED}
 					// filename={values.filename}
 					/>
 				</div>

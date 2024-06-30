@@ -1,15 +1,15 @@
 import React from 'react'
-import Page from '../mixins/Page';
-import { Settings } from "../classes/settings";
-import {FormControl, FormControlMultiline} from '../mixins/Form/FormControl';
-import defaultPlaces from '../assets/places.json';
-import defaultProjects from '../assets/projects.json'
-import { FormWrapper } from '../mixins/Form/form-wrapper';
-import Module from '../classes/Module';
-import I18n from '../classes/I18n';
+import Page from '../../mixins/Page';
+import { Settings } from "../../classes/settings";
+import {FormControl, FormControlMultiline} from '../../mixins/Form/FormControl';
+import defaultPlaces from '../../assets/places.json';
+import defaultProjects from '../../assets/projects.json'
+import { FormWrapper } from '../../mixins/Form/form-wrapper';
+import Module from '../../classes/Module';
+import I18n from '../../classes/I18n';
 import { Loader } from 'mixins/Loader';
-import { Error } from '../mixins/Error';
-import API from '../mixins/API';
+import { Error } from '../../mixins/Error';
+import API from '../../mixins/API';
 
 export default class UserSettings extends Module {
 	constructor(props) {

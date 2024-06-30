@@ -1,8 +1,6 @@
 import React from 'react'
 
 import Page from 'mixins/Page'
-import 'assets/Species.scss';
-
 import API, { fillDateParams } from 'mixins/API';
 import { Error } from 'mixins/Error';
 import { FormWrapper } from 'mixins/Form/form-wrapper';

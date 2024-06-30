@@ -1,15 +1,15 @@
 import React from 'react'
-import Page from '../mixins/Page';
-import API, { saveDatalist } from '../mixins/API';
-import { FormControl, FormControlCSV } from '../mixins/Form/FormControl';
-import defaultProjects from '../assets/projects.json';
+import Page from '../../mixins/Page';
+import API, { saveDatalist } from '../../mixins/API';
+import { FormControl, FormControlCSV } from '../../mixins/Form/FormControl';
+import defaultProjects from '../../assets/projects.json';
 import { Loader } from 'mixins/Loader';
-import { Error } from '../mixins/Error';
-import UsersList from '../mixins/UsersList';
-import { FormWrapper } from '../mixins/Form/form-wrapper';
+import { Error } from '../../mixins/Error';
+import UsersList from '../../mixins/UsersList';
+import { FormWrapper } from '../../mixins/Form/form-wrapper';
 // import Note from '../mixins/Note';
-import Module from '../classes/Module';
-import I18n from '../classes/I18n';
+import Module from '../../classes/Module';
+import I18n from '../../classes/I18n';
 
 export default class extends Module {
 	constructor(props) {

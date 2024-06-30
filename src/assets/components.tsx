@@ -1,13 +1,13 @@
 import React, { ReactElement } from 'react';
 import { ListPage, AboutPage, NotFound, Settings, MissedSpecies, ProjectMembers, NewSpecies, ListSpecies, DownloadObservations, ContributionPage } from 'pages';
 
-import DownloaderLegacy from '../pages/Downloader';
-import { Contribution as ContributionLegacy } from '../pages/Contribution';
-import SpeciesListLegacy from '../pages/SpeciesList';
-import NewSpeciesLegacy from '../pages/Species';
-import SpeciesMissedLegacy from '../pages/SpeciesMissed';
-import MembersLegacy from '../pages/Members';
-import UserSettingsLegacy from '../pages/UserSettings';
+import DownloaderLegacy from '../pages/legacy/Downloader';
+import { Contribution as ContributionLegacy } from '../pages/legacy/Contribution';
+import SpeciesListLegacy from '../pages/legacy/SpeciesList';
+import NewSpeciesLegacy from '../pages/legacy/Species';
+import SpeciesMissedLegacy from '../pages/legacy/SpeciesMissed';
+import MembersLegacy from '../pages/legacy/Members';
+import UserSettingsLegacy from '../pages/legacy/UserSettings';
 
 interface iComponentListItem {
   path: string

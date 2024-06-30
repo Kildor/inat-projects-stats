@@ -34,6 +34,16 @@ const ChangelogEnglish = memo(() => (
 		<h2>Changelog</h2>
 		<Changelog changelog={[
 			{
+				date: "06/30/2024",
+				changes: "Many changes. Extended comparing, ability to save form state to share it, incremental search on results, many other fixes."
+			},
+			{
+				date: "09/30/2023",
+				changes: <>
+					Rewrite script to use React-final-form. Also changed many moments here and there, in styles, views and logic of scrips.<br />
+					<strong>There could be glitches and bugs.</strong>
+				</>
+			}, {
 				date: "04/04/2022",
 				changes: <>Added script to <Link to='/contribition'>calculate observers contributions</Link> to selected project.</>
 			},
@@ -55,12 +65,6 @@ const ChangelogEnglish = memo(() => (
 			}, {
 				date: "02/20/2021",
 				changes: <>Added <Link to='/download-observations'>observation download script</Link>. Refactoring and small changes.</>
-			}, {
-				date: "09/30/2023",
-				changes: <>
-				Rewrite script to use React-final-form. Also changed many moments here and there, in styles, views and logic of scrips.<br />
-					<strong>There could be many glitches and bugs.</strong>
-				</>
 			}
 		]} />
 	</>
@@ -81,6 +85,16 @@ const ChangelogRussian = memo(() => (
 		<h2>Изменения</h2>
 		<Changelog changelog={[
 			{
+				date: "30.06.2024",
+				changes: "Множество изменений. Расширенное сравнение, возможность сохранять состояние формы чтоб переслать его, быстрый поиск по результирующим спискам, различные правки."
+			},
+			{
+				date: "30.09.2023",
+				changes: <>
+					Переписал скрипт на использование React-final-form. Попутно переделал много разных моментов в отображении и логике скриптов.<br />
+					<strong>Могут быть различные глюки и недоработки.</strong>
+				</>
+			}, {
 				date: "04.04.2022",
 				changes: <>Добавлен скрип <Link to='/contribition'>подсчёта вклада наблюдателей</Link> в тот или иной проект.</>
 			},
@@ -102,14 +116,7 @@ const ChangelogRussian = memo(() => (
 			}, {
 				date: "20.02.2021",
 				changes: <>Добавлен скрипт <Link to='/download-observations'>скачивания наблюдений</Link>. Рефакторинг и мелкие правки</>
-			}, {
-				date: "30.09.2023",
-				changes: <>
-				Переписал скрипт на использование React-final-form. Попутно переделал много разных моментов в отображении и логике скриптов.<br/>
-				<strong>Могут быть различные глюки и недоработки.</strong>
-				</>
 			}
-
 		]} />
 	</>
 ));
