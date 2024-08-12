@@ -72,13 +72,15 @@ const MissedSpeciesForm: React.FC<StandartFormProps<MissedSpeciesFields>> = ({ h
 
 	const { datalists, clearDatalistHandler } = useDatalist(["users", "projects", "taxons", "places"]);
 
-	const disabled = loading ||
-		(unobserved_by_user_id === '' && unobserved_by_project_id === '' && unobserved_by_place_id === '') ||
-		(project_id === '' && user_id === '' && place_id === '');
-
 	const showUserField = unobserved_by_user_id === '' && observed_by_user_id === '';
 	const showProjectField = unobserved_by_project_id === '' && observed_by_project_id === '';
 	const showPlaceField = unobserved_by_place_id === '' && observed_by_place_id === '';
+
+	const hasFilledObserved = observed_by_user_id !== '' || observed_by_place_id !== '' || observed_by_project_id !== '';
+	const hasFilledUnobserved = unobserved_by_user_id !== '' || unobserved_by_place_id !== '' || unobserved_by_project_id !== '';
+
+	const disabled = loading ||
+		!hasFilledUnobserved || (!hasFilledObserved && user_id === '' && project_id ==='' && place_id ==='');
 
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
@@ -165,14 +167,14 @@ const MissedSpeciesForm: React.FC<StandartFormProps<MissedSpeciesFields>> = ({ h
 						listName="users"
 					/>
 				)}
-				{showProjectField && <FormControlField
+				{(!extended_comparing || showProjectField) && <FormControlField
 					label={I18n.t("Id или имя проекта")}
 					type='text'
 					name='project_id'
 					changeHandler={onChangeHandler}
 					list={datalists.projects}
 				/>}
-				{showPlaceField && <FormControlField
+				{(!extended_comparing || showPlaceField) && <FormControlField
 					label={I18n.t("Id места")}
 					type='text'
 					name='place_id' changeHandler={onChangeHandler}

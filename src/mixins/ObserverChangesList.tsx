@@ -78,7 +78,7 @@ export const ObserverChangesList: React.FC<ObserverChangesListProps> = ({ observ
 			<li className='header'>
 				<span className="icon" />
 				<span className="position" />
-				{!showPrevPosition && <span className='sign' />}
+				<span className='sign' />
 				<span className='difference' />
 				<span className='user'>{I18n.t("Пользователь")}</span>
 				<span className='observations'>{I18n.t("Наблюдения")} {orderBy === 'observation_count' && ' ▼'}</span>
@@ -94,14 +94,8 @@ export const ObserverChangesList: React.FC<ObserverChangesListProps> = ({ observ
 				return (
 					<li key={key} className={`observer ${cnPosition}`}>
 						<span className="position">{!isRetiredFace ? currentPosition : ''}</span>
-						{showPrevPosition ? (
-							<span className='prev-position'>{prevPosition ?? ''}</span>
-						) : (
-							<>
-								<span className='sign'>{getSign(isRetiredFace, isNewFace, diff)}</span>
-								<span className='difference'>{getDifference(isNewFace, diff)}</span>
-							</>
-						)}
+						<span className='sign'>{showPrevPosition ? '' : getSign(isRetiredFace, isNewFace, diff)}</span>
+						{showPrevPosition ? <span className='prev-position'>{prevPosition ?? ''}</span> : <span className='difference'>{getDifference(isNewFace, diff)}</span>}
 						<UserLink user={currentState ?? prevState!} />
 						<span className='observations'>{currentState?.observations ?? 0} {showPrevState && `/ ${prevState?.observations ?? 0}`}</span>
 						<span className='species'>{currentState?.species ?? 0} {showPrevState && <>/ {prevState?.species ?? 0}</>}</span>

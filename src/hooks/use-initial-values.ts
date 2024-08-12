@@ -39,10 +39,8 @@ export function useInitialValues<T>(settingsList: Array<keyof T>, defaultValues:
 		usedSettings[name] = setting;
 	});
 
-	console.log(usedSettings);
 
 	const onChangeHandler = (fieldName: string, value: string | boolean) => {
-		console.log({ fieldName, value, us: usedSettings?.[fieldName as keyof T] });
 		if (usedSettings?.[fieldName as keyof T]?.save) {
 			Settings.set(fieldName, value);
 		}
