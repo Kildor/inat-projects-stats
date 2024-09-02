@@ -14,13 +14,16 @@ export const useLanguageContext = (language: iLanguage) => {
 		})
 	}, [currentLanguage]);
 
+	const formatter = new Intl.NumberFormat(currentLanguage);
+
 	const context = {
 		changeLanguage: (languageCode: string) => {
 			I18n.initDefault(languageCode);
 			setCurrentLanguage(languageCode);
 			saveLanguage(languageCode);
 		},
-		code: currentLanguage
+		code: currentLanguage,
+		formatNumber: formatter.format,
 	};
 	return {
 		context,

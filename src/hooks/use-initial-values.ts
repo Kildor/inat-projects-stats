@@ -29,7 +29,9 @@ export function useInitialValues<T>(settingsList: Array<keyof T>, defaultValues:
 			values[name] = Settings.get(name as string, defValue);
 		}
 		else {
-			values[name] = Boolean(defValue) && defValue[0] === '{' ? JSON.parse(defValue) : defValue;
+			values[name] = Boolean(defValue) && defValue[0] === '{' ?
+				JSON.parse(defValue) :
+				setting.type === 'boolean' ? defValue === 'true' : defValue;
 		}
 
 
@@ -38,7 +40,6 @@ export function useInitialValues<T>(settingsList: Array<keyof T>, defaultValues:
 		}
 		usedSettings[name] = setting;
 	});
-
 
 	const onChangeHandler = (fieldName: string, value: string | boolean) => {
 		if (usedSettings?.[fieldName as keyof T]?.save) {

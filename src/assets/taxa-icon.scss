@@ -1,0 +1,64 @@
+.taxa-icon {
+	text-decoration: none !important;
+	&::before {
+    line-height: 1.1;
+    vertical-align: bottom;
+    font-size: 1.5em;
+	}
+}
+
+.taxa-icon.Unknown {
+    color: #aaa;
+}
+
+.taxa-icon.Protozoa {
+    color: #691776;
+}
+
+.taxa-icon.Plantae {
+    color: #73ac13;
+}
+
+.taxa-icon.Fungi {
+    color: DeepPink;
+}
+
+.taxa-icon.Animalia {
+    color: #1e90ff;
+}
+
+.taxa-icon.Mollusca {
+    color: #ff4500;
+}
+
+.taxa-icon.Arachnida {
+    color: #ff4500;
+}
+
+.taxa-icon.Insecta {
+    color: #ff4500;
+}
+
+.taxa-icon.Amphibia {
+    color: #1e90ff;
+}
+
+.taxa-icon.Reptilia {
+    color: #1e90ff;
+}
+
+.taxa-icon.Aves {
+    color: #1e90ff;
+}
+
+.taxa-icon.Mammalia {
+    color: #1e90ff;
+}
+
+.taxa-icon.Actinopterygii {
+    color: #1e90ff;
+}
+
+.taxa-icon.Chromista {
+    color: #930;
+}

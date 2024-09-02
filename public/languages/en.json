@@ -18,7 +18,6 @@
 		],
 		"{1} всего": "{1} in total",
 		"* Список неполон, должно быть {1} пользователей!": "* The list is incomplete, there must be {1} users!",
-		"API iNaturalist из-за каких-то ошибок в некоторых случаях может возвращать неполный список подписчиков. Это проблема не данного скрипта, а получаемых им данных": "The iNaturalist API may in some cases return an incomplete list of subscribers due to some errors. This is not a problem of this script, but of the data it receives",
 		"Id места": "Place id",
 		"Id места для сравнения": "Place id for comparison",
 		"Id или имя пользователя для сравнения": "Id or username for comparison",

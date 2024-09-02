@@ -246,7 +246,7 @@ export const ListSpecies: React.FC = () => {
 						date_any={values.date_any}
 						place_id={values.place_id}
 						project_id={values.project_id}
-						user_id={![USER_CONTRIBUTIONS.NOT_OBSERVED, USER_CONTRIBUTIONS.NEVER_OBSERVED].includes(values.contribution) ? values.user_id : undefined}
+						user_id={[USER_CONTRIBUTIONS.OBSERVED, USER_CONTRIBUTIONS.OBSERVED_ONLY].includes(values.contribution) && values.user_id ? values.user_id : undefined}
 						csv={csv}
 						markObserved={values.contribution === USER_CONTRIBUTIONS.MARK_OBSERVED}
 					// filename={values.filename}

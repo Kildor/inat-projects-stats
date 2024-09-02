@@ -26,6 +26,7 @@ export class Taxon implements iCSVConvert {
 	name: JSONTaxonObject['name'];
 	rank: JSONTaxonObject['rank'];
 	commonName: JSONTaxonObject['preferred_common_name'];
+	iconicTaxa: JSONTaxonObject['iconic_taxon_name'];
 	count: number = 0;
 	countTotal: number = 0;
 	isObserved: boolean = false;
@@ -35,6 +36,7 @@ export class Taxon implements iCSVConvert {
 		this.name = jsonTaxon.name;
 		this.commonName = jsonTaxon.preferred_common_name;
 		this.rank = jsonTaxon.rank;
+		this.iconicTaxa = jsonTaxon.iconic_taxon_name;
 	}
 
 	get fullName() {

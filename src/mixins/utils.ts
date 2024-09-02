@@ -8,7 +8,6 @@ export const DateTimeFormat = new Intl.DateTimeFormat([...navigator.languages], 
 	hour: 'numeric', minute: 'numeric', second: 'numeric'
 });
 
-
 interface CreateQueryRequestParams {
 	taxon?: Taxon;
 	limit?: number;

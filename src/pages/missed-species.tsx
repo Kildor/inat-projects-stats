@@ -295,7 +295,6 @@ export const MissedSpecies: React.FC = () => {
 			<Error error={error} />
 			{!loading && !error && data && values &&
 				<div className='result'>
-					{/* <TaxonsList taxons={data} project_id={values.project_id} user_id={values!.user_id} csv={presentation.current.csv} /> */}
 					<TaxonsList taxons={data} project_id={values.project_id} user_id={values.user_id} csv={csv} />
 				</div>
 			}

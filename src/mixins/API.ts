@@ -33,6 +33,7 @@ API.lookupTaxon = async (queryString: string) => {
 				taxon.score = result.score;
 				taxon.id = result.record.id;
 				taxon.name = result.record.name;
+				taxon.iconicTaxa = result.record.iconic_taxon_name;
 				taxon.commonName = !!result.record.preferred_common_name ? result.record.preferred_common_name : taxon.name;
 			}
 		});

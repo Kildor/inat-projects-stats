@@ -50,7 +50,7 @@ const NewSpeciesForm: React.FC<StandartFormProps<NewSpeciesFields>> = ({ handleS
 					clearDatalistHandler={clearDatalistHandler}
 					listName="users" />
 				<FormControlField
-					label={I18n.t("Id места для сравнения")}
+					label={I18n.t("Id места")}
 					type='text'
 					name='place_id'
 					list={datalists.places}

@@ -1,5 +1,6 @@
 import { Taxon, User } from "DataObjects";
 import React from "react";
+import { JSONTaxonObject } from "./JSON";
 
 export interface iComment {
 	id: number
@@ -36,10 +37,11 @@ export interface iLookupPlace {
 
 export interface iLookupTaxon {
 	score?: number;
-	id: number
-	name: string
-	commonName?: string
-	lookupSuccess?: boolean
+	lookupSuccess?: boolean;
+	id: JSONTaxonObject['id'];
+	name: JSONTaxonObject['name'];
+	commonName?: JSONTaxonObject['preferred_common_name'];
+	iconicTaxa?: JSONTaxonObject['iconic_taxon_name'];
 }
 
 export interface iModule {

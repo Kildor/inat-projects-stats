@@ -44,8 +44,8 @@ export class Observation implements iCSVConvert {
 		this.taxon = new Taxon(jsonObservation.taxon);
 		this.user = new User(jsonObservation.user);
 		this.name = jsonObservation.taxon.name;
-		this.commonName = jsonObservation.taxon.preferred_common_name;
-		this.coordinates = jsonObservation?.geojson?.coordinates || null;
+		this.commonName = jsonObservation.taxon?.preferred_common_name ?? null;
+		this.coordinates = jsonObservation?.geojson?.coordinates ?? null;
 		this.location = jsonObservation.place_guess;
 		this.quality_grade = jsonObservation.quality_grade;
 		this.geoprivacy = jsonObservation.geoprivacy;
