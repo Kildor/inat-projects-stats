@@ -114,12 +114,12 @@ export const DownloadObservations: React.FC = () => {
 		async (newValues: DownloadObservationsFields) => {
 			setValues(newValues);
 
-			const { taxon, limit, project_id } = newValues;
+			const { taxon, limit, project_id, user_id } = newValues;
 
 			setStatus({ title: I18n.t("Загрузка наблюдений") });
 			setLoading(true);
 
-			const customParams = { ...createQueryRequest(newValues), ...fillDateParams(newValues), project_id };
+			const customParams = { ...createQueryRequest(newValues), ...fillDateParams(newValues), project_id, user_id };
 
 			try {
 				const observations = await API.fetchObservations(taxon.id, limit, customParams, setMessage);

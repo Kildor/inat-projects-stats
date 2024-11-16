@@ -240,7 +240,7 @@ API.fetchObservers = async (customParams: Record<string, string | number> = {}, 
 
 API.fetchObservations = async (
 	taxon_id: number, limit: number = 0, customParams: Record<string, string | number> = {}, callback?: Function
-) => {
+): Promise<iObjectsList<Observation>> => {
 	let url = API.getBaseUrl('observations')
 	if (taxon_id > 0) url += `&taxon_id=${taxon_id}`;
 
@@ -273,6 +273,7 @@ API.fetchObservations = async (
 		if (limit > 0 && limit <= loadedObservations) break;
 	} while (totalCount > page * perPageFromJSON);
 	observations.total = totalCount;
+
 	return observations;
 }
 
