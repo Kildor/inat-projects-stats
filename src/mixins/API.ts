@@ -111,8 +111,7 @@ API.fetchSpecies = async (project_id: string | null, user_id: string | null, d1:
 		page = json.page;
 		perPage = json.per_page;
 		json.results.forEach((result: { taxon: JSONTaxonObject, count: number }) => {
-			let t = new Taxon(result.taxon);
-			t.count = result.count;
+			let t = new Taxon(result.taxon, result.count);
 			taxons.objects.set(t.id, t);
 			taxons.ids.add(t.id);
 		});
@@ -122,46 +121,6 @@ API.fetchSpecies = async (project_id: string | null, user_id: string | null, d1:
 	return taxons;
 }
 
-API.fetchSpeciesByDay = async (project_id: string, user_id: string, dateFrom: string, dateTo: string, dateCreated: boolean, callback: Function, customParams: Record<string, string | number> = {}) => {
-	let taxons: iObjectsList<Taxon> = { ids: new Set(), objects: new Map<number, Taxon>(), total: 0 };
-	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
-	let url = API.getBaseUrl('observations/species_counts');
-	if (!!project_id) url += '&project_id=' + project_id;
-	if (!!user_id) url += '&user_id=' + user_id;
-	url += addCustomParams(fillDateParams({ d1: dateFrom, d2: dateTo, date_created: dateCreated }));
-	url += addCustomParams(customParams);
-
-	let limit = (typeof customParams.limit === 'number' ? customParams.limit : parseInt(customParams.limit)) || 0;
-	let totalCount = 0;
-	let page = 0;
-	let perPage = 0;
-
-	if (limit > 0) url += `&per_page=${limit}`;
-
-
-	do {
-		page++;
-
-		if (!!callback) {
-			callback(createCallbackMessage(page, perPage, totalCount), true);
-		}
-		// const json = await API.debounceFetch(url + '&page=' + page);
-		const json = await fetch(url + '&page=' + page).then(res => res.json()).catch(e => { throw e });
-		// console.dir(json);
-		totalCount = json.total_results;
-		page = json.page;
-		perPage = json.per_page;
-		json.results.forEach((result: { taxon: JSONTaxonObject, count: number }) => {
-			let t = new Taxon(result.taxon);
-			t.count = result.count;
-			taxons.objects.set(t.id, t);
-			taxons.ids.add(t.id);
-		});
-		if (limit > 0 && page * perPage >= limit) break;
-	} while (totalCount > page * perPage);
-	taxons.total = totalCount;
-	return taxons;
-}
 API.fetchMembers = async (project_id: string, callback: Function) => {
 	let users: iObjectsList<User> = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
@@ -252,7 +211,7 @@ API.fetchObservations = async (
 	let page = 0;
 	let perPageFromJSON = 0;
 
-	let perPage = limit > 0 && limit < 100 ? limit : 100;
+	let perPage = limit > 0 && limit < 151 ? limit : 100;
 	let loadedObservations = 0;
 	do {
 		page++;

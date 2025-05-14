@@ -7,6 +7,7 @@ import { addCustomParams, fillDateParams } from './API';
 import { SearchWidget } from './search-widget';
 import { TaxaIcon } from './taxa-icon';
 import { LanguageContext } from './LanguageContext';
+import { DateFormat } from './utils';
 
 export interface TaxonListProps {
 	taxons: Array<Taxon>
@@ -33,7 +34,7 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 
 	let list: ReactElement;
 	if (csv) {
-		list = <CSV header={getCSVHeader(taxons[0].countTotal > 0)} useRank={true} filename={filename}>{taxons}</CSV>
+		list = <CSV header={getCSVHeader(taxons[0].countTotal > 0, !!taxons[0].firstObserved)} useRank={true} filename={filename}>{taxons}</CSV>
 	} else {
 		let url = `https://www.inaturalist.org/observations?subview=table`;
 		const urlTaxa = `https://www.inaturalist.org/taxa/`;
@@ -48,7 +49,7 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 		}
 
 		list = <ol className='taxons'>
-			{taxons.filter(({ name = '', commonName = '' }) => search === '' || name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || commonName?.toLocaleLowerCase().includes(search.toLocaleLowerCase())).map(taxon => (
+			{(search === '' ? taxons : taxons.filter(({ name = '', commonName = '' }) => search === '' || name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || commonName?.toLocaleLowerCase().includes(search.toLocaleLowerCase()))).map(taxon => (
 				<li key={taxon.id} className={(!!taxon.commonName ? 'has-common-name' : '') + ' ' + (markObserved ? taxon.isObserved ? 'observed' : 'unobserved' : '')}>
 					<TaxaIcon iconicTaxa={taxon.iconicTaxa ?? 'Unknown'} />
 					{' '}
@@ -68,6 +69,12 @@ export const TaxonsList: React.FC<TaxonListProps> = ({ taxons, d1, d2, date_crea
 							<a href={url + '&taxon_id=' + taxon.id} target='_blank' rel='noopener noreferrer'>
 								{I18n.t("{1} всего", [formatNumber(taxon.countTotal)])}
 							</a>
+						</span>
+					}
+					{taxon.firstObserved &&
+						<span className="first_observation_date">
+							{', '}
+							{DateFormat.format(taxon.firstObserved)}
 						</span>
 					}
 				</li>

@@ -7,6 +7,7 @@ import { ObservationIdentification } from '../DataObjects/ObservationIdentificat
 import { ObservationComment } from '../DataObjects/ObservationComment';
 import I18n from '../classes/I18n';
 import { DateTimeFormat } from './utils';
+import { UserLink } from './UserLink';
 
 interface CommonListProps {
 	current_ids: boolean;
@@ -22,14 +23,14 @@ interface ObservationsListProps extends CommonListProps {
 
 interface ActivitiesListProps extends Omit<CommonListProps, 'hide_activity'> {
 	activityFilter: FilterFunction;
-	activities: Array<ObservationComment | ObservationIdentification >;
+	activities: Array<ObservationComment | ObservationIdentification>;
 }
 
 interface ObservationItemProps extends CommonListProps {
 	observation: Observation;
 }
 
-type FilterFunction = (act: ObservationComment | ObservationIdentification)  => boolean;
+type FilterFunction = (act: ObservationComment | ObservationIdentification) => boolean;
 
 
 interface ActivityItemPros {
@@ -38,10 +39,10 @@ interface ActivityItemPros {
 	children?: React.ReactNode;
 }
 
-const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, user: { login }, comment }, className, children}) =>{
+const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, user, comment }, className, children }) => {
 	return (
 		<li key={id} className={className}>
-			{DateTimeFormat.format(created)}, <strong>{login}:</strong> {children}<br />
+			{DateTimeFormat.format(created)}, <strong>{<UserLink user={user} />}:</strong> {children}<br />
 			<div className="comment">
 				{comment}
 			</div>
@@ -50,20 +51,20 @@ const ActivityItem: React.FC<ActivityItemPros> = ({ activity: { id, created, use
 };
 ActivityItem.displayName = 'ActivityItem';
 
-const ActivityIdentification: React.FC<{ activity: ObservationIdentification }> = ({ activity })=>{
+const ActivityIdentification: React.FC<{ activity: ObservationIdentification }> = ({ activity }) => {
 	const isCurrent = Boolean(activity?.current);
 	let className = 'identification ' + (isCurrent ? 'identification-current' : 'identification-outdated');
-	if (activity.vision) className+= ' has-vision';
-	if (activity.taxon?.commonName) className+= ' has-common-name';
+	if (activity.vision) className += ' has-vision';
+	if (activity.taxon?.commonName) className += ' has-common-name';
 	return <ActivityItem className={className} activity={activity}>
 		{!isCurrent && <span role='img' title={I18n.t('Отозванная идентификация')} aria-label={I18n.t('Отозванная идентификация')}>❌</span>}
 		{activity.vision && <span role='img' title={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')} aria-label={I18n.t('Идентификация сделана при помощи визуальной модели iNaturalist')}>✨</span>}
-		<a className='taxon-link' href={'https://www.inaturalist.org/taxa/'+activity.taxon.id}>{activity.taxon.commonName} <em>{activity.taxon.name}</em></a>
+		<a className='taxon-link' href={'https://www.inaturalist.org/taxa/' + activity.taxon.id}>{activity.taxon.commonName} <em>{activity.taxon.name}</em></a>
 	</ActivityItem>
 }
 
-const ActivityComment = ({ activity }: { activity: ObservationComment})=>{
-	return <ActivityItem className='comment' activity={activity}/>
+const ActivityComment = ({ activity }: { activity: ObservationComment }) => {
+	return <ActivityItem className='comment' activity={activity} />
 }
 
 const getFilterForActivities = (current_ids = false, show_discussion = false): FilterFunction => {
@@ -75,7 +76,7 @@ const getFilterForActivities = (current_ids = false, show_discussion = false): F
 	return (act) => true
 }
 
-const ActivityList = ({activities, current_ids, show_discussion, activityFilter } : ActivitiesListProps ) => {
+const ActivityList = ({ activities, current_ids, show_discussion, activityFilter }: ActivitiesListProps) => {
 	activities = activities.filter(activityFilter);
 	if (activities.length === 0) return null;
 
@@ -83,7 +84,7 @@ const ActivityList = ({activities, current_ids, show_discussion, activityFilter 
 		<ul className='activity'>
 			{activities.map(act => {
 				return (
-					'taxon' in act ? <ActivityIdentification key={act.id} activity={act} /> : <ActivityComment activity={act} key={act.id}/>
+					'taxon' in act ? <ActivityIdentification key={act.id} activity={act} /> : <ActivityComment activity={act} key={act.id} />
 				)
 			})}
 		</ul>
@@ -92,15 +93,15 @@ const ActivityList = ({activities, current_ids, show_discussion, activityFilter 
 
 const BASE_URL = `https://www.inaturalist.org/observations/`;
 
-const ObservationItem: React.FC<ObservationItemProps> = ({ observation, hide_activity, current_ids, show_discussion } ) => {
+const ObservationItem: React.FC<ObservationItemProps> = ({ observation, hide_activity, current_ids, show_discussion }) => {
 	let className = 'observation quality-' + observation.quality_grade;
 	if (!!observation.commonName) className += ' has-common-name';
 	let url = BASE_URL;
 
 	return (<li className={className}>
 		<a href={url + '' + observation.id} target='_blank' rel='noopener noreferrer' className='observation-name'>
-			{observation.commonName} <em>{observation.name}</em>, @{observation.user.login}
-		</a> <span className={'location' + (observation.geoprivacy !== null ? ' location-' + observation.geoprivacy : '')}>({observation.location}, {DateTimeFormat.format(observation.observed)})</span>
+			{observation.commonName} <em>{observation.name}</em></a>,
+			<UserLink user={observation.user} /> <span className={'location' + (observation.geoprivacy !== null ? ' location-' + observation.geoprivacy : '')}>({observation.location}, {DateTimeFormat.format(observation.observed)})</span>
 		{(!hide_activity && observation.activity.length > 0) && <ActivityList activities={observation.activity} current_ids={current_ids} show_discussion={show_discussion} activityFilter={getFilterForActivities(current_ids, show_discussion)} />}
 	</li>)
 }

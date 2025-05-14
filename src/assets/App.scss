@@ -11,15 +11,18 @@
 		color: #fff;
 		padding: 0.5rem;
 		position: relative;
+
 		.inat-logo {
 			width: 1em;
 			height: 1em;
 		}
+
 		h1 {
 			margin: 0;
 			padding: 1rem 0.5rem;
 			font-size: 1.2rem;
 		}
+
 		.btn-menu {
 			position: absolute;
 			top: 20px;
@@ -31,17 +34,21 @@
 			line-height: 1;
 			/* font-weight: bold; */
 			padding: 5px 15px;
+
 			&.open {
 				background: darken($main-block-bg-color, 20%);
 				box-shadow: 0 0 3px $main-block-color;
 			}
 		}
+
 		.menu-languages .btn-menu {
 			top: 5px;
 		}
+
 		.menu-pages .btn-menu {
 			top: 30px;
 		}
+
 		ul {
 			display: inline-flex;
 			list-style: none;
@@ -51,21 +58,25 @@
 			background: $main-block-bg-color;
 			// box-shadow: 0 0 2px #444;
 			overflow: hidden;
+
 			li {
 				text-shadow: 1px 1px #000;
-				& + li {
+
+				&+li {
 					border-left: 1px solid #444;
 				}
+
 				&.active {
-					background: darken($main-block-bg-color, 20%)
-						linear-gradient(180deg, darken($main-block-bg-color, 15%), darken($main-block-bg-color, 30%));
+					background: darken($main-block-bg-color, 20%) linear-gradient(180deg, darken($main-block-bg-color, 15%), darken($main-block-bg-color, 30%));
 					text-shadow: 1px 1px #000;
 				}
+
 				a {
 					text-decoration: none;
 				}
 			}
 		}
+
 		a,
 		span {
 			color: $main-block-color;
@@ -77,26 +88,31 @@
 			display: flex;
 			align-items: center;
 		}
+
 		@media screen and (min-width: 600px) {
 			.btn-menu {
 				display: none;
 			}
+
 			.header-menu.menu-languages {
 				position: absolute;
 				top: 1em;
 				right: 1em;
 			}
 		}
+
 		@media screen and (max-width: 600px) {
 			ul {
 				display: none;
 			}
-			.btn-menu.open + ul {
+
+			.btn-menu.open+ul {
 				display: flex;
 				flex-direction: column;
+
 				// background: #444 linear-gradient(180deg, #505050 0, #303030 60px);
 				li {
-					& + li {
+					&+li {
 						border-left: none;
 						border-top: 1px solid #fff;
 					}
@@ -104,8 +120,10 @@
 			}
 		}
 	}
+
 	.loader {
 		font-weight: bold;
+
 		svg {
 			vertical-align: text-bottom;
 			display: inline-block;
@@ -113,14 +131,17 @@
 			height: 1.2em;
 		}
 	}
+
 	.AppLoader {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		grid-row: 1/4;
 		grid-column: 1/4;
+
 		.loader {
 			text-align: center;
+
 			svg {
 				display: block;
 				margin: auto;
@@ -129,13 +150,16 @@
 			}
 		}
 	}
+
 	footer.app-footer {
 		padding: 0.5rem;
 		text-align: center;
+
 		a {
 			color: #22a;
 			text-decoration: none;
 		}
+
 		i:before {
 			content: "";
 			width: 3px;
@@ -147,7 +171,7 @@
 		}
 	}
 
-	@media screen and( min-width: 800px) {
+	@media screen and (min-width: 800px) {
 		$sidebar-width: 250px;
 		display: grid;
 		box-sizing: border-box;
@@ -185,15 +209,18 @@
 				margin-top: 1em;
 				order: 1;
 			}
+
 			ul {
 				display: flex;
 				flex-direction: column;
-				li + li {
+
+				li+li {
 					border-top: 1px solid #000;
 					border-left: none;
 				}
 			}
 		}
+
 		.page {
 			flex: 1 1 auto;
 			box-sizing: border-box;
@@ -202,12 +229,14 @@
 			grid-column: 2/2;
 			grid-row: 1/1;
 		}
+
 		footer.app-footer {
 			box-sizing: border-box;
 			grid-column: 2/3;
 			grid-row: 2/2;
 		}
 	}
+
 	@media screen and (min-width: 600px) and (max-width: 799px) {
 		header.App-header {
 			ul {
@@ -215,6 +244,7 @@
 				flex-wrap: wrap;
 				gap: 5px;
 				justify-content: center;
+
 				li {
 					border: 1px solid #444;
 					border-radius: 5px;
@@ -229,6 +259,7 @@
 
 		.header-menu {
 			font-size: 0.8em;
+
 			a,
 			span {
 				text-align: center;

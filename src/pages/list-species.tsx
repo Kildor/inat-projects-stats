@@ -21,7 +21,7 @@ interface ListSpeciesFields extends StandartFormFields {
 	/** Вклад пользователя. */
 	contribution: USER_CONTRIBUTIONS;
 	/** Сортировка видов. */
-	order_by: 'count' | 'rarity' | 'rarity_abs';
+	order_by: 'count' | 'rarity' | 'rarity_abs' | 'first_obs_date';
 }
 
 const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handleSubmit, form, optionValues = {}, onChangeHandler, loading }) => {
@@ -34,6 +34,14 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 	const { input: { value: d1 } } = useField<ListSpeciesFields['d1']>('d1');
 	const { input: { value: contribution } } = useField<ListSpeciesFields['contribution']>('contribution');
 
+	console.log({
+		project_id,
+		place_id,
+		taxon_id,
+		show: (!!user_id && (!!project_id || !!place_id || (!!taxon_id && (taxon_id as unknown as Taxon).id !== 0))),
+		txn: (taxon_id as unknown as Taxon).id,
+		txnCmpr: (taxon_id as unknown as Taxon).id !== 0,
+	});
 
 
 	const disabled = loading || (d1 === '' || (project_id === '' && user_id === '' && place_id === 0));
@@ -57,9 +65,8 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 					list={datalists.users}
 					clearDatalistHandler={clearDatalistHandler}
 					listName="users" />
-				{(!!user_id && (!!project_id || !!place_id || !!taxon_id)) &&
-					<FormControlSelectField label={I18n.t("Вклад пользователя")} name='contribution' values={optionValues['contribution']} />
-				}
+				{(!!user_id && (!!project_id || !!place_id || (!!taxon_id && (taxon_id as unknown as Taxon).id !== 0))) &&
+					<FormControlSelectField label={I18n.t("Вклад пользователя")} name='contribution' values={optionValues['contribution']} />}
 				<FormControlField
 					label={I18n.t("Место")}
 					type='text'
@@ -109,7 +116,8 @@ export const ListSpecies: React.FC = () => {
 			setting: 'order_by', save: true, type: 'select', default: "count", values: {
 				count: "Количеству наблюдений",
 				rarity: "Редкости",
-				rarity_abs: "Редкости на всём сайте"
+				rarity_abs: "Редкости на всём сайте",
+				first_obs_date: "Дате первой встречи"
 			}
 		}
 	});
@@ -130,6 +138,8 @@ export const ListSpecies: React.FC = () => {
 			const customParamsWithoutData = createQueryRequest(newValues);
 			const customParams = { ...customParamsWithoutData, ...fillDateParams(newValues) };
 
+			console.log({ customParams });
+
 			const contribution: USER_CONTRIBUTIONS = project_id || place_id || taxon ? contributionValue : USER_CONTRIBUTIONS.OBSERVED;
 
 			try {
@@ -146,41 +156,112 @@ export const ListSpecies: React.FC = () => {
 
 				const allTaxa = await API.fetchSpecies(project_id, contribution === USER_CONTRIBUTIONS.OBSERVED ? user_id : '', null, null, false, setMessage, customParams);
 
-				if (contribution === USER_CONTRIBUTIONS.OBSERVED && user_id !== '' && ['rarity', 'rarity_abs'].includes(order_by)) {
-					setStatus(I18n.t("Загрузка всех видов"));
-					const userTaxonIds = [...allTaxa.ids];
-					let allFilteredTaxa = { ids: new Set(), total: 0, objects: new Map() };
-					let page = 1;
+				if (contribution === USER_CONTRIBUTIONS.OBSERVED && user_id !== '') {
+					if (['rarity', 'rarity_abs'].includes(order_by)) {
+						setStatus(I18n.t("Загрузка всех видов"));
+						const userTaxonIds = [...allTaxa.ids];
+						let allFilteredTaxa = { ids: new Set(), total: 0, objects: new Map() };
+						let page = 1;
 
-					do {
-						setMessage(createCallbackMessage(page, 500, allTaxa.total));
+						do {
+							setMessage(createCallbackMessage(page, 500, allTaxa.total));
 
-						const taxons = userTaxonIds.splice(0, 500).join(',');
+							const taxons = userTaxonIds.splice(0, 500).join(',');
 
-						const customParams = {
-							hrank: customParamsWithoutData?.hrank ?? '',
-							lrank: customParamsWithoutData?.lrank ?? '',
-							quality_grade: customParamsWithoutData?.quality_grade ?? '',
-							taxon_is_active: 'true',
-						};
+							/** Параметры запроса для получения таксонов по абсолютной редкости на сайте. */
+							const customParamsRarityAbs = {
+								hrank: customParamsWithoutData?.hrank ?? '',
+								lrank: customParamsWithoutData?.lrank ?? '',
+								quality_grade: customParamsWithoutData?.quality_grade ?? '',
+								taxon_is_active: 'true',
+							};
 
-						const taxa = await API.fetchSpecies(order_by === 'rarity' ? project_id : null, '', null, null, false, () => { }, { ...(order_by === 'rarity' ? customParamsWithoutData : customParams), 'taxon_id': taxons });
-						allFilteredTaxa = API.concatObjects(allFilteredTaxa as iObjectsList<Taxon>, taxa);
-						page++;
-					} while (userTaxonIds.length > 0);
+							const taxa = await API.fetchSpecies(order_by === 'rarity' ? project_id : null, '', null, null, false, () => { }, { ...(order_by === 'rarity' ? customParamsWithoutData : customParamsRarityAbs), 'taxon_id': taxons });
+							allFilteredTaxa = API.concatObjects(allFilteredTaxa as iObjectsList<Taxon>, taxa);
+							page++;
+						} while (userTaxonIds.length > 0);
 
-					setStatus(I18n.t("Обработка загруженных данных"));
-					const listAllTaxa = [...allFilteredTaxa.objects]
-						.map(a => a[1])
-						.sort((t1: Taxon, t2: Taxon) => t1.count - t2.count);
+						setStatus(I18n.t("Обработка загруженных данных"));
+						const listAllTaxa = [...allFilteredTaxa.objects]
+							.map(a => a[1])
+							.sort((t1: Taxon, t2: Taxon) => t1.count - t2.count);
 
-					setData(listAllTaxa.filter(({ id }) => allTaxa.objects.has(id)).map(({ id, count }) => {
-						const taxon = allTaxa.objects.get(id);
-						taxon!.countTotal = count;
-						return (taxon);
-					}) as Taxon[]);
+						setData(listAllTaxa.filter(({ id }) => allTaxa.objects.has(id)).map(({ id, count }) => {
+							const taxon = allTaxa.objects.get(id);
+							taxon!.countTotal = count;
+							return (taxon);
+						}) as Taxon[]);
 
-					return;
+						return;
+					}
+					else if (order_by === 'first_obs_date') {
+						/*
+						1. Берём айди всех конечных таксонов.
+						2. Набираем список, ограниченный количеством или длиной строки.
+						3. Получаем страницу всех наблюдений для этого списка. 
+						3.1. выбираем все новые виды, убираем айдишники этих видов из списка всех видов.
+						3.3. Повторяем.
+						4. Сортируем по дате
+						*/
+
+						setStatus(I18n.t("Загрузка наблюдений"));
+
+						/** Итоговый список таксонов, отсортированных по первой встрече с датой встречи. */
+						const resultTaxaList: Array<Taxon> = [];
+						/** Найденные таксоны. */
+						const foundTaxons = new Set<Taxon['id']>();
+
+						/** Айди видов, для которых ещё не получена дата. */
+						const speciesIdsLeft = new Set<Taxon['id']>(allTaxa.ids);
+
+						/** Загружаемая страница. */
+						let page = 1;
+
+						do {
+							const customParamsCurrent: Record<string, string | number> = {
+								...customParams,
+								order_by: 'observed_on',
+								order: 'asc',
+								user_id,
+								project_id: project_id ?? '',
+							};
+							/** Айди таксонов для проверки. */
+							let taxon_id = '';
+
+							for (let id of speciesIdsLeft) {
+								taxon_id += id + ',';
+								if (taxon_id.length > 7850) break;
+							}
+
+							setMessage(createCallbackMessage(page++, 0, 0));
+
+							const observationsList = await API.fetchObservations(0, 150, { ...customParamsCurrent, taxon_id });
+
+							const observations = [...observationsList.objects.values()];
+
+							observations.forEach(obs => {
+								if (!foundTaxons.has(obs.taxon.id) && allTaxa.objects.has(obs.taxon.id)) {
+									const taxon = allTaxa.objects.get(obs.taxon.id)!;
+
+									taxon.firstObserved = obs.observed;
+									resultTaxaList.push(taxon);
+
+									speciesIdsLeft.delete(obs.taxon.id);
+									foundTaxons.add(obs.taxon.id);
+								}
+							});
+
+							// console.log({ page, speciesIdsLeft: speciesIdsLeft.size, foundTaxons: foundTaxons.size });
+						} while (speciesIdsLeft.size > 0);
+
+						// console.log({ resultTaxaList, page });
+
+						resultTaxaList.sort((a, b) => (a.firstObserved?.getTime() ?? 0) - (b.firstObserved?.getTime() ?? 0))
+
+						setData(resultTaxaList);
+
+						return;
+					}
 				}
 
 				if (contribution !== USER_CONTRIBUTIONS.OBSERVED && user_id !== '') {
@@ -202,7 +283,7 @@ export const ListSpecies: React.FC = () => {
 							return !userTaxa.ids.has(id)
 						}).map(id => allTaxa.objects.get(id)) as Taxon[]);
 					} else if (contribution === USER_CONTRIBUTIONS.MARK_OBSERVED) {
-						setData([...allTaxa.ids].map(id => ({ ...allTaxa.objects.get(id), isObserved: userTaxa.ids.has(id)})) as Taxon[]);
+						setData([...allTaxa.ids].map(id => ({ ...allTaxa.objects.get(id), isObserved: userTaxa.ids.has(id) })) as Taxon[]);
 					}
 
 					return;

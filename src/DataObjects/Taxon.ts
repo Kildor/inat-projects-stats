@@ -1,15 +1,16 @@
 import { iCSVConvert, JSONTaxonObject } from "interfaces";
 import { makeCsvString } from "mixins/utils";
 
-export const getCSVHeader = (showTotal: boolean) => ((useRank: boolean) => makeCsvString(
+export const getCSVHeader = (showTotal: boolean, firstObserved: boolean = false) => ((useRank: boolean) => makeCsvString(
 	useRank ? 'Rank' : undefined,
 	'ID',
 	'Name',
 	'Common name',
 	'Rank',
 	'Observations',
-	showTotal ? 'Total' : undefined)
-);
+	showTotal ? 'Total' : undefined,
+	firstObserved ? 'First observed' : undefined
+));
 
 export class Taxon implements iCSVConvert {
 	toCSV = (index: number | false) => makeCsvString(
@@ -20,6 +21,7 @@ export class Taxon implements iCSVConvert {
 		this.rank,
 		this.count,
 		this.countTotal > 0 ? this.countTotal : null,
+		this.firstObserved ? this.firstObserved.toDateString() : null,
 	);
 
 	id: JSONTaxonObject['id'];
@@ -30,13 +32,18 @@ export class Taxon implements iCSVConvert {
 	count: number = 0;
 	countTotal: number = 0;
 	isObserved: boolean = false;
+	firstObserved?: Date = undefined;
 
-	constructor(jsonTaxon: JSONTaxonObject) {
+	constructor(jsonTaxon: JSONTaxonObject, count?: number) {
 		this.id = jsonTaxon.id;
 		this.name = jsonTaxon.name;
 		this.commonName = jsonTaxon.preferred_common_name;
 		this.rank = jsonTaxon.rank;
 		this.iconicTaxa = jsonTaxon.iconic_taxon_name;
+
+		if (count) {
+			this.count = count;
+		}
 	}
 
 	get fullName() {
