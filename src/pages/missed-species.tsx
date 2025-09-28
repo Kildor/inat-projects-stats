@@ -8,8 +8,9 @@ import { FormWrapper } from 'mixins/Form/form-wrapper';
 import TaxonsList from 'mixins/TaxonsList';
 import { TranslateJSX } from 'mixins/Translation';
 import { Form, useField } from 'react-final-form';
-import { FormControlCheckboxField, FormControlField, FormControlTaxonField } from 'mixins/Form/FormControl';
-import { SwapIcon } from 'mixins/swap-icon';
+import { FormControlCheckboxField, FormControlField } from 'mixins/Form/FormControl';
+import { FormControlTaxonField, ProjectField } from 'mixins/Form/fields';
+import { SwapIcon } from 'mixins/icons';
 import { StatusMessageContext } from 'contexts/status-message-context';
 import { Taxon } from 'DataObjects';
 import { StandartFormProps, PresentationSettingsList, StandartFormFields } from 'interfaces';
@@ -113,25 +114,22 @@ const MissedSpeciesForm: React.FC<StandartFormProps<MissedSpeciesFields>> = ({ h
 				/>
 				{extended_comparing && (
 					<fieldset className='noborder'>
-						<FormControlField
-							label={I18n.t("Id или имя проекта")}
-							type='text'
+						<ProjectField 
 							name='unobserved_by_project_id'
 							changeHandler={onChangeHandler}
 							list={datalists.projects}
-							clearDatalistHandler={clearDatalistHandler}
-							listName="projects">
-						</FormControlField>
+							listName='projects'
+							comment=''
+						/>
 						<SwapIcon fieldA='unobserved_by_project_id' fieldB='observed_by_project_id' />
-						<FormControlField
+						<ProjectField
 							label={I18n.t("Id или имя проекта для сравнения")}
-							type='text'
 							name='observed_by_project_id'
 							changeHandler={onChangeHandler}
 							list={datalists.projects}
 							clearDatalistHandler={clearDatalistHandler}
-							listName="projects">
-						</FormControlField>
+							listName='projects'
+							/>
 						<FormControlField
 							label={I18n.t("Id места")}
 							type='text'
@@ -167,12 +165,11 @@ const MissedSpeciesForm: React.FC<StandartFormProps<MissedSpeciesFields>> = ({ h
 						listName="users"
 					/>
 				)}
-				{(!extended_comparing || showProjectField) && <FormControlField
-					label={I18n.t("Id или имя проекта")}
-					type='text'
-					name='project_id'
+				{(!extended_comparing || showProjectField) && <ProjectField
 					changeHandler={onChangeHandler}
 					list={datalists.projects}
+					listName='projects'
+					clearDatalistHandler={clearDatalistHandler}
 				/>}
 				{(!extended_comparing || showPlaceField) && <FormControlField
 					label={I18n.t("Id места")}
@@ -213,6 +210,7 @@ export const MissedSpecies: React.FC = () => {
 	const [values, setValues] = useState<MissedSpeciesFields>(initialValues);
 
 	const submitHandler = useCallback(async (values: MissedSpeciesFields) => {
+		setError('')
 		setLoading(true);
 		const {
 			project_id, place_id, user_id,

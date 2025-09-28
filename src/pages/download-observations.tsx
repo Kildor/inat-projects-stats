@@ -4,7 +4,8 @@ import { I18n } from 'classes';
 import { useDatalist, useInitialValues } from 'hooks';
 import { PresentationSettingsList, StandartFormFields, StandartFormProps } from 'interfaces';
 import API, { fillDateParams } from 'mixins/API';
-import { FormControlField, FormControlTaxonField } from 'mixins/Form/FormControl';
+import { FormControlField } from 'mixins/Form/FormControl';
+import { FormControlTaxonField, ProjectField } from 'mixins/Form/fields';
 import { DataControlsBlock, OtherControlsBlock } from 'mixins/Form/form-control-field-sets';
 import { FormWrapper } from 'mixins/Form/form-wrapper';
 import { Loader } from 'mixins/Loader';
@@ -56,12 +57,10 @@ const DownloadObservationsForm: React.FC<StandartFormProps<DownloadObservationsF
 			</fieldset>
 			<fieldset>
 				<legend>{I18n.t("Фильтрация")}</legend>
-				<FormControlField
-					label={I18n.t("Id или имя проекта")}
-					type='text'
-					name='project_id'
+				<ProjectField
+					list={datalists.projects}
 					changeHandler={onChangeHandler}
-					list={datalists.projects} />
+					/>
 				<FormControlField
 					label={I18n.t("Id или имя пользователя")}
 					comment={I18n.t("Можно вводить несколько идентификаторов через запятую.")}
@@ -113,6 +112,7 @@ export const DownloadObservations: React.FC = () => {
 	const submitHandler = useCallback(
 		async (newValues: DownloadObservationsFields) => {
 			setValues(newValues);
+			setError('')
 
 			const { taxon, limit, project_id, user_id } = newValues;
 

@@ -1,0 +1,64 @@
+.panel {
+	display: block;
+	border: 1px solid #666;
+	border-radius: 5px;
+	margin: 0;
+	padding: 1em 15px;
+
+	>h3.title {
+		white-space: nowrap;
+		font-weight: bold;
+		flex: 1 1 100%;
+		margin: 0;
+		padding: 0;
+		font-size: 1em;
+
+		font-weight: 500;
+		font-size: 1.01em;
+		padding: 0 5px;
+		background: #fff;
+		box-shadow: 1px 1px 1.5px 1px #ccc, 5px 0 #fff, -5px 0 #fff;
+		border-radius: 3px;
+		position: absolute;
+		top: 0;
+		left: 1em;
+		margin-top: -1em;
+	}
+
+	&.copy-url {
+		margin-top: 1em;
+		// padding: 5px 15px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px;
+		position: relative;
+
+		.icon-close {
+			position: absolute;
+			top: -3px;
+			right: -4px;
+			background-color: #fff;
+			border: 1px solid #666;
+			border-radius: 5px;
+			padding: 2px;
+			cursor: pointer;
+		}
+
+		>.url-field {
+			flex: 1 1 auto;
+			width: calc(100% - 50px);
+		}
+	}
+
+	&.error-info {
+		margin-top: 1em;
+
+		.copy-icon {
+			padding: 5px;
+			background-color: #eee;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+
+		}
+	}
+}

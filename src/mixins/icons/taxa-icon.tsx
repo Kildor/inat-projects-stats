@@ -1,6 +1,6 @@
 import React from 'react';
-import '../assets/fontastic-icons/fontastic-icons.scss';
-import '../assets/taxa-icon.scss';
+import 'assets/fontastic-icons/fontastic-icons.scss';
+import 'assets/taxa-icon.scss';
 import { Taxon } from 'DataObjects';
 
 export const TaxaIcon: React.FC<{ iconicTaxa: Taxon['iconicTaxa'] }> = ({ iconicTaxa }) => {

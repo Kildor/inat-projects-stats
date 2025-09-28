@@ -13,6 +13,7 @@ import React, { useCallback, useState } from 'react';
 import { Form, useField } from 'react-final-form';
 import { ObserverChangesList, Strategy, iObserverChange } from 'mixins/ObserverChangesList';
 import { useStatusMessageContext } from 'hooks/use-status-message-context';
+import { ProjectField } from 'mixins/Form';
 
 export interface ContributionFields extends FormOtherFields, FormPresentationFields, Pick<FormDataFields, 'date_created'>, Pick<FormFilterFields, 'project_id'> {
 	order_by: 'species_count' | 'observation_count';
@@ -55,12 +56,10 @@ const ContributionForm: React.FC<StandartFormProps<ContributionFields>> = ({ han
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
 			<fieldset className='noborder'>
-				<FormControlField
-					label={I18n.t("Id или имя проекта")}
-					type='text'
-					name='project_id'
+				<ProjectField
+					list={datalists.projects}
 					changeHandler={onChangeHandler}
-					list={datalists.projects} />
+				/>
 			</fieldset>
 			<fieldset>
 				<legend>{I18n.t("Настройки даты")}</legend>
@@ -126,6 +125,7 @@ export const ContributionPage: React.FC = () => {
 			setValues(newValues);
 			setStatus({ title: I18n.t("Загрузка новых наблюдений") });
 			setLoading(true);
+			setError('')
 
 			const { project_id, limit, order_by,
 				d1_new, d2_new, d1_prev, d2_prev, date_created,

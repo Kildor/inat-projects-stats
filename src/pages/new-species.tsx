@@ -7,7 +7,8 @@ import Page from 'mixins/Page';
 import { FormWrapper } from 'mixins/Form/form-wrapper';
 import TaxonsList from 'mixins/TaxonsList';
 import { Form, useField } from 'react-final-form';
-import { FormControlCheckboxField, FormControlField, FormControlTaxonField } from 'mixins/Form/FormControl';
+import { FormControlCheckboxField, FormControlField } from 'mixins/Form/FormControl';
+import { FormControlTaxonField, ProjectField } from 'mixins/Form/fields';
 import { Taxon } from 'DataObjects';
 import { StandartFormProps, StandartFormFields, PresentationSettingsList, iObjectsList } from 'interfaces';
 import API from 'mixins/API';
@@ -35,12 +36,11 @@ const NewSpeciesForm: React.FC<StandartFormProps<NewSpeciesFields>> = ({ handleS
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
 			<fieldset>
 				<legend>{I18n.t("Фильтрация")}</legend>
-				<FormControlField
-					label={I18n.t("Id или имя проекта")}
-					type='text'
-					name='project_id'
+				<ProjectField
+					list={datalists.projects}
+					clearDatalistHandler={clearDatalistHandler}
 					changeHandler={onChangeHandler}
-					list={datalists.projects} />
+				/>
 				<FormControlField
 					label={I18n.t("Id или имя пользователя")}
 					type='text'
@@ -94,6 +94,7 @@ export const NewSpecies: React.FC = () => {
 	const submitHandler = useCallback(async (newValues: NewSpeciesFields) => {
 		setLoading(true);
 		setStatus(I18n.t("Загрузка новых видов"));
+		setError('')
 
 		const { project_id, user_id, d1, d2, date_created, show_first } = newValues;
 
@@ -145,7 +146,7 @@ export const NewSpecies: React.FC = () => {
 			/>
 			<PresentationSettings onChangeHandler={onChangeHandler} setPresentation={setPresentation} values={{ csv }} />
 			<Loader title={statusTitle} message={statusMessage} show={loading} />
-			<Error error={error} />
+			<Error error={error} {...values} />
 			{!loading && !error && data && values &&
 				<div className='result'>
 					<TaxonsList taxons={data} project_id={values.project_id} user_id={values!.user_id} csv={csv} />

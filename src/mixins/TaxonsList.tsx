@@ -5,7 +5,7 @@ import CSV from './CSV';
 import I18n from '../classes/I18n';
 import { addCustomParams, fillDateParams } from './API';
 import { SearchWidget } from './search-widget';
-import { TaxaIcon } from './taxa-icon';
+import { TaxaIcon } from './icons';
 import { LanguageContext } from './LanguageContext';
 import { DateFormat } from './utils';
 

@@ -8,12 +8,12 @@ import Page from 'mixins/Page';
 import UsersList from 'mixins/UsersList';
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import { Form, useField } from 'react-final-form';
-import { FormControlField } from 'mixins/Form/FormControl';
 import API from 'mixins/API';
 import { User } from 'DataObjects';
 import { useStatusMessageContext } from 'hooks/use-status-message-context';
 import { PresentationSettingsList, StandartFormFields, StandartFormProps } from 'interfaces';
 import { PresentationSettings as PresentationSettingsComponent } from 'mixins/presentation-settings';
+import { ProjectField } from 'mixins/Form';
 
 interface ProjectMembersFields extends Pick<StandartFormFields, 'csv'> {
 	project_id: string;
@@ -30,9 +30,12 @@ const ProjectMembersForm: React.FC<StandartFormProps<ProjectMembersFields>> = ({
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
 			<fieldset className='noborder'>
-				<FormControlField label={I18n.t("Id или имя проекта")} type='text' name='project_id'
+				<ProjectField
+					list={datalists.projects}
+					listName='projects'
+					clearDatalistHandler={clearDatalistHandler}
 					changeHandler={onChangeHandler}
-					list={datalists.projects} clearDatalistHandler={clearDatalistHandler} />
+				/>
 			</fieldset>
 		</FormWrapper>
 	);
@@ -53,6 +56,7 @@ export const ProjectMembers: React.FC = () => {
 	const { statusMessage, statusTitle } = getStatus();
 
 	const submitHandler = useCallback((newValues: ProjectMembersFields): void => {
+		setError('')
 		setValues(newValues);
 		filename.current = newValues.project_id + '-members.csv';
 		setStatus({ title: I18n.t("Загрузка участников") });
@@ -83,7 +87,7 @@ export const ProjectMembers: React.FC = () => {
 			/>
 			<PresentationSettingsComponent setPresentation={setPresentation} values={{ csv }} onChangeHandler={onChangeHandler} />
 			<Loader title={statusTitle} message={statusMessage} show={loading} />
-			<Error error={error} />
+			<Error error={error} {...values} />
 			{!loading && data && (
 				<div className='result'>
 					<UsersList users={data.members} total={data.total} csv={csv} filename={filename.current} />

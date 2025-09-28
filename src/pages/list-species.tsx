@@ -7,7 +7,8 @@ import { useStatusMessageContext } from 'hooks/use-status-message-context';
 import { PresentationSettingsList, StandartFormFields, StandartFormProps, iObjectsList } from 'interfaces';
 import API, { createCallbackMessage, fillDateParams } from 'mixins/API';
 import { Error } from 'mixins/Error';
-import { FormControlField, FormControlSelectField, FormControlTaxonField } from 'mixins/Form/FormControl';
+import { FormControlField, FormControlSelectField } from 'mixins/Form/FormControl';
+import { FormControlTaxonField } from 'mixins/Form/fields';
 import { DataControlsBlock, OtherControlsBlock } from 'mixins/Form/form-control-field-sets';
 import { FormWrapper } from 'mixins/Form/form-wrapper';
 import { Loader } from 'mixins/Loader';
@@ -16,12 +17,13 @@ import TaxonsList from 'mixins/TaxonsList';
 import { PresentationSettings } from 'mixins/presentation-settings';
 import { createQueryRequest } from 'mixins/utils';
 import { USER_CONTRIBUTIONS } from '../constants';
+import { ProjectField } from 'mixins/Form';
 
 interface ListSpeciesFields extends StandartFormFields {
 	/** Вклад пользователя. */
 	contribution: USER_CONTRIBUTIONS;
 	/** Сортировка видов. */
-	order_by: 'count' | 'rarity' | 'rarity_abs' | 'first_obs_date';
+	order_by: 'count' | 'rarity' | 'rarity_abs' | 'first_obs_date' | 'alphabet_scientific_name' | 'alphabet_common_name';
 }
 
 const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handleSubmit, form, optionValues = {}, onChangeHandler, loading }) => {
@@ -32,8 +34,10 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 	const { input: { value: place_id } } = useField<ListSpeciesFields['place_id']>('place_id');
 	const { input: { value: taxon_id } } = useField<ListSpeciesFields['taxon']>('taxon');
 	const { input: { value: d1 } } = useField<ListSpeciesFields['d1']>('d1');
+	const { input: { value: date_any } } = useField<ListSpeciesFields['date_any']>('date_any');
 	const { input: { value: contribution } } = useField<ListSpeciesFields['contribution']>('contribution');
 
+	/*
 	console.log({
 		project_id,
 		place_id,
@@ -42,20 +46,25 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 		txn: (taxon_id as unknown as Taxon).id,
 		txnCmpr: (taxon_id as unknown as Taxon).id !== 0,
 	});
+	*/
 
 
-	const disabled = loading || (d1 === '' || (project_id === '' && user_id === '' && place_id === 0));
+	const disabled = loading || ((d1 === '' && !date_any) || (project_id === '' && user_id === '' && place_id === 0));
+
+	const canSelectContribution = (!!project_id || !!place_id || (!!taxon_id && (taxon_id as unknown as Taxon).id !== 0));
+
+	const orderValues = !!user_id && (USER_CONTRIBUTIONS.OBSERVED === contribution || !canSelectContribution) ?
+		optionValues['order_by'] :
+		optionValues['order_by_common'];
 
 	return (
 		<FormWrapper onSubmit={handleSubmit} disabled={disabled}>
 			<fieldset>
 				<legend>{I18n.t("Фильтрация")}</legend>
-				<FormControlField
-					label={I18n.t("Id или имя проекта")}
-					type='text'
-					name='project_id'
+				<ProjectField
 					changeHandler={onChangeHandler}
-					list={datalists.projects} />
+					list={datalists.projects}
+				/>
 				<FormControlField
 					label={I18n.t("Id или имя пользователя")}
 					comment={I18n.t("Можно вводить несколько идентификаторов через запятую.")}
@@ -65,7 +74,7 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 					list={datalists.users}
 					clearDatalistHandler={clearDatalistHandler}
 					listName="users" />
-				{(!!user_id && (!!project_id || !!place_id || (!!taxon_id && (taxon_id as unknown as Taxon).id !== 0))) &&
+				{!!user_id && canSelectContribution &&
 					<FormControlSelectField label={I18n.t("Вклад пользователя")} name='contribution' values={optionValues['contribution']} />}
 				<FormControlField
 					label={I18n.t("Место")}
@@ -88,9 +97,7 @@ const ListSpeciesForm: React.FC<StandartFormProps<ListSpeciesFields>> = ({ handl
 			</fieldset>
 			<DataControlsBlock handler={onChangeHandler} showDateAny />
 			<OtherControlsBlock handler={onChangeHandler} optionValues={optionValues} >
-				{!!user_id && USER_CONTRIBUTIONS.OBSERVED === contribution && (
-					<FormControlSelectField label={I18n.t("Сортировка по")} name="order_by" values={optionValues['order_by']} />
-				)}
+				<FormControlSelectField label={I18n.t("Сортировка по")} name="order_by" values={orderValues} />
 			</OtherControlsBlock>
 		</FormWrapper>
 	);
@@ -104,7 +111,7 @@ export const ListSpecies: React.FC = () => {
 	const { getStatus, setStatus, setMessage, show: loading, setShow: setLoading } = useStatusMessageContext();
 
 	const { statusMessage, statusTitle } = getStatus();
-	const { values: initialValues, optionValues, onChangeHandler } = useInitialValues<ListSpeciesFields>([
+	const { values: initialValues, optionValues: optionValuesDefault, onChangeHandler } = useInitialValues<ListSpeciesFields>([
 		"project_id", "user_id", "place_id", "taxon",
 		"limit", "species_only", "quality_grade", "contribution",
 		"d1", "d2", "date_created", "date_any", "csv", "additional",
@@ -117,10 +124,17 @@ export const ListSpecies: React.FC = () => {
 				count: "Количеству наблюдений",
 				rarity: "Редкости",
 				rarity_abs: "Редкости на всём сайте",
-				first_obs_date: "Дате первой встречи"
+				first_obs_date: "Дате первой встречи",
+				alphabet_scientific_name: "Научному названию",
+				alphabet_common_name: "Имени"
 			}
-		}
+		},
 	});
+
+	const order_by_common = new Map();
+	['count', 'alphabet_scientific_name', 'alphabet_common_name'].forEach(key => order_by_common.set(key, optionValuesDefault.order_by.get(key)));
+
+	const optionValues = { ...optionValuesDefault, order_by_common };
 
 	const [{ csv }, setPresentation] = useState<PresentationSettingsList>({ csv: initialValues!.csv });
 	const [data, setData] = useState<Taxon[]>([]);
@@ -131,6 +145,7 @@ export const ListSpecies: React.FC = () => {
 	const submitHandler = useCallback(
 		async (newValues: ListSpeciesFields) => {
 			setValues(newValues);
+			setError('')
 
 			setLoading(true);
 
@@ -138,9 +153,10 @@ export const ListSpecies: React.FC = () => {
 			const customParamsWithoutData = createQueryRequest(newValues);
 			const customParams = { ...customParamsWithoutData, ...fillDateParams(newValues) };
 
-			console.log({ customParams });
-
-			const contribution: USER_CONTRIBUTIONS = project_id || place_id || taxon ? contributionValue : USER_CONTRIBUTIONS.OBSERVED;
+			const contribution: USER_CONTRIBUTIONS =
+				project_id || place_id || (taxon && (taxon as unknown as Taxon).id !== 0)
+					? contributionValue
+					: USER_CONTRIBUTIONS.OBSERVED;
 
 			try {
 				if (contribution === USER_CONTRIBUTIONS.NEVER_OBSERVED && user_id !== '') {
@@ -291,7 +307,15 @@ export const ListSpecies: React.FC = () => {
 
 				setStatus(I18n.t("Обработка загруженных данных"));
 
-				setData([...allTaxa.ids].map(id => allTaxa.objects.get(id)) as Taxon[]);
+				const newTaxons = [...allTaxa.ids].map(id => allTaxa.objects.get(id)) as Taxon[];
+
+				if (order_by === 'alphabet_scientific_name') {
+					newTaxons.sort((o1, o2) => o1.name.localeCompare(o2.name));
+				} else if (order_by === 'alphabet_common_name') {
+					newTaxons.sort((o1, o2) => o1.fullName.localeCompare(o2.fullName));
+				}
+
+				setData(newTaxons);
 				return;
 			} catch (e: any) {
 				console.error(e);

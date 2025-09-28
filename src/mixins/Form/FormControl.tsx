@@ -1,11 +1,11 @@
-import { Field, FieldRenderProps, useField } from 'react-final-form';
+import { Field, useField, useForm } from 'react-final-form';
 import I18n from 'classes/I18n';
-import { StatusMessageContext } from 'contexts/status-message-context';
-import { BooleanControlProps, FormControlCheckboxFieldProps, FormControlCheckboxProps, FormControlFieldProps, FormControlProps, FormControlRadioProps, FormControlSelectFieldProps, FormControlSelectProps, FormControlTaxonFieldProps, FormControlTaxonProps, iDataListItem, iLookupTaxon, MultilineControlFieldProps, NumberControlProps } from 'interfaces';
-import { lookupTaxon, setTaxon } from 'mixins/API';
+import { BooleanControlProps, FormControlCheckboxFieldProps, FormControlCheckboxProps, FormControlFieldProps, FormControlProps, FormControlRadioProps, FormControlSelectFieldProps, FormControlSelectProps, FormControlTaxonProps, iDataListItem, iLookupTaxon, MultilineControlFieldProps, NumberControlProps } from 'interfaces';
+import { setTaxon } from 'mixins/API';
 import cn from 'classnames';
 import { DataList } from 'mixins/DataList';
-import React, { ChangeEvent, FunctionComponent, memo, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { ChangeEvent, FunctionComponent, memo, ReactElement, useCallback, useEffect, useState } from 'react'
+import { CloseIcon } from 'mixins/icons';
 
 export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, name, comment, className, onChange, value, list, clearDatalistHandler, listName, children, ...attr }): JSX.Element => {
 	const datalistId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
@@ -21,15 +21,23 @@ export const FormControl: FunctionComponent<FormControlProps> = ({ label, type, 
 		</label>
 	)
 };
-export const FormControlField: FunctionComponent<FormControlFieldProps> = memo(({ label, type, name, comment, className, changeHandler, value, list, clearDatalistHandler, listName, datalistId, children, field, ...attr }): JSX.Element => {
+export const FormControlField: FunctionComponent<FormControlFieldProps> = memo(({ label, type, name, comment, className, changeHandler, value, list, clearDatalistHandler, defaultValue, listName, datalistId, children, field, ...attr }): JSX.Element => {
 	datalistId = datalistId ?? (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
 
 	const { input } = useField(name);
+	const { change } = useForm();
 
 	const onBlurHandler = useCallback(() => {
 		if (!changeHandler) return;
 		changeHandler(name, input.value);
 	}, [input.value, name, changeHandler]);
+
+	const clearValue = useCallback(() => {
+		const newValue = defaultValue ?? (type === 'number' ? '0' : '');
+		change(name, newValue);
+	}, [change, defaultValue, name, type]);
+
+	console.log(name, {defaultValue, value: input.value})
 
 	return (
 		<label className={className}>
@@ -42,6 +50,7 @@ export const FormControlField: FunctionComponent<FormControlFieldProps> = memo((
 					list={datalistId}
 					{...attr}
 				>{field}</Field>
+				{(defaultValue ? input.value !== defaultValue : Boolean(input.value) && input.value !== '0') && <CloseIcon onClick={clearValue} />}
 				{children}
 				{!!datalistId && <DataList list={list} id={datalistId} clearDatalistHandler={clearDatalistHandler} listName={listName} />}
 			</span>
@@ -155,71 +164,6 @@ export const FormControlTaxon: FunctionComponent<FormControlTaxonProps> = (props
 		(<FormControl type='text' {...attr} label={I18n.t("Таксон")} name="taxon" onChange={onChange} onBlur={() => { setTaxon(props.value, updateState) }} value={taxonName}>
 			{children}
 		</FormControl>)
-	);
-}
-
-export const FormControlTaxonField: FunctionComponent<FormControlTaxonFieldProps> = ({ name, changeHandler, list, label = I18n.t("Таксон"), ...attr }) => {
-	const { input: { value: taxonValue, onChange, onBlur } } = useField<iLookupTaxon | string>(name, { subscription: { value: true } });
-
-	const { setStatus, setShow } = useContext(StatusMessageContext);
-	const datalistId = (!!list && list.length > 0) ? `form-control-dl-${name}-${new Date().getMilliseconds()}` : undefined;
-
-	let children = useMemo(() => {
-		if (typeof taxonValue !== 'string' && taxonValue.id !== 0 && taxonValue.name !== "" + taxonValue.id) {
-			if (taxonValue.lookupSuccess) {
-				return (
-					<a href={`https://www.inaturalist.org/taxa/${taxonValue.id}`} target='_blank' rel='noopener noreferrer'>
-						<span role='img' aria-label={I18n.t("Успешно")}>✅
-							{!!taxonValue.commonName && <span className='common-name'>{taxonValue.commonName}</span>}
-						</span>
-					</a>);
-
-			} else {
-				return (<span role='img' aria-label={I18n.t("Неуспешно")}>⚠️</span>);
-			}
-		}
-		return null;
-	}, [taxonValue]);
-
-	const onBlurHandler = useCallback(async (event: React.FocusEvent<HTMLInputElement>) => {
-		onBlur(event)
-		const taxon = await lookupTaxon(taxonValue, setStatus, setShow);
-
-		onChange(taxon);
-	}, [onChange, onBlur, setShow, setStatus, taxonValue]);
-
-	const field = useCallback(
-		({ input, onBlur }: { input: FieldRenderProps<any, HTMLElement, any>, onBlur: React.FocusEventHandler<HTMLInputElement> }) => {
-			const value = typeof input.value === 'string' ?
-				input.value :
-				input.value.lookupSuccess ?
-					`${input.value.commonName} (${input.value.name})` : (
-						typeof taxonValue === 'string' ? taxonValue : taxonValue.name
-					);
-
-			return (
-				<input type='text' name={input.name} value={value} list={datalistId} onChange={input.onChange} onBlur={onBlur} onFocus={(e) => {
-					e.target.focus();
-				}} />
-			);
-		}, [datalistId, taxonValue]
-	);
-
-	return (
-		<FormControlField
-			type='text'
-			{...attr}
-			list={list}
-			datalistId={datalistId}
-			label={label}
-			name="taxon"
-			changeHandler={changeHandler}
-			onBlur={onBlurHandler}
-			field={field}
-		>
-			{children}
-		</FormControlField>
-
 	);
 }
 

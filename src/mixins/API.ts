@@ -6,6 +6,7 @@ import { JSONLookupTaxonObject, JSONPlaceObject, JSONTaxonObject, JSONUserObject
 
 const API = () => { };
 API.BASE_URL = 'https://api.inaturalist.org/v1/';
+API.V2_BASE_URL = 'https://api.inaturalist.org/v2/';
 API.LOCALE = 'ru';
 API.DEBUG = !1;
 export const addCustomParams = (customParams: Record<string, string | number>): string =>
@@ -121,17 +122,20 @@ API.fetchSpecies = async (project_id: string | null, user_id: string | null, d1:
 	return taxons;
 }
 
-API.fetchMembers = async (project_id: string, callback: Function) => {
+API.fetchMembers = async (project_id: string, callback: Function, skip_counts = true) => {
 	let users: iObjectsList<User> = { ids: new Set(), objects: new Map(), total: 0 };
 	// let url = `${API.BASE_URL}observations/species_counts?user_id=kildor&project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`;
 	// let url = `${API.BASE_URL}observations/species_counts?project_id=${project_id}&locale=${window.navigator.language}&preferred_place_id=7161`; 
 	let url = `${API.BASE_URL}projects/${project_id}/members?order_by=login&order=asc`;
+	if (skip_counts) {
+		url += '&skip_counts=true'
+	}
 
 	let totalCount = 0;
 	let page = 0;
 	let perPageFromJSON = 0;
 
-	let perPage = 100;
+	let perPage = 200;
 
 	do {
 		page++;
@@ -139,7 +143,6 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 		if (!!callback) {
 			callback(createCallbackMessage(page, perPageFromJSON, totalCount), true);
 		}
-		// const json = await API.debounceFetch(url + '&page=' + page);
 		const json = await fetch(url + '&per_page=' + perPage + '&page=' + page).then(res => res.json()).catch(e => { throw new Error(`${e.message}, ${url}`) });
 		totalCount = json.total_results;
 		page = json.page;
@@ -150,11 +153,6 @@ API.fetchMembers = async (project_id: string, callback: Function) => {
 			users.objects.set(u.id, u);
 			users.ids.add(u.id);
 		});
-		// console.dir(users.ids.size);
-		// if (totalCount < page*perPageFromJSON && totalCount !== users.ids.size ) {
-		// page = 0;
-		// perPage-=20;
-		// }
 	} while (totalCount > page * perPageFromJSON);
 	users.total = totalCount;
 	return users;
@@ -264,6 +262,14 @@ API.filterDatalist = (datalist: iDataListItem[]) => Array.from(
 
 export default API;
 
+/** Проверяет что это число или строка с числовым значением */
+const isNumber = (value: unknown): boolean => {
+	if (typeof value === 'string') {
+		return Number(value.trim()).toFixed().toString() === value.trim();
+	}
+
+	return Number.isInteger(value);
+}
 
 export const setTaxon = async function (taxon: iLookupTaxon, setState: Function) {
 	let taxonName = "";
@@ -271,8 +277,7 @@ export const setTaxon = async function (taxon: iLookupTaxon, setState: Function)
 	else if (!!taxon.name) taxonName = taxon.name;
 	if (taxonName.trim().length < 3) return;
 	setState({ loading: true, loadingTitle: I18n.t("Поиск ID вида") });
-	const regexp = /[0-9]+/;
-	if (!taxonName.match(regexp)) {
+	if (isNumber(taxonName)) {
 		taxon = await API.lookupTaxon(taxonName);
 	} else {
 		taxon = { id: parseInt(taxonName), name: taxonName, commonName: taxonName, lookupSuccess: false };
@@ -300,9 +305,8 @@ export const lookupTaxon = async function (taxonName: string | iLookupTaxon, set
 
 	let taxon: iLookupTaxon;
 
-	const regexpNumber = /[0-9]+/;
 	const regexpCommon = /.+\(([ a-zA-Z]+)\)/;
-	if (!taxonName.match(regexpNumber)) {
+	if (!isNumber(taxonName)) {
 		const taxonCommon = taxonName.match(regexpCommon);
 		if (taxonCommon && taxonCommon[1]) {
 			taxonName = taxonCommon[1];

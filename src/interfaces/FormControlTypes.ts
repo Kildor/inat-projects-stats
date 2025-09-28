@@ -65,7 +65,9 @@ export interface FormControlProps extends DatalistFormControlProps {
 }
 
 export interface FormControlFieldProps extends Omit<FormControlProps, 'onChange'> {
-	changeHandler?: (name: string, value: string) => void
+	changeHandler?: (name: string, value: string) => void;
+	clearHandler?(): void;
+	defaultValue? : unknown;
 	// field?: JSX.Element | React.ReactNode | ((props: FieldRenderProps<any, HTMLElement, any>) => any)
 	// field?: JSX.Element | React.ReactNode
 	field?: any
