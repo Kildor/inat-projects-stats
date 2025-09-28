@@ -1,7 +1,7 @@
 import { Field, FieldRenderProps, useField } from 'react-final-form';
 import I18n from 'classes/I18n';
 import { StatusMessageContext } from 'contexts/status-message-context';
-import { BooleanControlProps, FormControlCheckboxFieldProps, FormControlCheckboxProps, FormControlFieldProps, FormControlProps, FormControlRadioProps, FormControlSelectFieldProps, FormControlSelectProps, FormControlTaxonFieldProps, FormControlTaxonProps, iDataListItem, iLookupTaxon, MultilineControlFieldProps, MultilineControlProps, NumberControlProps } from 'interfaces';
+import { BooleanControlProps, FormControlCheckboxFieldProps, FormControlCheckboxProps, FormControlFieldProps, FormControlProps, FormControlRadioProps, FormControlSelectFieldProps, FormControlSelectProps, FormControlTaxonFieldProps, FormControlTaxonProps, iDataListItem, iLookupTaxon, MultilineControlFieldProps, NumberControlProps } from 'interfaces';
 import { lookupTaxon, setTaxon } from 'mixins/API';
 import cn from 'classnames';
 import { DataList } from 'mixins/DataList';
@@ -253,25 +253,6 @@ export const FormControlAdditionalParamsField: React.FC = () => (
 	/>
 );
 FormControlAdditionalParamsField.displayName = 'FormControlAdditionalParamsField';
-
-export const FormControlMultiline: FunctionComponent<MultilineControlProps> = (props) => {
-	const { value: defValue = '' } = props;
-	const [value, setValue] = useState('');
-
-	useEffect(() => {
-		setValue(typeof defValue === 'string' ? defValue : defValue?.reduce((value, item) => value + item.name + (!!item.title && item.title !== item.name ? ': ' + item.title : '') + '\n', '').trim())
-	}, [defValue])
-
-	return (
-		<label className={props.className}>
-			<span>{props.label}
-				{!!props.comment && <div className="comment"><small>{props.comment}</small></div>}
-			</span> <span className='form-control'>
-				<textarea name={props.name} value={value} onChange={(e) => setValue(e.target.value)} onBlur={props.handler} />
-			</span>
-		</label>
-	)
-}
 
 export const FormControlMultilineField: FunctionComponent<MultilineControlFieldProps> = (props) => {
 	const { name } = props;

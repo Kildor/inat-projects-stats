@@ -24,7 +24,7 @@ const AppLoader = () => (
 
 const RoutesSwitch = () => (
   <Switch>
-    {components.map(({ path, component, exact = false }) => <Route exact={exact} key={path} path={path}>{component}</Route>)}
+    {components.map(({ path, component, exact = false }) => <Route exact={exact} key={`${path}-${exact ? 0 : 1}`} path={path}>{component}</Route>)}
   </Switch>
 );
 
